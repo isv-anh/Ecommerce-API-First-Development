@@ -31,7 +31,7 @@ RUN curl -o actions-runner-linux-x64-2.325.0.tar.gz -L $BINARY_URL && \
     rm actions-runner-linux-x64-2.325.0.tar.gz && \
     echo $RUNNER_TOKEN
 
-RUN ./config.sh --url https://github.com/ndha1511/hrm-dev \
+RUN ./config.sh --url https://github.com/ndh-anh/hrm-dev \
     --token $RUNNER_TOKEN \
     --name $RUNNER_NAME \
     --unattended \
