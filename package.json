@@ -1,0 +1,9 @@
+{
+  "name": "hrm",
+  "private": true,
+  "workspaces": [
+    "packages/openapi-typespec",
+    "packages/hrm-front",
+    "packages/hrm-api"
+  ]
+}
