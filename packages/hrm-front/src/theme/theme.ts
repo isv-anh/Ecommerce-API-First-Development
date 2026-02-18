@@ -1,10 +1,33 @@
 import { createTheme } from "@mui/material/styles";
 
+declare module "@mui/material/styles" {
+  interface TypeText {
+    white: string;
+  }
+}
+
 const theme = createTheme({
   typography: {},
   palette: {
     primary: {
-      main: "#A29BFE",
+      main: "#9B5DE0",
+      light: "#C77DFF",
+    },
+    text: {
+      white: "#FFFFFF",
+    },
+    common: {
+      white: "#FFFFFF",
+      black: "#000000",
+    },
+  },
+  breakpoints: {
+    values: {
+      xs: 600,
+      sm: 900,
+      md: 1200,
+      lg: 1536,
+      xl: 1920,
     },
   },
   components: {
@@ -26,15 +49,20 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           "& .MuiOutlinedInput-root": {
-            borderRadius: "24px",
-          },
-          "& .MuiInputBase-input": {
-            padding: "6px 16px",
+            borderRadius: "48px",
           },
         },
       },
       defaultProps: {
         variant: "outlined",
+        size: "small",
+      },
+    },
+    MuiToolbar: {
+      styleOverrides: {
+        root: {
+          height: "64px",
+        },
       },
     },
   },

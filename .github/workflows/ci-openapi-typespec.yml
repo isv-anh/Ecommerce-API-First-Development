@@ -1,13 +1,13 @@
-name: "[CI] HRM Frontend Build and Test"
+name: "[CI] OpenAPI Typespec Build and Test"
 
 on:
   pull_request:
     types: [assigned]
     paths:
-      - "hrm-front/**"
-      - ".github/workflows/ci-hrm-front.yml"
-      - "!hrm-front/.vscode/**"
-      - "!hrm-front/*.code-workspace"
+      - "openapi-typespec/**"
+      - ".github/workflows/ci-openapi-typespec.yml"
+      - "!openapi-typespec/.vscode/**"
+      - "!openapi-typespec/*.code-workspace"
 jobs:
   ci-check:
     runs-on: [self-hosted, "${{github.event.sender.login}}"]
@@ -15,7 +15,7 @@ jobs:
       NODE_VERSION: "22.17.0"
     defaults:
       run:
-        working-directory: ./hrm-front
+        working-directory: ./openapi-typespec
     permissions:
       contents: read
     steps:
@@ -32,26 +32,11 @@ jobs:
           # https://github.com/actions/setup-node#caching-packages-data
           cache-dependency-path: hrm-front/package-lock.json
 
+      - name: Install Typespec Compile
+        run: npm install -g @typespec/compiler
+
       - name: Install npm
         run: npm ci
 
-      - name: Generator OpenAPI client
+      - name: Generator OpenAPI files
         run: npm run generate
-
-      - name: Pettier & Lint check
-        run: npm run lint
-
-      - name: Build
-        run: npm run build
-
-      - name: Component Test Coverage
-        run: npm run coverage
-
-      - name: Storybook Deploy
-        uses: chromaui/action@latest
-        with:
-          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
-          # https://www.chromatic.com/docs/github-actions/#run-chromatic-on-monorepos
-          workingDir: hrm-front
-          exitOnceUploaded: true
-          autoAcceptChanges: true

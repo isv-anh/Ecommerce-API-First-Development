@@ -19,6 +19,7 @@
         "type": "shell",
         "args": [],
         "problemMatcher": [],
+        "dependsOn": ["Install Extensions"]
       },
       {
         "label": "Install Extensions",

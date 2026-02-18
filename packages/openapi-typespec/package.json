@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "type": "module",
   "private": true,
+  "scripts": {
+    "generate": "cd .. && chmod +x ./scripts/generate.sh && ./scripts/generate.sh"
+  },
   "dependencies": {
     "@typespec/compiler": "latest",
     "@typespec/http": "latest",

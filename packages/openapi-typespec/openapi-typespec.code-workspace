@@ -37,6 +37,17 @@
         "presentation": {
           "reveal": "always"
         }
+      },
+      {
+        "label": "Generate Open API",
+        "detail": "Generate Open API files",
+        "command": "npm run generate",
+        "type": "shell",
+        "args": [],
+        "problemMatcher": [],
+        "presentation": {
+          "reveal": "always"
+        }
       }
     ]
   }

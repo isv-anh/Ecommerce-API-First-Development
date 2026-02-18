@@ -18,6 +18,8 @@
         "PKief.material-icon-theme",
         "dsznajder.es7-react-js-snippets",
         "vivaxy.vscode-conventional-commits",
+        "ms-playwright.playwright",
+        "vitest.explorer",
         "eamodio.gitlens",
         "mhutchie.git-graph"
     ]

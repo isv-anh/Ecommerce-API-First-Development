@@ -7,8 +7,13 @@
  * - Please do NOT modify this file.
  */
 
+<<<<<<< HEAD:packages/hrm-front/public/mockServiceWorker.js
 const PACKAGE_VERSION = '2.12.10'
 const INTEGRITY_CHECKSUM = '4db4a41e972cec1b64cc569c66952d82'
+=======
+const PACKAGE_VERSION = '2.10.4'
+const INTEGRITY_CHECKSUM = 'f5825c521429caf22a4dd13b66e243af'
+>>>>>>> develop:hrm-front/public/mockServiceWorker.js
 const IS_MOCKED_RESPONSE = Symbol('isMockedResponse')
 const activeClientIds = new Set()
 

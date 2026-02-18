@@ -42,3 +42,5 @@ next-env.d.ts
 
 # generate
 src/generated
+
+build-storybook.log

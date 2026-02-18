@@ -6,6 +6,7 @@ on:
   workflow_dispatch:
 jobs:
   ci-check:
+    if: ${{ github.event.pull_request.changed_files != null }}
     runs-on: [self-hosted, "${{github.event.sender.login}}"]
     permissions:
       contents: read
