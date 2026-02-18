@@ -12,7 +12,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./hrm-api:/app/hrm-api
+      - ./packages/hrm-api:/app/packages/hrm-api
       - m2_data:/home/pengu/.m2
     environment:
       - DB_USERNAME=${DB_USERNAME}
@@ -36,7 +36,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./hrm-front:/app/hrm-front
+      - ./packages/hrm-front:/app/packageshrm-front
     networks:
       - hrm-network
   
