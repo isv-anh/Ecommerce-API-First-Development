@@ -40,7 +40,7 @@ services:
 
   postgres-db:
     container_name: postgres-db
-    image: postgres
+    image: postgres:16
     ports:
       - "5432:5432"
     restart: always
@@ -50,6 +50,29 @@ services:
       - POSTGRES_DB=${DB_NAME}
     volumes:
       - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h localhost -U ${DB_USERNAME} -d ${DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - hrm-network
+
+  liquibase:
+    image: liquibase/liquibase:4.33
+    container_name: liquibase
+    depends_on:
+      postgres-db:
+          condition: service_healthy
+    volumes:
+      - ./packages/hrm-db/changelog:/liquibase/changelog
+    command:
+      - --url=jdbc:postgresql://postgres-db:5432/${DB_NAME}
+      - --username=${DB_USERNAME}
+      - --password=${DB_PASSWORD}
+      - --changeLogFile=init.yaml
+      - --searchPath=/liquibase/changelog
+      - update
     networks:
       - hrm-network
 
