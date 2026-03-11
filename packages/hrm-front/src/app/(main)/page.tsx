@@ -1,5 +1,7 @@
+import Portal from "@/features/main/portal/Portal";
+
 const Home = () => {
-  return <div>Home </div>;
+  return <Portal/>;
 };
 
 export default Home;

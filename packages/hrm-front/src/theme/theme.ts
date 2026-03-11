@@ -31,6 +31,28 @@ const theme = createTheme({
     },
   },
   components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          scrollbarGutter: "stable overlay", // modern browser
+        },
+
+        "*::-webkit-scrollbar": {
+          width: "4px",
+          height: "4px",
+        },
+        "*::-webkit-scrollbar-track": {
+          background: "transparent",
+        },
+        "*::-webkit-scrollbar-thumb": {
+          backgroundColor: "rgba(255,255,255,0.3)",
+          borderRadius: "8px",
+        },
+        "*::-webkit-scrollbar-thumb:hover": {
+          backgroundColor: "rgba(255,255,255,0.5)",
+        },
+      },
+    },
     MuiButton: {
       styleOverrides: {
         root: {
@@ -62,6 +84,13 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           height: "64px",
+        },
+      },
+    },
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          borderRadius: "16px",
         },
       },
     },
