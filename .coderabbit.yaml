@@ -12,9 +12,6 @@ reviews:
   high_level_summary: true
   changed_files_summary: true
 
-  comment:
-    max_comments: 10
-    style: concise
 
   path_instructions:
     - path: "**/*"
