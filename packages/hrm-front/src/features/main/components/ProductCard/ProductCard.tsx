@@ -21,15 +21,31 @@ const ProductCard = ({ product }: ProductCardProps) => {
           },
         }}
       >
-        {/* TODO: add default iamge */}
+        {/* TODO: add default image */}
         <Box sx={{ height: 350, width: "100%", position: "relative" }}>
-          <Image
-            src={product.thumbnail ?? ""}
-            alt={product.product_name}
-            fill
-            sizes="300px"
-            style={{ objectFit: "cover", objectPosition: "center" }}
-          />
+          {product.thumbnail ? (
+            <Image
+              src={product.thumbnail}
+              alt={product.product_name}
+              fill
+              sizes="300px"
+              style={{ objectFit: "cover", objectPosition: "center" }}
+            />
+          ) : (
+            <Box
+              sx={{
+                height: "100%",
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                bgcolor: "grey.100",
+              }}
+            >
+              <Typography color="text.secondary">No image available</Typography>
+            </Box>
+          )}
+        </Box>
         </Box>
 
         <Stack>
