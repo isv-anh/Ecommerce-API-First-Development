@@ -46,7 +46,6 @@ const ProductCard = ({ product }: ProductCardProps) => {
             </Box>
           )}
         </Box>
-        </Box>
 
         <Stack>
           <Typography>{product.product_name}</Typography>

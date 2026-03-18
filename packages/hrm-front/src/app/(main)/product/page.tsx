@@ -1,14 +1,16 @@
 import Hydration from "@/components/ssr/Hydration/Hydration";
 import ProductList from "@/features/main/components/ProductList/ProductList";
 import { getListProductsSuspenseQueryOptions } from "@/generated/endpoints/petstore/petstore";
-import { dehydrate, QueryClient } from "@tanstack/react-query";
+import { getQueryClient } from "@/utils/query";
+import { dehydrate } from "@tanstack/react-query";
 
-const ProductPage = async () => {
-  const queryClient = new QueryClient();
+const ProductPage = () => {
+  const queryClient = getQueryClient();
 
-  await queryClient.prefetchQuery({
+  queryClient.prefetchQuery({
     ...getListProductsSuspenseQueryOptions(),
   });
+
   return (
     <Hydration state={dehydrate(queryClient)}>
       <ProductList />

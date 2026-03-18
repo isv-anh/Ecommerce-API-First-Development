@@ -23,7 +23,6 @@ const TimeView = () => {
   }
 
   return (
-  return (
     <Box display={"flex"} alignItems={"flex-end"} gap={2}>
       <Typography variant="h4" fontWeight={"bold"}>
         {format(time, "dd-MM-yyyy", { locale: vi })}
