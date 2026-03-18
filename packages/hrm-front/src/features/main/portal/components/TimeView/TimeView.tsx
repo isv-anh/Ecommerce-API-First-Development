@@ -5,17 +5,24 @@ import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 
 const TimeView = () => {
-  const [time, setTime] = useState(new Date());
+  const [time, setTime] = useState<Date | null>(null);
 
   const timeInterval = 1000; // Update every second
 
   useEffect(() => {
+    setTime(new Date()); // Set initial time on client
     const timer = setInterval(() => {
       setTime(new Date());
     }, timeInterval);
 
     return () => clearInterval(timer);
   }, []);
+
+  if (!time) {
+    return null; // Or a skeleton/placeholder
+  }
+
+  return (
   return (
     <Box display={"flex"} alignItems={"flex-end"} gap={2}>
       <Typography variant="h4" fontWeight={"bold"}>
