@@ -23,7 +23,8 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
-  marginLeft: `-${drawerWidth}px`,
+  // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+  marginLeft: `-${drawerWidth - 40}px`,
   variants: [
     {
       props: ({ open }) => open,
@@ -59,14 +60,16 @@ const AppNavigation = ({
   return (
     <>
       <Toolbar />
-      <Box display={"flex"}>
+      <Box display={"flex"} height={"100%"}>
         <Box
           display={open ? "none" : "block"}
+          position={"absolute"}
           mt={2}
           ml={1}
           mb={2}
           zIndex={(theme) => theme.zIndex.appBar}
           bgcolor={(theme) => theme.palette.primary.main}
+          height={40}
           borderRadius={2}
         >
           <IconButton
@@ -97,7 +100,7 @@ const AppNavigation = ({
           anchor="left"
           open={open}
         >
-          <Stack spacing={1} flexGrow={1}>
+          <Stack spacing={1} flexGrow={1} overflow={"hidden"}>
             <Stack flexDirection={"row"} pt={1.5} pl={1}>
               <IconButton
                 onClick={handleDrawerClose}
@@ -108,7 +111,9 @@ const AppNavigation = ({
                 <ViewSidebarIcon />
               </IconButton>
             </Stack>
-            <AppNavigationList />
+            <Stack flexGrow={1} overflow={"auto"}>
+              <AppNavigationList />
+            </Stack>
           </Stack>
           <Divider
             sx={{
