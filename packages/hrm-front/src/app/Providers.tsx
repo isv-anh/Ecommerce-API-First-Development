@@ -23,7 +23,7 @@ const Providers = ({ children }: { children: ReactNode }) => {
   return (
     <AppRouterCacheProvider>
       <QueryClientProvider client={queryClient}>
-        <ReactQueryDevtools initialIsOpen={true} />
+        <ReactQueryDevtools initialIsOpen={false} />
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <MockBrowser>{children}</MockBrowser>
