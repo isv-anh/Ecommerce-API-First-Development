@@ -18,8 +18,9 @@ const Search = () => {
   });
 
   const handleSearch = (data: { textSearch: string }) => {
-    if (data.textSearch.trim() !== "") {
-      router.push(`/search?q=${encodeURIComponent(data.textSearch)}`);
+    const query = data.textSearch.trim();
+    if (query !== "") {
+      router.push(`/search?q=${encodeURIComponent(query)}`);
     }
   };
   return (
