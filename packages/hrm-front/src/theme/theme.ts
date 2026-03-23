@@ -207,7 +207,11 @@ const theme = createTheme({
           if (!color) {
             paletteColor = theme.palette.action.active;
           } else if (color === "inherit") {
-            paletteColor = "currentColor";
+            return {
+              "&:hover": {
+                backgroundColor: theme.palette.action.hover,
+              },
+            };
           } else {
             paletteColor = theme.palette[color].main;
           }
@@ -253,6 +257,20 @@ const theme = createTheme({
     MuiTypography: {
       defaultProps: {
         variant: "regularS",
+        variantMapping: {
+          title: "h1",
+          subtitle: "h2",
+          header: "h3",
+          regularS: "p",
+          regularM: "p",
+          regularL: "p",
+          regularXs: "p",
+          regularXxs: "p",
+          boldS: "p",
+          boldM: "p",
+          boldL: "p",
+          boldXs: "p",
+        },
       },
     },
     MuiTab: {
@@ -272,7 +290,11 @@ const theme = createTheme({
           if (!color || color === "default") {
             paletteColor = theme.palette.action.active;
           } else if (color === "inherit") {
-            paletteColor = "currentColor";
+            return {
+              "&:hover": {
+                backgroundColor: theme.palette.action.hover,
+              },
+            };
           } else {
             paletteColor = theme.palette[color].main;
           }

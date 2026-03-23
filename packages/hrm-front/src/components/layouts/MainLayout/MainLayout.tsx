@@ -15,7 +15,7 @@ const MainLayout = ({ children }: { children: ReactNode }) => {
     threshold: 100,
   });
   return (
-    <Box px={12}>
+    <Box sx={{ px: "clamp(16px, 4vw, 96px)" }}>
       <Header />
       <Stack
         position="sticky"
