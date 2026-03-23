@@ -1,7 +1,38 @@
+"use client";
 import { ReactNode } from "react";
+import Header from "./components/Header/Header";
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import Search from "./components/Search/Search";
+import Footer from "./components/Footer/Footer";
+import { useScrollTrigger } from "@mui/material";
+import ActionButtonList from "./components/ActionButtonList/ActionButtonList";
+import ScrollToTopButton from "./components/ScrollToTopButton/ScrollToTopButton";
 
 const MainLayout = ({ children }: { children: ReactNode }) => {
-  return <div>MainLayout</div>;
+  const trigger = useScrollTrigger({
+    disableHysteresis: true,
+    threshold: 100,
+  });
+  return (
+    <Box px={12}>
+      <Header />
+      <Stack
+        position="sticky"
+        top={0}
+        sx={(theme) => ({
+          backgroundColor: theme.palette.common.white,
+          zIndex: theme.zIndex.appBar,
+        })}
+      >
+        <Search />
+      </Stack>
+      {children}
+      <Footer />
+      <ActionButtonList />
+      {trigger && <ScrollToTopButton />}
+    </Box>
+  );
 };
 
 export default MainLayout;
