@@ -1,0 +1,79 @@
+databaseChangeLog:
+  # ─── CARTS ──────────────────────────────────────────────
+  - changeSet:
+      id: cart-001-create-carts
+      author: hoanganh
+      changes:
+        - createTable:
+            tableName: carts
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: uuid
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: timestamp
+
+  - changeSet:
+      id: cart-001-carts-fk
+      author: hoanganh
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: carts
+            baseColumnNames: user_id
+            constraintName: fk_carts_user
+            referencedTableName: users
+            referencedColumnNames: uid
+
+  # ─── CART ITEMS ──────────────────────────────────────────
+  - changeSet:
+      id: cart-002-create-cart-items
+      author: hoanganh
+      changes:
+        - createTable:
+            tableName: cart_items
+            columns:
+              - column:
+                  name: cart_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: product_variant_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: quantity
+                  type: int
+                  defaultValueNumeric: 1
+        - addPrimaryKey:
+            tableName: cart_items
+            columnNames: cart_id, product_variant_id
+            constraintName: pk_cart_items
+
+  - changeSet:
+      id: cart-002-cart-items-fk
+      author: hoanganh
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: cart_items
+            baseColumnNames: cart_id
+            constraintName: fk_cart_items_cart
+            referencedTableName: carts
+            referencedColumnNames: id
+        - addForeignKeyConstraint:
+            baseTableName: cart_items
+            baseColumnNames: product_variant_id
+            constraintName: fk_cart_items_variant
+            referencedTableName: product_variants
+            referencedColumnNames: id

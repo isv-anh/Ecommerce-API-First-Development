@@ -1,0 +1,383 @@
+databaseChangeLog:
+  # ─── CATEGORIES ──────────────────────────────────────────
+  - changeSet:
+      id: product-001-create-categories
+      author: hoanganh
+      changes:
+        - createTable:
+            tableName: categories
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: parent_id
+                  type: uuid
+
+  - changeSet:
+      id: product-001-categories-self-ref-fk
+      author: hoanganh
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: categories
+            baseColumnNames: parent_id
+            constraintName: fk_categories_parent
+            referencedTableName: categories
+            referencedColumnNames: id
+
+  # ─── PRODUCTS ────────────────────────────────────────────
+  - changeSet:
+      id: product-002-create-products
+      author: hoanganh
+      changes:
+        - createTable:
+            tableName: products
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: shop_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: category_id
+                  type: uuid
+              - column:
+                  name: name
+                  type: varchar(500)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: slug
+                  type: varchar(500)
+              - column:
+                  name: thumbnail_url
+                  type: varchar(500)
+              - column:
+                  name: description
+                  type: text
+              - column:
+                  name: is_published
+                  type: boolean
+                  defaultValueBoolean: true
+              - column:
+                  name: created_at
+                  type: timestamp
+              - column:
+                  name: updated_at
+                  type: timestamp
+
+  - changeSet:
+      id: product-002-products-indexes-fk
+      author: hoanganh
+      changes:
+        - createIndex:
+            tableName: products
+            indexName: idx_products_shop_id
+            columns:
+              - column:
+                  name: shop_id
+        - createIndex:
+            tableName: products
+            indexName: idx_products_category_id
+            columns:
+              - column:
+                  name: category_id
+        - createIndex:
+            tableName: products
+            indexName: idx_products_shop_published
+            columns:
+              - column:
+                  name: shop_id
+              - column:
+                  name: is_published
+        - addForeignKeyConstraint:
+            baseTableName: products
+            baseColumnNames: shop_id
+            constraintName: fk_products_shop
+            referencedTableName: shops
+            referencedColumnNames: id
+        - addForeignKeyConstraint:
+            baseTableName: products
+            baseColumnNames: category_id
+            constraintName: fk_products_category
+            referencedTableName: categories
+            referencedColumnNames: id
+
+  # ─── PRODUCT IMAGES ──────────────────────────────────────
+  - changeSet:
+      id: product-003-create-product-images
+      author: hoanganh
+      changes:
+        - createTable:
+            tableName: product_images
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: product_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: url
+                  type: varchar(500)
+              - column:
+                  name: is_thumbnail
+                  type: boolean
+                  defaultValueBoolean: false
+              - column:
+                  name: sort_order
+                  type: int
+                  defaultValueNumeric: 0
+              - column:
+                  name: created_at
+                  type: timestamp
+
+  - changeSet:
+      id: product-003-product-images-indexes-fk
+      author: hoanganh
+      changes:
+        - createIndex:
+            tableName: product_images
+            indexName: idx_product_images_product_id
+            columns:
+              - column:
+                  name: product_id
+        - addForeignKeyConstraint:
+            baseTableName: product_images
+            baseColumnNames: product_id
+            constraintName: fk_product_images_product
+            referencedTableName: products
+            referencedColumnNames: id
+
+  # ─── PRODUCT VARIANTS ────────────────────────────────────
+  - changeSet:
+      id: product-004-create-product-variants
+      author: hoanganh
+      changes:
+        - createTable:
+            tableName: product_variants
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: product_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: sku
+                  type: varchar(255)
+                  constraints:
+                    unique: true
+              - column:
+                  name: thumbnail_url
+                  type: varchar(500)
+              - column:
+                  name: price
+                  type: numeric(18,2)
+              - column:
+                  name: compare_price
+                  type: numeric(18,2)
+              - column:
+                  name: stock
+                  type: int
+                  defaultValueNumeric: 0
+              - column:
+                  name: created_at
+                  type: timestamp
+              - column:
+                  name: updated_at
+                  type: timestamp
+
+  - changeSet:
+      id: product-004-product-variants-indexes-fk
+      author: hoanganh
+      changes:
+        - createIndex:
+            tableName: product_variants
+            indexName: idx_product_variants_product_id
+            columns:
+              - column:
+                  name: product_id
+        - createIndex:
+            tableName: product_variants
+            indexName: idx_product_variants_sku
+            columns:
+              - column:
+                  name: sku
+        - addForeignKeyConstraint:
+            baseTableName: product_variants
+            baseColumnNames: product_id
+            constraintName: fk_product_variants_product
+            referencedTableName: products
+            referencedColumnNames: id
+
+  # ─── PRODUCT VARIANT IMAGES ──────────────────────────────
+  - changeSet:
+      id: product-005-create-product-variant-images
+      author: hoanganh
+      changes:
+        - createTable:
+            tableName: product_variant_images
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: product_variant_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: url
+                  type: varchar(500)
+              - column:
+                  name: is_thumbnail
+                  type: boolean
+                  defaultValueBoolean: false
+              - column:
+                  name: sort_order
+                  type: int
+                  defaultValueNumeric: 0
+              - column:
+                  name: created_at
+                  type: timestamp
+
+  - changeSet:
+      id: product-005-product-variant-images-indexes-fk
+      author: hoanganh
+      changes:
+        - createIndex:
+            tableName: product_variant_images
+            indexName: idx_product_variant_images_variant_id
+            columns:
+              - column:
+                  name: product_variant_id
+        - addForeignKeyConstraint:
+            baseTableName: product_variant_images
+            baseColumnNames: product_variant_id
+            constraintName: fk_product_variant_images_variant
+            referencedTableName: product_variants
+            referencedColumnNames: id
+
+  # ─── WAREHOUSES ──────────────────────────────────────────
+  - changeSet:
+      id: product-006-create-warehouses
+      author: hoanganh
+      changes:
+        - createTable:
+            tableName: warehouses
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: shop_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+              - column:
+                  name: address
+                  type: text
+              - column:
+                  name: created_at
+                  type: timestamp
+
+  - changeSet:
+      id: product-006-warehouses-indexes-fk
+      author: hoanganh
+      changes:
+        - createIndex:
+            tableName: warehouses
+            indexName: idx_warehouses_shop_id
+            columns:
+              - column:
+                  name: shop_id
+        - addForeignKeyConstraint:
+            baseTableName: warehouses
+            baseColumnNames: shop_id
+            constraintName: fk_warehouses_shop
+            referencedTableName: shops
+            referencedColumnNames: id
+
+  # ─── WAREHOUSE INVENTORY ─────────────────────────────────
+  - changeSet:
+      id: product-007-create-warehouse-inventory
+      author: hoanganh
+      changes:
+        - createTable:
+            tableName: warehouse_inventory
+            columns:
+              - column:
+                  name: warehouse_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: product_variant_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: stock
+                  type: int
+                  defaultValueNumeric: 0
+        - addPrimaryKey:
+            tableName: warehouse_inventory
+            columnNames: warehouse_id, product_variant_id
+            constraintName: pk_warehouse_inventory
+
+  - changeSet:
+      id: product-007-warehouse-inventory-indexes-fk
+      author: hoanganh
+      changes:
+        - createIndex:
+            tableName: warehouse_inventory
+            indexName: idx_warehouse_inventory_variant_id
+            columns:
+              - column:
+                  name: product_variant_id
+        - addForeignKeyConstraint:
+            baseTableName: warehouse_inventory
+            baseColumnNames: warehouse_id
+            constraintName: fk_warehouse_inventory_warehouse
+            referencedTableName: warehouses
+            referencedColumnNames: id
+        - addForeignKeyConstraint:
+            baseTableName: warehouse_inventory
+            baseColumnNames: product_variant_id
+            constraintName: fk_warehouse_inventory_variant
+            referencedTableName: product_variants
+            referencedColumnNames: id

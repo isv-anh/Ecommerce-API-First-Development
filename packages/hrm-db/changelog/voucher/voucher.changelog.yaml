@@ -1,0 +1,224 @@
+databaseChangeLog:
+  # ─── VOUCHERS ────────────────────────────────────────────
+  - changeSet:
+      id: voucher-001-create-vouchers
+      author: hoanganh
+      changes:
+        - createTable:
+            tableName: vouchers
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: code
+                  type: varchar(100)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: shop_id
+                  type: uuid
+              - column:
+                  name: discount_type
+                  type: varchar(50)
+                  remarks: "percentage | fixed"
+              - column:
+                  name: discount_value
+                  type: numeric(18,2)
+              - column:
+                  name: max_discount
+                  type: numeric(18,2)
+              - column:
+                  name: min_order_value
+                  type: numeric(18,2)
+              - column:
+                  name: usage_limit
+                  type: int
+              - column:
+                  name: used_count
+                  type: int
+                  defaultValueNumeric: 0
+              - column:
+                  name: start_date
+                  type: timestamp
+              - column:
+                  name: end_date
+                  type: timestamp
+              - column:
+                  name: is_active
+                  type: boolean
+                  defaultValueBoolean: true
+
+  - changeSet:
+      id: voucher-001-vouchers-indexes
+      author: hoanganh
+      changes:
+        - createIndex:
+            tableName: vouchers
+            indexName: idx_vouchers_code
+            columns:
+              - column:
+                  name: code
+        - createIndex:
+            tableName: vouchers
+            indexName: idx_vouchers_is_active
+            columns:
+              - column:
+                  name: is_active
+
+  # ─── VOUCHER CONDITIONS ───────────────────────────────────
+  - changeSet:
+      id: voucher-002-create-voucher-conditions
+      author: hoanganh
+      changes:
+        - createTable:
+            tableName: voucher_conditions
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: voucher_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: type
+                  type: varchar(50)
+                  remarks: "all | product | category | user"
+              - column:
+                  name: ref_id
+                  type: uuid
+
+  - changeSet:
+      id: voucher-002-voucher-conditions-fk
+      author: hoanganh
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: voucher_conditions
+            baseColumnNames: voucher_id
+            constraintName: fk_voucher_conditions_voucher
+            referencedTableName: vouchers
+            referencedColumnNames: id
+
+  # ─── ORDER VOUCHERS ───────────────────────────────────────
+  - changeSet:
+      id: voucher-003-create-order-vouchers
+      author: hoanganh
+      changes:
+        - createTable:
+            tableName: order_vouchers
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: order_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: voucher_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: discount_amount
+                  type: numeric(18,2)
+
+  - changeSet:
+      id: voucher-003-order-vouchers-fk
+      author: hoanganh
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: order_vouchers
+            baseColumnNames: order_id
+            constraintName: fk_order_vouchers_order
+            referencedTableName: orders
+            referencedColumnNames: id
+        - addForeignKeyConstraint:
+            baseTableName: order_vouchers
+            baseColumnNames: voucher_id
+            constraintName: fk_order_vouchers_voucher
+            referencedTableName: vouchers
+            referencedColumnNames: id
+
+  # ─── FLASH SALES ─────────────────────────────────────────
+  - changeSet:
+      id: voucher-004-create-flash-sales
+      author: hoanganh
+      changes:
+        - createTable:
+            tableName: flash_sales
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: shop_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+              - column:
+                  name: start_time
+                  type: timestamp
+              - column:
+                  name: end_time
+                  type: timestamp
+
+  - changeSet:
+      id: voucher-004-flash-sales-indexes
+      author: hoanganh
+      changes:
+        - createIndex:
+            tableName: flash_sales
+            indexName: idx_flash_sales_shop_id
+            columns:
+              - column:
+                  name: shop_id
+        - createIndex:
+            tableName: flash_sales
+            indexName: idx_flash_sales_time_range
+            columns:
+              - column:
+                  name: start_time
+              - column:
+                  name: end_time
+  - changeSet:
+      id: voucher-001-vouchers-fk
+      author: hoanganh
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: vouchers
+            baseColumnNames: shop_id
+            constraintName: fk_vouchers_shop
+            referencedTableName: shops
+            referencedColumnNames: id
+            onDelete: CASCADE
+  - changeSet:
+      id: voucher-004-flash-sale-fk
+      author: hoanganh
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: flash_sales
+            baseColumnNames: shop_id
+            constraintName: fk_flash_sales_shop
+            referencedTableName: shops
+            referencedColumnNames: id
+            onDelete: CASCADE

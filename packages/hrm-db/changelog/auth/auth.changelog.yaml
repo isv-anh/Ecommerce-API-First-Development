@@ -1,0 +1,299 @@
+databaseChangeLog:
+  # ─── USERS ───────────────────────────────────────────────
+  - changeSet:
+      id: auth-001-create-users
+      author: hoanganh
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: uid
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: username
+                  type: varchar(255)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(255)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: password
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: full_name
+                  type: varchar(255)
+              - column:
+                  name: phone
+                  type: varchar(50)
+              - column:
+                  name: is_active
+                  type: boolean
+                  defaultValueBoolean: true
+              - column:
+                  name: is_deleted
+                  type: boolean
+                  defaultValueBoolean: false
+              - column:
+                  name: last_login
+                  type: timestamp
+              - column:
+                  name: created_at
+                  type: timestamp
+              - column:
+                  name: updated_at
+                  type: timestamp
+
+  - changeSet:
+      id: auth-001-users-indexes
+      author: hoanganh
+      changes:
+        - createIndex:
+            tableName: users
+            indexName: idx_users_email
+            columns:
+              - column:
+                  name: email
+        - createIndex:
+            tableName: users
+            indexName: idx_users_username
+            columns:
+              - column:
+                  name: username
+
+  # ─── GROUPS ──────────────────────────────────────────────
+  - changeSet:
+      id: auth-002-create-groups
+      author: hoanganh
+      changes:
+        - createTable:
+            tableName: groups
+            columns:
+              - column:
+                  name: gid
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: group_name
+                  type: varchar(255)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: parent_gid
+                  type: uuid
+              - column:
+                  name: created_at
+                  type: timestamp
+              - column:
+                  name: updated_at
+                  type: timestamp
+              - column:
+                  name: is_deleted
+                  type: boolean
+                  defaultValueBoolean: false
+
+  - changeSet:
+      id: auth-002-groups-self-ref-fk
+      author: hoanganh
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: groups
+            baseColumnNames: parent_gid
+            constraintName: fk_groups_parent
+            referencedTableName: groups
+            referencedColumnNames: gid
+
+  # ─── ROLES ───────────────────────────────────────────────
+  - changeSet:
+      id: auth-003-create-roles
+      author: hoanganh
+      changes:
+        - createTable:
+            tableName: roles
+            columns:
+              - column:
+                  name: role_id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: role_name
+                  type: varchar(255)
+                  constraints:
+                    unique: true
+                    nullable: false
+
+  # ─── PERMISSIONS ─────────────────────────────────────────
+  - changeSet:
+      id: auth-004-create-permissions
+      author: hoanganh
+      changes:
+        - createTable:
+            tableName: permissions
+            columns:
+              - column:
+                  name: pid
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: permission_name
+                  type: varchar(255)
+                  constraints:
+                    unique: true
+                    nullable: false
+
+  # ─── USER_GROUPS ─────────────────────────────────────────
+  - changeSet:
+      id: auth-005-create-user-groups
+      author: hoanganh
+      changes:
+        - createTable:
+            tableName: user_groups
+            columns:
+              - column:
+                  name: uid
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: gid
+                  type: uuid
+                  constraints:
+                    nullable: false
+        - addPrimaryKey:
+            tableName: user_groups
+            columnNames: uid, gid
+            constraintName: pk_user_groups
+        - addForeignKeyConstraint:
+            baseTableName: user_groups
+            baseColumnNames: uid
+            constraintName: fk_user_groups_uid
+            referencedTableName: users
+            referencedColumnNames: uid
+        - addForeignKeyConstraint:
+            baseTableName: user_groups
+            baseColumnNames: gid
+            constraintName: fk_user_groups_gid
+            referencedTableName: groups
+            referencedColumnNames: gid
+
+  # ─── USER_ROLE ────────────────────────────────────────────
+  - changeSet:
+      id: auth-006-create-user-role
+      author: hoanganh
+      changes:
+        - createTable:
+            tableName: user_role
+            columns:
+              - column:
+                  name: uid
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+        - addPrimaryKey:
+            tableName: user_role
+            columnNames: uid, role_id
+            constraintName: pk_user_role
+        - addForeignKeyConstraint:
+            baseTableName: user_role
+            baseColumnNames: uid
+            constraintName: fk_user_role_uid
+            referencedTableName: users
+            referencedColumnNames: uid
+        - addForeignKeyConstraint:
+            baseTableName: user_role
+            baseColumnNames: role_id
+            constraintName: fk_user_role_role
+            referencedTableName: roles
+            referencedColumnNames: role_id
+
+  # ─── GROUP_ROLE ───────────────────────────────────────────
+  - changeSet:
+      id: auth-007-create-group-role
+      author: hoanganh
+      changes:
+        - createTable:
+            tableName: group_role
+            columns:
+              - column:
+                  name: gid
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+        - addPrimaryKey:
+            tableName: group_role
+            columnNames: gid, role_id
+            constraintName: pk_group_role
+        - addForeignKeyConstraint:
+            baseTableName: group_role
+            baseColumnNames: gid
+            constraintName: fk_group_role_gid
+            referencedTableName: groups
+            referencedColumnNames: gid
+        - addForeignKeyConstraint:
+            baseTableName: group_role
+            baseColumnNames: role_id
+            constraintName: fk_group_role_role
+            referencedTableName: roles
+            referencedColumnNames: role_id
+
+  # ─── ROLE_PERMISSION ─────────────────────────────────────
+  - changeSet:
+      id: auth-008-create-role-permission
+      author: hoanganh
+      changes:
+        - createTable:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: role_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: permission_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+        - addPrimaryKey:
+            tableName: role_permission
+            columnNames: role_id, permission_id
+            constraintName: pk_role_permission
+        - addForeignKeyConstraint:
+            baseTableName: role_permission
+            baseColumnNames: role_id
+            constraintName: fk_role_permission_role
+            referencedTableName: roles
+            referencedColumnNames: role_id
+        - addForeignKeyConstraint:
+            baseTableName: role_permission
+            baseColumnNames: permission_id
+            constraintName: fk_role_permission_perm
+            referencedTableName: permissions
+            referencedColumnNames: pid
