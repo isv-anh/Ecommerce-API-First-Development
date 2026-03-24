@@ -16,12 +16,12 @@
       "editor.defaultFormatter": "esbenp.prettier-vscode",
     },
     "workbench.iconTheme": "material-icon-theme",
-     "terminal.integrated.defaultProfile.windows": "WSL",
+    "terminal.integrated.defaultProfile.windows": "WSL",
     "terminal.integrated.profiles.windows": {
       "WSL": {
-        "path": "wsl.exe"
-      }
-    }
+        "path": "wsl.exe",
+      },
+    },
   },
   "tasks": {
     "version": "2.0.0",
@@ -51,25 +51,25 @@
       {
         "label": "Create PR to Github",
         "detail": "Create a pull request to the HRM repository on GitHub",
-        "command": "chmod +x ../scripts/create-pr.sh && ../scripts/create-pr.sh",
+        "command": "chmod +x ../../scripts/create-pr.sh && ../../scripts/create-pr.sh",
         "type": "shell",
         "args": [],
         "problemMatcher": [],
         "presentation": {
-          "reveal": "always"
-        }
+          "reveal": "always",
+        },
       },
       {
         "label": "Execute CI Check",
         "detail": "Execute CI Check on github",
-        "command": "docker compose up -d seft-runner && chmod +x ../scripts/ci-check.sh && ../scripts/ci-check.sh",
+        "command": "docker compose up -d seft-runner && chmod +x ../../scripts/ci-check.sh && ../../scripts/ci-check.sh",
         "type": "shell",
         "args": [],
         "problemMatcher": [],
         "presentation": {
-          "reveal": "always"
-        }
-      }
+          "reveal": "always",
+        },
+      },
     ],
   },
 }

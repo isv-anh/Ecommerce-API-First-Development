@@ -159,6 +159,114 @@ paths:
               example:
                 code: 400
                 message: Invalid ID supplied
+  /products:
+    get:
+      summary: List all products
+      operationId: listProducts
+      tags:
+        - products
+      parameters:
+        - name: limit
+          in: query
+          description: How many items to return at one time (max 100)
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+      responses:
+        "200":
+          description: A paged array of products
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductsArray"
+              examples:
+                products:
+                  summary: List of products
+                  value:
+                    products:
+                      - product_id: 1
+                        product_name: Pokemon TCG Booster Pack
+                        thumbnail: https://i.pinimg.com/1200x/0e/3b/29/0e3b294beb09239a0625d82a2e2c0561.jpg
+                        product_code: pokemon
+                        price: 4.99
+                        tags:
+                          - tag_name: "flash sale"
+
+                      - product_id: 2
+                        product_name: Pikachu Plush Toy
+                        thumbnail: https://i.pinimg.com/736x/2b/1c/fa/2b1cfaeb9d98a1313b425c42a7d8ee25.jpg
+                        product_code: pokemon-pikachu
+                        price: 4.99
+
+                      - product_id: 3
+                        product_name: Pikachu T-Shirt
+                        thumbnail: https://i.pinimg.com/1200x/dc/70/2c/dc702c6762c873c76dae3f8fc3ef1eb7.jpg
+                        product_code: pokemon-pikachu-tshirt
+                        price: 4.99
+                        tags:
+                          - tag_name: "flash sale"
+                      - product_id: 4
+                        product_name: Pikachu T-Shirt
+                        thumbnail: https://i.pinimg.com/1200x/dc/70/2c/dc702c6762c873c76dae3f8fc3ef1eb7.jpg
+                        product_code: pokemon-pikachu-tshirt-1
+                        price: 4.99
+                        tags:
+                          - tag_name: "flash sale"
+                      - product_id: 5
+                        product_name: Pikachu T-Shirt
+                        thumbnail: https://i.pinimg.com/1200x/dc/70/2c/dc702c6762c873c76dae3f8fc3ef1eb7.jpg
+                        product_code: pokemon-pikachu-tshirt-2
+                        price: 4.99
+                        tags:
+                          - tag_name: "flash sale"
+                      - product_id: 6
+                        product_name: Pikachu T-Shirt
+                        thumbnail: https://i.pinimg.com/1200x/dc/70/2c/dc702c6762c873c76dae3f8fc3ef1eb7.jpg
+                        product_code: pokemon-pikachu-tshirt-3
+                        price: 4.99
+                        tags:
+                          - tag_name: "flash sale"
+                      - product_id: 7
+                        product_name: Pikachu T-Shirt
+                        thumbnail: https://i.pinimg.com/1200x/dc/70/2c/dc702c6762c873c76dae3f8fc3ef1eb7.jpg
+                        product_code: pokemon-pikachu-tshirt-4
+                        price: 4.99
+                        tags:
+                          - tag_name: "flash sale"
+                      - product_id: 8
+                        product_name: Pikachu T-Shirt
+                        thumbnail: https://i.pinimg.com/1200x/dc/70/2c/dc702c6762c873c76dae3f8fc3ef1eb7.jpg
+                        product_code: pokemon-pikachu-tshirt-5
+                        price: 4.99
+                        tags:
+                          - tag_name: "flash sale"
+                      - product_id: 9
+                        product_name: Pikachu T-Shirt
+                        thumbnail: https://i.pinimg.com/1200x/dc/70/2c/dc702c6762c873c76dae3f8fc3ef1eb7.jpg
+                        product_code: pokemon-pikachu-tshirt-6
+                        price: 4.99
+                        tags:
+                          - tag_name: "flash sale"
+                      - product_id: 10
+                        product_name: Pikachu T-Shirt
+                        thumbnail: https://i.pinimg.com/1200x/dc/70/2c/dc702c6762c873c76dae3f8fc3ef1eb7.jpg
+                        product_code: pokemon-pikachu-tshirt-7
+                        price: 4.99
+                        tags:
+                          - tag_name: "flash sale"
+
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                code: 500
+                message: Internal server error
+
 components:
   schemas:
     Pet:
@@ -217,6 +325,60 @@ components:
       maxItems: 20
       items:
         $ref: "#/components/schemas/Pet"
+
+    Product:
+      type: object
+      required:
+        - product_id
+        - product_name
+        - product_code
+        - price
+      properties:
+        product_id:
+          type: integer
+          format: int64
+          example: 1
+        product_name:
+          type: string
+          description: Product name
+          maxLength: 255
+          example: Pokemon TCG Booster Pack
+        thumbnail:
+          type: string
+          format: uri
+          example: https://i.pinimg.com/1200x/0e/3b/29/0e3b294beb09239a0625d82a2e2c0561.jpg
+        product_code:
+          type: string
+          example: pokemon
+        price:
+          type: number
+          format: float
+          minimum: 0
+          example: 4.99
+        tags:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProductTag"
+
+    ProductTag:
+      type: object
+      required:
+        - tag_name
+      properties:
+        tag_name:
+          type: string
+          example: flash sale
+
+    ProductsArray:
+      type: object
+      required:
+        - products
+      properties:
+        products:
+          type: array
+          items:
+            $ref: "#/components/schemas/Product"
+
     Error:
       type: object
       required:

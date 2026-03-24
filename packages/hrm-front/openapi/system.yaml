@@ -1,0 +1,198 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Swagger System
+  license:
+    name: MIT
+
+servers:
+  - url: /api/v1
+
+paths:
+  /apps:
+    get:
+      summary: List all apps
+      operationId: listApps
+      tags:
+        - apps
+
+      parameters:
+        - name: limit
+          in: query
+          description: How many items to return at one time (max 100)
+          required: false
+          schema:
+            type: integer
+            maximum: 100
+            example: 20
+
+      responses:
+        "200":
+          description: A list of apps
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AppsArray"
+              examples:
+                apps:
+                  summary: List of apps
+                  value:
+                    apps:
+                      - app_id: 1
+                        app_name: Dashboard
+                        icon: dashboard
+                        parent_app_id: null
+                        url: dashboard
+
+                      - app_id: 2
+                        app_name: Attendance
+                        icon: access_time
+                        parent_app_id: null
+                        url: attendance
+
+                      - app_id: 3
+                        app_name: Check In/Out
+                        icon: fingerprint
+                        parent_app_id: 2
+                        url: attendance/check-in-out
+
+                      - app_id: 4
+                        app_name: Attendance Report
+                        icon: assessment
+                        parent_app_id: 2
+                        url: attendance/report
+
+                      - app_id: 5
+                        app_name: Leave Management
+                        icon: event_busy
+                        parent_app_id: null
+                        url: leave
+
+                      - app_id: 6
+                        app_name: Leave Request
+                        icon: send
+                        parent_app_id: 5
+                        url: leave/request
+
+                      - app_id: 7
+                        app_name: Leave Balance
+                        icon: donut_large
+                        parent_app_id: 5
+                        url: leave/balance
+
+                      - app_id: 8
+                        app_name: Employee
+                        icon: people
+                        parent_app_id: null
+                        url: employees
+
+                      - app_id: 9
+                        app_name: Employee List
+                        icon: format_list_bulleted
+                        parent_app_id: 8
+                        url: employees/list
+
+                      - app_id: 10
+                        app_name: Organization
+                        icon: account_tree
+                        parent_app_id: 8
+                        url: employees/organization
+
+                      - app_id: 11
+                        app_name: Payroll
+                        icon: payments
+                        parent_app_id: null
+                        url: payroll
+
+                      - app_id: 12
+                        app_name: Salary Slip
+                        icon: receipt_long
+                        parent_app_id: 11
+                        url: payroll/salary-slip
+
+                      - app_id: 13
+                        app_name: Settings
+                        icon: settings
+                        parent_app_id: null
+                        url: settings
+
+                      - app_id: 14
+                        app_name: User Management
+                        icon: admin_panel_settings
+                        parent_app_id: 13
+                        url: settings/users
+
+                      - app_id: 15
+                        app_name: Role & Permission
+                        icon: security
+                        parent_app_id: 13
+                        url: settings/roles
+
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                code: 500
+                message: Internal server error
+
+components:
+  schemas:
+    App:
+      type: object
+      required:
+        - app_id
+        - app_name
+      properties:
+        app_id:
+          type: integer
+          format: int64
+          example: 1
+
+        app_name:
+          type: string
+          description: Name of the app
+          example: Attendance
+
+        icon:
+          type: string
+          description: MUI icon name
+          example: AccessTime
+
+        parent_app_id:
+          type: integer
+          format: int64
+          nullable: true
+          description: Parent app id if this is a child app
+          example: 2
+
+        url:
+          type: string
+          description: Url of the app
+          example: attendance
+
+    AppsArray:
+      type: object
+      required:
+        - apps
+      properties:
+        apps:
+          type: array
+          items:
+            $ref: "#/components/schemas/App"
+
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+          example: 400
+        message:
+          type: string
+          example: Something went wrong

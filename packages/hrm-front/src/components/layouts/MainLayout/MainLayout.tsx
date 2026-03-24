@@ -1,44 +1,36 @@
 "use client";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import { useTheme } from "@mui/material/styles";
 import { ReactNode } from "react";
-import AppNavigation from "@/components/navigation/AppNavigation/AppNavigation";
-import AppBar from "@mui/material/AppBar";
+import Header from "./components/Header/Header";
 import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
+import Stack from "@mui/material/Stack";
+import Search from "./components/Search/Search";
+import Footer from "./components/Footer/Footer";
+import { useScrollTrigger } from "@mui/material";
+import ActionButtonList from "./components/ActionButtonList/ActionButtonList";
+import ScrollToTopButton from "./components/ScrollToTopButton/ScrollToTopButton";
 
 const MainLayout = ({ children }: { children: ReactNode }) => {
-  const { breakpoints } = useTheme();
-  const isMobile = useMediaQuery(breakpoints.down("xs"));
-  const isTablet = useMediaQuery(breakpoints.between("xs", "md"));
-
-  if (isMobile) {
-    return <div>Mobile layout is not implemented yet.</div>;
-  }
+  const trigger = useScrollTrigger({
+    disableHysteresis: true,
+    threshold: 100,
+  });
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar>
-        <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            News
-          </Typography>
-          <Button color="inherit">Login</Button>
-        </Toolbar>
-      </AppBar>
-      <AppNavigation open={!isTablet}>{children}</AppNavigation>
+    <Box sx={{ px: "clamp(16px, 4vw, 96px)" }}>
+      <Header />
+      <Stack
+        position="sticky"
+        top={0}
+        sx={(theme) => ({
+          backgroundColor: theme.palette.common.white,
+          zIndex: theme.zIndex.appBar,
+        })}
+      >
+        <Search />
+      </Stack>
+      {children}
+      <Footer />
+      <ActionButtonList />
+      {trigger && <ScrollToTopButton />}
     </Box>
   );
 };
