@@ -131,12 +131,6 @@ databaseChangeLog:
             constraintName: fk_order_items_order
             referencedTableName: orders
             referencedColumnNames: id
-        - addForeignKeyConstraint:
-            baseTableName: order_items
-            baseColumnNames: product_variant_id
-            constraintName: fk_order_items_variant
-            referencedTableName: product_variants
-            referencedColumnNames: id
 
   # ─── ORDER SHOPS ─────────────────────────────────────────
   - changeSet:
