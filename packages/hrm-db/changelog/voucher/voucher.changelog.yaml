@@ -200,3 +200,25 @@ databaseChangeLog:
                   name: start_time
               - column:
                   name: end_time
+  - changeSet:
+      id: voucher-001-vouchers-fk
+      author: hoanganh
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: vouchers
+            baseColumnNames: shop_id
+            constraintName: fk_vouchers_shop
+            referencedTableName: shops
+            referencedColumnNames: id
+            onDelete: CASCADE
+  - changeSet:
+      id: voucher-004-flash-sale-fk
+      author: hoanganh
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: flash_sales
+            baseColumnNames: shop_id
+            constraintName: fk_flash_sales_shop
+            referencedTableName: shops
+            referencedColumnNames: id
+            onDelete: CASCADE
