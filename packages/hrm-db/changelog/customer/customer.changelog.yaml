@@ -1,0 +1,171 @@
+databaseChangeLog:
+  # ─── ADDRESSES ───────────────────────────────────────────
+  - changeSet:
+      id: customer-001-create-addresses
+      author: hoanganh
+      changes:
+        - createTable:
+            tableName: addresses
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: receiver_name
+                  type: varchar(255)
+              - column:
+                  name: phone
+                  type: varchar(50)
+              - column:
+                  name: address_line
+                  type: text
+              - column:
+                  name: city
+                  type: varchar(255)
+              - column:
+                  name: country
+                  type: varchar(100)
+              - column:
+                  name: is_default
+                  type: boolean
+                  defaultValueBoolean: false
+
+  - changeSet:
+      id: customer-001-addresses-fk
+      author: hoanganh
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: addresses
+            baseColumnNames: user_id
+            constraintName: fk_addresses_user
+            referencedTableName: users
+            referencedColumnNames: uid
+
+  # ─── REVIEWS ─────────────────────────────────────────────
+  - changeSet:
+      id: customer-002-create-reviews
+      author: hoanganh
+      changes:
+        - createTable:
+            tableName: reviews
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: product_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: rating
+                  type: int
+              - column:
+                  name: comment
+                  type: text
+
+  - changeSet:
+      id: customer-002-reviews-fk
+      author: hoanganh
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: reviews
+            baseColumnNames: user_id
+            constraintName: fk_reviews_user
+            referencedTableName: users
+            referencedColumnNames: uid
+        - addForeignKeyConstraint:
+            baseTableName: reviews
+            baseColumnNames: product_id
+            constraintName: fk_reviews_product
+            referencedTableName: products
+            referencedColumnNames: id
+
+  # ─── WISHLISTS ───────────────────────────────────────────
+  - changeSet:
+      id: customer-003-create-wishlists
+      author: hoanganh
+      changes:
+        - createTable:
+            tableName: wishlists
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: customer-003-wishlists-fk
+      author: hoanganh
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: wishlists
+            baseColumnNames: user_id
+            constraintName: fk_wishlists_user
+            referencedTableName: users
+            referencedColumnNames: uid
+
+  # ─── WISHLIST ITEMS ───────────────────────────────────────
+  - changeSet:
+      id: customer-004-create-wishlist-items
+      author: hoanganh
+      changes:
+        - createTable:
+            tableName: wishlist_items
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: wishlist_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: product_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: customer-004-wishlist-items-fk
+      author: hoanganh
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: wishlist_items
+            baseColumnNames: wishlist_id
+            constraintName: fk_wishlist_items_wishlist
+            referencedTableName: wishlists
+            referencedColumnNames: id
+        - addForeignKeyConstraint:
+            baseTableName: wishlist_items
+            baseColumnNames: product_id
+            constraintName: fk_wishlist_items_product
+            referencedTableName: products
+            referencedColumnNames: id

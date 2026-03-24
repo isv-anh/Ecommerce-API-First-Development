@@ -67,10 +67,10 @@ services:
     volumes:
       - ./packages/hrm-db/changelog:/liquibase/changelog
     command:
-      - --url=jdbc:postgresql://postgres-db:5432/${DB_NAME}
+      - --url=jdbc:postgresql://postgres-db:${DB_PORT}/${DB_NAME}
       - --username=${DB_USERNAME}
       - --password=${DB_PASSWORD}
-      - --changeLogFile=init.yaml
+      - --changeLogFile=db.changelog-master.yaml
       - --searchPath=/liquibase/changelog
       - update
     networks:
