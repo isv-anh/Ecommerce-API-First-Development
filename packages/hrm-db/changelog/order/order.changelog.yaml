@@ -1,0 +1,255 @@
+databaseChangeLog:
+  # ─── ORDERS ──────────────────────────────────────────────
+  - changeSet:
+      id: order-001-create-orders
+      author: hoanganh
+      changes:
+        - createTable:
+            tableName: orders
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: varchar(50)
+                  remarks: "pending | paid | shipped | completed | cancelled"
+              - column:
+                  name: total_amount
+                  type: numeric(18,2)
+              - column:
+                  name: total_discount
+                  type: numeric(18,2)
+                  defaultValueNumeric: 0
+              - column:
+                  name: final_amount
+                  type: numeric(18,2)
+              - column:
+                  name: created_at
+                  type: timestamp
+
+  - changeSet:
+      id: order-001-orders-indexes-fk
+      author: hoanganh
+      changes:
+        - createIndex:
+            tableName: orders
+            indexName: idx_orders_user_id
+            columns:
+              - column:
+                  name: user_id
+        - createIndex:
+            tableName: orders
+            indexName: idx_orders_status
+            columns:
+              - column:
+                  name: status
+        - createIndex:
+            tableName: orders
+            indexName: idx_orders_created_at
+            columns:
+              - column:
+                  name: created_at
+        - addForeignKeyConstraint:
+            baseTableName: orders
+            baseColumnNames: user_id
+            constraintName: fk_orders_user
+            referencedTableName: users
+            referencedColumnNames: uid
+
+  # ─── ORDER ITEMS ─────────────────────────────────────────
+  - changeSet:
+      id: order-002-create-order-items
+      author: hoanganh
+      changes:
+        - createTable:
+            tableName: order_items
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: order_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: shop_id
+                  type: uuid
+              - column:
+                  name: product_id
+                  type: uuid
+              - column:
+                  name: product_variant_id
+                  type: uuid
+              - column:
+                  name: product_name
+                  type: varchar(500)
+              - column:
+                  name: variant_name
+                  type: varchar(500)
+              - column:
+                  name: price
+                  type: numeric(18,2)
+              - column:
+                  name: quantity
+                  type: int
+              - column:
+                  name: total_price
+                  type: numeric(18,2)
+
+  - changeSet:
+      id: order-002-order-items-indexes-fk
+      author: hoanganh
+      changes:
+        - createIndex:
+            tableName: order_items
+            indexName: idx_order_items_order_id
+            columns:
+              - column:
+                  name: order_id
+        - createIndex:
+            tableName: order_items
+            indexName: idx_order_items_shop_id
+            columns:
+              - column:
+                  name: shop_id
+        - addForeignKeyConstraint:
+            baseTableName: order_items
+            baseColumnNames: order_id
+            constraintName: fk_order_items_order
+            referencedTableName: orders
+            referencedColumnNames: id
+
+  # ─── ORDER SHOPS ─────────────────────────────────────────
+  - changeSet:
+      id: order-003-create-order-shops
+      author: hoanganh
+      changes:
+        - createTable:
+            tableName: order_shops
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: order_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: shop_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: subtotal
+                  type: numeric(18,2)
+              - column:
+                  name: discount
+                  type: numeric(18,2)
+                  defaultValueNumeric: 0
+              - column:
+                  name: final_amount
+                  type: numeric(18,2)
+              - column:
+                  name: status
+                  type: varchar(50)
+
+  - changeSet:
+      id: order-003-order-shops-indexes-fk
+      author: hoanganh
+      changes:
+        - createIndex:
+            tableName: order_shops
+            indexName: idx_order_shops_order_id
+            columns:
+              - column:
+                  name: order_id
+        - createIndex:
+            tableName: order_shops
+            indexName: idx_order_shops_shop_id
+            columns:
+              - column:
+                  name: shop_id
+        - addForeignKeyConstraint:
+            baseTableName: order_shops
+            baseColumnNames: order_id
+            constraintName: fk_order_shops_order
+            referencedTableName: orders
+            referencedColumnNames: id
+        - addForeignKeyConstraint:
+            baseTableName: order_shops
+            baseColumnNames: shop_id
+            constraintName: fk_order_shops_shop
+            referencedTableName: shops
+            referencedColumnNames: id
+
+  # ─── PAYMENTS ────────────────────────────────────────────
+  - changeSet:
+      id: order-004-create-payments
+      author: hoanganh
+      changes:
+        - createTable:
+            tableName: payments
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: order_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: method
+                  type: varchar(100)
+              - column:
+                  name: status
+                  type: varchar(50)
+              - column:
+                  name: amount
+                  type: numeric(18,2)
+              - column:
+                  name: created_at
+                  type: timestamp
+
+  - changeSet:
+      id: order-004-payments-indexes-fk
+      author: hoanganh
+      changes:
+        - createIndex:
+            tableName: payments
+            indexName: idx_payments_order_id
+            columns:
+              - column:
+                  name: order_id
+        - createIndex:
+            tableName: payments
+            indexName: idx_payments_status
+            columns:
+              - column:
+                  name: status
+        - addForeignKeyConstraint:
+            baseTableName: payments
+            baseColumnNames: order_id
+            constraintName: fk_payments_order
+            referencedTableName: orders
+            referencedColumnNames: id

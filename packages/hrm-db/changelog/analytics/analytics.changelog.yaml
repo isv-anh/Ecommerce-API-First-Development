@@ -1,0 +1,102 @@
+databaseChangeLog:
+  # ─── SHOP DAILY STATS ────────────────────────────────────
+  - changeSet:
+      id: analytics-001-create-shop-daily-stats
+      author: hoanganh
+      changes:
+        - createTable:
+            tableName: shop_daily_stats
+            columns:
+              - column:
+                  name: shop_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: date
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: revenue
+                  type: numeric(18,2)
+                  defaultValueNumeric: 0
+              - column:
+                  name: orders_count
+                  type: int
+                  defaultValueNumeric: 0
+        - addPrimaryKey:
+            tableName: shop_daily_stats
+            columnNames: shop_id, date
+            constraintName: pk_shop_daily_stats
+
+  - changeSet:
+      id: analytics-001-shop-daily-stats-fk
+      author: hoanganh
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: shop_daily_stats
+            baseColumnNames: shop_id
+            constraintName: fk_shop_daily_stats_shop
+            referencedTableName: shops
+            referencedColumnNames: id
+
+  # ─── ORDER COMMISSIONS ───────────────────────────────────
+  - changeSet:
+      id: analytics-002-create-order-commissions
+      author: hoanganh
+      changes:
+        - createTable:
+            tableName: order_commissions
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: order_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: shop_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: commission_rate
+                  type: numeric(5,4)
+              - column:
+                  name: commission_amount
+                  type: numeric(18,2)
+
+  - changeSet:
+      id: analytics-002-order-commissions-indexes-fk
+      author: hoanganh
+      changes:
+        - createIndex:
+            tableName: order_commissions
+            indexName: idx_order_commissions_order_id
+            columns:
+              - column:
+                  name: order_id
+        - createIndex:
+            tableName: order_commissions
+            indexName: idx_order_commissions_shop_id
+            columns:
+              - column:
+                  name: shop_id
+        - addForeignKeyConstraint:
+            baseTableName: order_commissions
+            baseColumnNames: order_id
+            constraintName: fk_order_commissions_order
+            referencedTableName: orders
+            referencedColumnNames: id
+        - addForeignKeyConstraint:
+            baseTableName: order_commissions
+            baseColumnNames: shop_id
+            constraintName: fk_order_commissions_shop
+            referencedTableName: shops
+            referencedColumnNames: id

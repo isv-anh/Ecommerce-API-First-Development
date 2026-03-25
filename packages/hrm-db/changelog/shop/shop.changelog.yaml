@@ -1,0 +1,154 @@
+databaseChangeLog:
+  # ─── SHOPS ───────────────────────────────────────────────
+  - changeSet:
+      id: shop-001-create-shops
+      author: hoanganh
+      changes:
+        - createTable:
+            tableName: shops
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: owner_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: slug
+                  type: varchar(255)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: description
+                  type: text
+              - column:
+                  name: logo_url
+                  type: varchar(500)
+              - column:
+                  name: status
+                  type: varchar(50)
+                  remarks: "pending | active | banned"
+              - column:
+                  name: rating
+                  type: numeric(3,2)
+                  defaultValueNumeric: 0
+              - column:
+                  name: total_products
+                  type: int
+                  defaultValueNumeric: 0
+              - column:
+                  name: total_orders
+                  type: int
+                  defaultValueNumeric: 0
+              - column:
+                  name: created_at
+                  type: timestamp
+              - column:
+                  name: updated_at
+                  type: timestamp
+
+  - changeSet:
+      id: shop-001-shops-indexes
+      author: hoanganh
+      changes:
+        - createIndex:
+            tableName: shops
+            indexName: idx_shops_owner_id
+            columns:
+              - column:
+                  name: owner_id
+        - createIndex:
+            tableName: shops
+            indexName: idx_shops_status
+            columns:
+              - column:
+                  name: status
+        - addForeignKeyConstraint:
+            baseTableName: shops
+            baseColumnNames: owner_id
+            constraintName: fk_shops_owner
+            referencedTableName: users
+            referencedColumnNames: uid
+
+  # ─── COMMISSION SETTINGS ─────────────────────────────────
+  - changeSet:
+      id: shop-002-create-commission-settings
+      author: hoanganh
+      changes:
+        - createTable:
+            tableName: commission_settings
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: scope
+                  type: varchar(50)
+                  remarks: "global | shop | category"
+              - column:
+                  name: ref_id
+                  type: uuid
+                  remarks: "null=global | shop_id | category_id"
+              - column:
+                  name: rate
+                  type: numeric(5,4)
+                  remarks: "Percentage e.g. 0.05 = 5%"
+              - column:
+                  name: fixed_fee
+                  type: numeric(18,2)
+              - column:
+                  name: min_fee
+                  type: numeric(18,2)
+              - column:
+                  name: max_fee
+                  type: numeric(18,2)
+              - column:
+                  name: start_date
+                  type: timestamp
+              - column:
+                  name: end_date
+                  type: timestamp
+              - column:
+                  name: is_active
+                  type: boolean
+                  defaultValueBoolean: true
+              - column:
+                  name: created_at
+                  type: timestamp
+
+  - changeSet:
+      id: shop-002-commission-settings-indexes
+      author: hoanganh
+      changes:
+        - createIndex:
+            tableName: commission_settings
+            indexName: idx_commission_scope
+            columns:
+              - column:
+                  name: scope
+        - createIndex:
+            tableName: commission_settings
+            indexName: idx_commission_ref_id
+            columns:
+              - column:
+                  name: ref_id
+        - createIndex:
+            tableName: commission_settings
+            indexName: idx_commission_is_active
+            columns:
+              - column:
+                  name: is_active
