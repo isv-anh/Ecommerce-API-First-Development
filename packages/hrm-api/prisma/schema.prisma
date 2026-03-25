@@ -91,6 +91,8 @@ model databasechangeloglock {
   locked      Boolean
   lockgranted DateTime? @db.Timestamp(6)
   lockedby    String?   @db.VarChar(255)
+
+  @@ignore
 }
 
 model flash_sales {
