@@ -1,0 +1,466 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "../generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model addresses {
+  id            String   @id @db.Uuid
+  user_id       String   @db.Uuid
+  receiver_name String?  @db.VarChar(255)
+  phone         String?  @db.VarChar(50)
+  address_line  String?
+  city          String?  @db.VarChar(255)
+  country       String?  @db.VarChar(100)
+  is_default    Boolean? @default(false)
+  users         users    @relation(fields: [user_id], references: [uid], onDelete: NoAction, onUpdate: NoAction, map: "fk_addresses_user")
+}
+
+model cart_items {
+  cart_id            String           @db.Uuid
+  product_variant_id String           @db.Uuid
+  quantity           Int?             @default(1)
+  carts              carts            @relation(fields: [cart_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cart_items_cart")
+  product_variants   product_variants @relation(fields: [product_variant_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cart_items_variant")
+
+  @@id([cart_id, product_variant_id], map: "pk_cart_items")
+}
+
+model carts {
+  id         String       @id @db.Uuid
+  user_id    String       @unique @db.Uuid
+  updated_at DateTime?    @db.Timestamp(6)
+  cart_items cart_items[]
+  users      users        @relation(fields: [user_id], references: [uid], onDelete: NoAction, onUpdate: NoAction, map: "fk_carts_user")
+}
+
+model categories {
+  id               String       @id @db.Uuid
+  name             String       @db.VarChar(255)
+  parent_id        String?      @db.Uuid
+  categories       categories?  @relation("categoriesTocategories", fields: [parent_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_categories_parent")
+  other_categories categories[] @relation("categoriesTocategories")
+  products         products[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model commission_settings {
+  id         String    @id @db.Uuid
+  scope      String?   @db.VarChar(50)
+  ref_id     String?   @db.Uuid
+  rate       Decimal?  @db.Decimal(5, 4)
+  fixed_fee  Decimal?  @db.Decimal(18, 2)
+  min_fee    Decimal?  @db.Decimal(18, 2)
+  max_fee    Decimal?  @db.Decimal(18, 2)
+  start_date DateTime? @db.Timestamp(6)
+  end_date   DateTime? @db.Timestamp(6)
+  is_active  Boolean?  @default(true)
+  created_at DateTime? @db.Timestamp(6)
+
+  @@index([is_active], map: "idx_commission_is_active")
+  @@index([ref_id], map: "idx_commission_ref_id")
+  @@index([scope], map: "idx_commission_scope")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model databasechangelog {
+  id            String   @db.VarChar(255)
+  author        String   @db.VarChar(255)
+  filename      String   @db.VarChar(255)
+  dateexecuted  DateTime @db.Timestamp(6)
+  orderexecuted Int
+  exectype      String   @db.VarChar(10)
+  md5sum        String?  @db.VarChar(35)
+  description   String?  @db.VarChar(255)
+  comments      String?  @db.VarChar(255)
+  tag           String?  @db.VarChar(255)
+  liquibase     String?  @db.VarChar(20)
+  contexts      String?  @db.VarChar(255)
+  labels        String?  @db.VarChar(255)
+  deployment_id String?  @db.VarChar(10)
+
+  @@ignore
+}
+
+model databasechangeloglock {
+  id          Int       @id
+  locked      Boolean
+  lockgranted DateTime? @db.Timestamp(6)
+  lockedby    String?   @db.VarChar(255)
+
+  @@ignore
+}
+
+model flash_sales {
+  id         String    @id @db.Uuid
+  shop_id    String    @db.Uuid
+  name       String?   @db.VarChar(255)
+  start_time DateTime? @db.Timestamp(6)
+  end_time   DateTime? @db.Timestamp(6)
+  shops      shops     @relation(fields: [shop_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_flash_sales_shop")
+
+  @@index([shop_id], map: "idx_flash_sales_shop_id")
+  @@index([start_time, end_time], map: "idx_flash_sales_time_range")
+}
+
+model group_role {
+  gid     String @db.Uuid
+  role_id String @db.Uuid
+  groups  groups @relation(fields: [gid], references: [gid], onDelete: NoAction, onUpdate: NoAction, map: "fk_group_role_gid")
+  roles   roles  @relation(fields: [role_id], references: [role_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_group_role_role")
+
+  @@id([gid, role_id], map: "pk_group_role")
+}
+
+model groups {
+  gid          String        @id @db.Uuid
+  group_name   String        @unique @db.VarChar(255)
+  parent_gid   String?       @db.Uuid
+  created_at   DateTime?     @db.Timestamp(6)
+  updated_at   DateTime?     @db.Timestamp(6)
+  is_deleted   Boolean?      @default(false)
+  group_role   group_role[]
+  groups       groups?       @relation("groupsTogroups", fields: [parent_gid], references: [gid], onDelete: NoAction, onUpdate: NoAction, map: "fk_groups_parent")
+  other_groups groups[]      @relation("groupsTogroups")
+  user_groups  user_groups[]
+}
+
+model order_commissions {
+  id                String   @id @db.Uuid
+  order_id          String   @db.Uuid
+  shop_id           String   @db.Uuid
+  commission_rate   Decimal? @db.Decimal(5, 4)
+  commission_amount Decimal? @db.Decimal(18, 2)
+  orders            orders   @relation(fields: [order_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_commissions_order")
+  shops             shops    @relation(fields: [shop_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_commissions_shop")
+
+  @@index([order_id], map: "idx_order_commissions_order_id")
+  @@index([shop_id], map: "idx_order_commissions_shop_id")
+}
+
+model order_items {
+  id                 String   @id @db.Uuid
+  order_id           String   @db.Uuid
+  shop_id            String?  @db.Uuid
+  product_id         String?  @db.Uuid
+  product_variant_id String?  @db.Uuid
+  product_name       String?  @db.VarChar(500)
+  variant_name       String?  @db.VarChar(500)
+  price              Decimal? @db.Decimal(18, 2)
+  quantity           Int?
+  total_price        Decimal? @db.Decimal(18, 2)
+  orders             orders   @relation(fields: [order_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_items_order")
+
+  @@index([order_id], map: "idx_order_items_order_id")
+  @@index([shop_id], map: "idx_order_items_shop_id")
+}
+
+model order_shops {
+  id           String   @id @db.Uuid
+  order_id     String   @db.Uuid
+  shop_id      String   @db.Uuid
+  subtotal     Decimal? @db.Decimal(18, 2)
+  discount     Decimal? @default(0) @db.Decimal(18, 2)
+  final_amount Decimal? @db.Decimal(18, 2)
+  status       String?  @db.VarChar(50)
+  orders       orders   @relation(fields: [order_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_shops_order")
+  shops        shops    @relation(fields: [shop_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_shops_shop")
+
+  @@index([order_id], map: "idx_order_shops_order_id")
+  @@index([shop_id], map: "idx_order_shops_shop_id")
+}
+
+model order_vouchers {
+  id              String   @id @db.Uuid
+  order_id        String   @db.Uuid
+  voucher_id      String   @db.Uuid
+  discount_amount Decimal? @db.Decimal(18, 2)
+  orders          orders   @relation(fields: [order_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_vouchers_order")
+  vouchers        vouchers @relation(fields: [voucher_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_vouchers_voucher")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model orders {
+  id                String              @id @db.Uuid
+  user_id           String              @db.Uuid
+  status            String?             @db.VarChar(50)
+  total_amount      Decimal?            @db.Decimal(18, 2)
+  total_discount    Decimal?            @default(0) @db.Decimal(18, 2)
+  final_amount      Decimal?            @db.Decimal(18, 2)
+  created_at        DateTime?           @db.Timestamp(6)
+  order_commissions order_commissions[]
+  order_items       order_items[]
+  order_shops       order_shops[]
+  order_vouchers    order_vouchers[]
+  users             users               @relation(fields: [user_id], references: [uid], onDelete: NoAction, onUpdate: NoAction, map: "fk_orders_user")
+  payments          payments[]
+
+  @@index([created_at], map: "idx_orders_created_at")
+  @@index([status], map: "idx_orders_status")
+  @@index([user_id], map: "idx_orders_user_id")
+}
+
+model payments {
+  id         String    @id @db.Uuid
+  order_id   String    @db.Uuid
+  method     String?   @db.VarChar(100)
+  status     String?   @db.VarChar(50)
+  amount     Decimal?  @db.Decimal(18, 2)
+  created_at DateTime? @db.Timestamp(6)
+  orders     orders    @relation(fields: [order_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_payments_order")
+
+  @@index([order_id], map: "idx_payments_order_id")
+  @@index([status], map: "idx_payments_status")
+}
+
+model permissions {
+  pid             String            @id @db.Uuid
+  permission_name String            @unique @db.VarChar(255)
+  role_permission role_permission[]
+}
+
+model product_images {
+  id           String    @id @db.Uuid
+  product_id   String    @db.Uuid
+  url          String?   @db.VarChar(500)
+  is_thumbnail Boolean?  @default(false)
+  sort_order   Int?      @default(0)
+  created_at   DateTime? @db.Timestamp(6)
+  products     products  @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_product_images_product")
+
+  @@index([product_id], map: "idx_product_images_product_id")
+}
+
+model product_variant_images {
+  id                 String           @id @db.Uuid
+  product_variant_id String           @db.Uuid
+  url                String?          @db.VarChar(500)
+  is_thumbnail       Boolean?         @default(false)
+  sort_order         Int?             @default(0)
+  created_at         DateTime?        @db.Timestamp(6)
+  product_variants   product_variants @relation(fields: [product_variant_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_product_variant_images_variant")
+
+  @@index([product_variant_id], map: "idx_product_variant_images_variant_id")
+}
+
+model product_variants {
+  id                     String                   @id @db.Uuid
+  product_id             String                   @db.Uuid
+  sku                    String?                  @unique @db.VarChar(255)
+  thumbnail_url          String?                  @db.VarChar(500)
+  price                  Decimal?                 @db.Decimal(18, 2)
+  compare_price          Decimal?                 @db.Decimal(18, 2)
+  stock                  Int?                     @default(0)
+  created_at             DateTime?                @db.Timestamp(6)
+  updated_at             DateTime?                @db.Timestamp(6)
+  cart_items             cart_items[]
+  product_variant_images product_variant_images[]
+  products               products                 @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_product_variants_product")
+  warehouse_inventory    warehouse_inventory[]
+
+  @@index([product_id], map: "idx_product_variants_product_id")
+  @@index([sku], map: "idx_product_variants_sku")
+}
+
+model products {
+  id               String             @id @db.Uuid
+  shop_id          String             @db.Uuid
+  category_id      String?            @db.Uuid
+  name             String             @db.VarChar(500)
+  slug             String?            @db.VarChar(500)
+  thumbnail_url    String?            @db.VarChar(500)
+  description      String?
+  is_published     Boolean?           @default(true)
+  created_at       DateTime?          @db.Timestamp(6)
+  updated_at       DateTime?          @db.Timestamp(6)
+  product_images   product_images[]
+  product_variants product_variants[]
+  categories       categories?        @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_products_category")
+  shops            shops              @relation(fields: [shop_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_products_shop")
+  reviews          reviews[]
+  wishlist_items   wishlist_items[]
+
+  @@index([category_id], map: "idx_products_category_id")
+  @@index([shop_id], map: "idx_products_shop_id")
+  @@index([shop_id, is_published], map: "idx_products_shop_published")
+}
+
+model reviews {
+  id         String   @id @db.Uuid
+  user_id    String   @db.Uuid
+  product_id String   @db.Uuid
+  rating     Int?
+  comment    String?
+  products   products @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_reviews_product")
+  users      users    @relation(fields: [user_id], references: [uid], onDelete: NoAction, onUpdate: NoAction, map: "fk_reviews_user")
+}
+
+model role_permission {
+  role_id       String      @db.Uuid
+  permission_id String      @db.Uuid
+  permissions   permissions @relation(fields: [permission_id], references: [pid], onDelete: NoAction, onUpdate: NoAction, map: "fk_role_permission_perm")
+  roles         roles       @relation(fields: [role_id], references: [role_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_role_permission_role")
+
+  @@id([role_id, permission_id], map: "pk_role_permission")
+}
+
+model roles {
+  role_id         String            @id @db.Uuid
+  role_name       String            @unique @db.VarChar(255)
+  group_role      group_role[]
+  role_permission role_permission[]
+  user_role       user_role[]
+}
+
+model shop_daily_stats {
+  shop_id      String   @db.Uuid
+  date         DateTime @db.Date
+  revenue      Decimal? @default(0) @db.Decimal(18, 2)
+  orders_count Int?     @default(0)
+  shops        shops    @relation(fields: [shop_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_shop_daily_stats_shop")
+
+  @@id([shop_id, date], map: "pk_shop_daily_stats")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model shops {
+  id                String              @id @db.Uuid
+  owner_id          String              @db.Uuid
+  name              String              @db.VarChar(255)
+  slug              String              @unique @db.VarChar(255)
+  description       String?
+  logo_url          String?             @db.VarChar(500)
+  status            String?             @db.VarChar(50)
+  rating            Decimal?            @default(0) @db.Decimal(3, 2)
+  total_products    Int?                @default(0)
+  total_orders      Int?                @default(0)
+  created_at        DateTime?           @db.Timestamp(6)
+  updated_at        DateTime?           @db.Timestamp(6)
+  flash_sales       flash_sales[]
+  order_commissions order_commissions[]
+  order_shops       order_shops[]
+  products          products[]
+  shop_daily_stats  shop_daily_stats[]
+  users             users               @relation(fields: [owner_id], references: [uid], onDelete: NoAction, onUpdate: NoAction, map: "fk_shops_owner")
+  vouchers          vouchers[]
+  warehouses        warehouses[]
+
+  @@index([owner_id], map: "idx_shops_owner_id")
+  @@index([status], map: "idx_shops_status")
+}
+
+model user_groups {
+  uid    String @db.Uuid
+  gid    String @db.Uuid
+  groups groups @relation(fields: [gid], references: [gid], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_groups_gid")
+  users  users  @relation(fields: [uid], references: [uid], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_groups_uid")
+
+  @@id([uid, gid], map: "pk_user_groups")
+}
+
+model user_role {
+  uid     String @db.Uuid
+  role_id String @db.Uuid
+  roles   roles  @relation(fields: [role_id], references: [role_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_role_role")
+  users   users  @relation(fields: [uid], references: [uid], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_role_uid")
+
+  @@id([uid, role_id], map: "pk_user_role")
+}
+
+model users {
+  uid         String        @id @db.Uuid
+  username    String        @unique @db.VarChar(255)
+  email       String        @unique @db.VarChar(255)
+  password    String        @db.VarChar(255)
+  full_name   String?       @db.VarChar(255)
+  phone       String?       @db.VarChar(50)
+  is_active   Boolean?      @default(true)
+  is_deleted  Boolean?      @default(false)
+  last_login  DateTime?     @db.Timestamp(6)
+  created_at  DateTime?     @db.Timestamp(6)
+  updated_at  DateTime?     @db.Timestamp(6)
+  addresses   addresses[]
+  carts       carts?
+  orders      orders[]
+  reviews     reviews[]
+  shops       shops[]
+  user_groups user_groups[]
+  user_role   user_role[]
+  wishlists   wishlists[]
+
+  @@index([email], map: "idx_users_email")
+  @@index([username], map: "idx_users_username")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model voucher_conditions {
+  id         String   @id @db.Uuid
+  voucher_id String   @db.Uuid
+  type       String?  @db.VarChar(50)
+  ref_id     String?  @db.Uuid
+  vouchers   vouchers @relation(fields: [voucher_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_voucher_conditions_voucher")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model vouchers {
+  id                 String               @id @db.Uuid
+  code               String               @unique @db.VarChar(100)
+  shop_id            String?              @db.Uuid
+  discount_type      String?              @db.VarChar(50)
+  discount_value     Decimal?             @db.Decimal(18, 2)
+  max_discount       Decimal?             @db.Decimal(18, 2)
+  min_order_value    Decimal?             @db.Decimal(18, 2)
+  usage_limit        Int?
+  used_count         Int?                 @default(0)
+  start_date         DateTime?            @db.Timestamp(6)
+  end_date           DateTime?            @db.Timestamp(6)
+  is_active          Boolean?             @default(true)
+  order_vouchers     order_vouchers[]
+  voucher_conditions voucher_conditions[]
+  shops              shops?               @relation(fields: [shop_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_vouchers_shop")
+
+  @@index([code], map: "idx_vouchers_code")
+  @@index([is_active], map: "idx_vouchers_is_active")
+}
+
+model warehouse_inventory {
+  warehouse_id       String           @db.Uuid
+  product_variant_id String           @db.Uuid
+  stock              Int?             @default(0)
+  product_variants   product_variants @relation(fields: [product_variant_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_warehouse_inventory_variant")
+  warehouses         warehouses       @relation(fields: [warehouse_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_warehouse_inventory_warehouse")
+
+  @@id([warehouse_id, product_variant_id], map: "pk_warehouse_inventory")
+  @@index([product_variant_id], map: "idx_warehouse_inventory_variant_id")
+}
+
+model warehouses {
+  id                  String                @id @db.Uuid
+  shop_id             String                @db.Uuid
+  name                String?               @db.VarChar(255)
+  address             String?
+  created_at          DateTime?             @db.Timestamp(6)
+  warehouse_inventory warehouse_inventory[]
+  shops               shops                 @relation(fields: [shop_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_warehouses_shop")
+
+  @@index([shop_id], map: "idx_warehouses_shop_id")
+}
+
+model wishlist_items {
+  id          String    @id @db.Uuid
+  wishlist_id String    @db.Uuid
+  product_id  String    @db.Uuid
+  products    products  @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_wishlist_items_product")
+  wishlists   wishlists @relation(fields: [wishlist_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_wishlist_items_wishlist")
+}
+
+model wishlists {
+  id             String           @id @db.Uuid
+  user_id        String           @db.Uuid
+  wishlist_items wishlist_items[]
+  users          users            @relation(fields: [user_id], references: [uid], onDelete: NoAction, onUpdate: NoAction, map: "fk_wishlists_user")
+}
