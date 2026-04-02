@@ -6,6 +6,11 @@ const entryPoints = await glob("src/**/*.ts", {
   ignore: ["src/**/*.d.ts", "src/**/*.test.ts", "src/**/*.spec.ts"],
 });
 
+if (entryPoints.length === 0) {
+  console.error("❌ No source files found. Did you run 'pnpm generate' first?");
+  process.exit(1);
+}
+
 // Build JS (ESM)
 await esbuild.build({
   entryPoints,
