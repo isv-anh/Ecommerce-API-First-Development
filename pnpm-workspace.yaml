@@ -1,0 +1,20 @@
+packages:
+  - packages/e-commerce-api
+  - packages/e-commerce-front
+  - packages/api-client
+  - packages/api-type
+  - packages/openapi-typespec
+
+catalog:
+  '@tanstack/react-query': ^5.96.1
+  '@tanstack/react-query-devtools': ^5.96.1
+  axios: ^1.9.0
+  date-fns: ^4.1.0
+  eslint: ^9.39.4
+  next: ^16.1.6
+  orval: ^7.9.0
+  prettier: 3.5.3
+  react: ^19.2.4
+  react-dom: ^19.2.4
+  typescript: ^5
+  zod: ^4.3.6

@@ -1,0 +1,69 @@
+{
+  "folders": [
+    {
+      "path": ".",
+    },
+    {
+      "path": "../../docs",
+    },
+    {
+      "path": "../api-client",
+    },
+  ],
+  "settings": {
+    "editor.fontSize": 14,
+    "editor.codeActionsOnSave": {},
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "[typescriptreact]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+    },
+    "workbench.iconTheme": "material-icon-theme",
+    "terminal.integrated.defaultProfile.windows": "WSL",
+    "terminal.integrated.profiles.windows": {
+      "WSL": {
+        "path": "wsl.exe",
+      },
+    },
+    "typescript.preferences.includePackageJsonAutoImports": "on",
+    "typescript.preferences.importModuleSpecifier": "non-relative",
+  },
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Start",
+        "detail": "Start the development server",
+        "type": "shell",
+        "command": "npm run dev",
+        "args": [],
+        "options": {
+          "cwd": "${workspaceFolder}",
+        },
+        "problemMatcher": [],
+      },
+      {
+        "label": "Create PR to Github",
+        "detail": "Create a pull request to the HRM repository on GitHub",
+        "command": "chmod +x ../../scripts/create-pr.sh && ../../scripts/create-pr.sh",
+        "type": "shell",
+        "args": [],
+        "problemMatcher": [],
+        "presentation": {
+          "reveal": "always",
+        },
+      },
+      {
+        "label": "Execute CI Check",
+        "detail": "Execute CI Check on github",
+        "command": "docker compose up -d seft-runner && chmod +x ../../scripts/ci-check.sh && ../../scripts/ci-check.sh",
+        "type": "shell",
+        "args": [],
+        "problemMatcher": [],
+        "presentation": {
+          "reveal": "always",
+        },
+      },
+    ],
+  },
+}
