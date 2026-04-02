@@ -1,9 +1,21 @@
 {
-  "name": "hrm",
+  "name": "e-commerce",
   "private": true,
-  "workspaces": [
-    "packages/openapi-typespec",
-    "packages/hrm-front",
-    "packages/hrm-api"
-  ]
+  "packageManager": "pnpm@10.13.1",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "dev": "pnpm -r --parallel dev",
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint",
+    "generate": "pnpm --filter openapi-typespec generate"
+  },
+  "pnpm": {
+    "overrides": {
+      "axios": "^1.9.0",
+      "date-fns": "^4.1.0",
+      "zod": "^4.3.6"
+    }
+  }
 }

@@ -1,8 +1,8 @@
 services:
-  hrm-api:
-    container_name: hrm-api
+  e-commerce-api:
+    container_name: e-commerce-api
     build:
-      context: docker/hrm-api/dev
+      context: docker/e-commerce-api/dev
       dockerfile: dev.dockerfile
       args:
         - UID=${UID}
@@ -10,7 +10,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./packages/hrm-api:/app/packages/hrm-api
+      - ./packages/e-commerce-api:/app/packages/e-commerce-api
       - m2_data:/app/.m2
     environment:
       - DB_USERNAME=${DB_USERNAME}
@@ -21,12 +21,12 @@ services:
     depends_on:
       - postgres-db
     networks:
-      - hrm-network
+      - e-commerce-network
 
-  hrm-front:
-    container_name: hrm-front
+  e-commerce-front:
+    container_name: e-commerce-front
     build:
-      context: docker/hrm-front/dev
+      context: docker/e-commerce-front/dev
       dockerfile: dev.dockerfile
       args:
         - UID=${UID}
@@ -34,9 +34,9 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./packages/hrm-front:/app/packageshrm-front
+      - ./packages/e-commerce-front:/app/packages/e-commerce-front
     networks:
-      - hrm-network
+      - e-commerce-network
 
   postgres-db:
     container_name: postgres-db
@@ -51,21 +51,22 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -h localhost -U ${DB_USERNAME} -d ${DB_NAME}"]
+      test:
+        ["CMD-SHELL", "pg_isready -h localhost -U ${DB_USERNAME} -d ${DB_NAME}"]
       interval: 5s
       timeout: 5s
       retries: 5
     networks:
-      - hrm-network
+      - e-commerce-network
 
   liquibase:
     image: liquibase/liquibase:4.33
     container_name: liquibase
     depends_on:
       postgres-db:
-          condition: service_healthy
+        condition: service_healthy
     volumes:
-      - ./packages/hrm-db/changelog:/liquibase/changelog
+      - ./packages/e-commerce-db/changelog:/liquibase/changelog
     command:
       - --url=jdbc:postgresql://postgres-db:${DB_PORT}/${DB_NAME}
       - --username=${DB_USERNAME}
@@ -74,7 +75,7 @@ services:
       - --searchPath=/liquibase/changelog
       - update
     networks:
-      - hrm-network
+      - e-commerce-network
 
   seft-runner:
     container_name: seft-runner
@@ -95,10 +96,10 @@ services:
     depends_on:
       - postgres-db
     networks:
-      - hrm-network
+      - e-commerce-network
 
 networks:
-  hrm-network:
+  e-commerce-network:
     driver: bridge
 volumes:
   pg_data: # maven dependency cache

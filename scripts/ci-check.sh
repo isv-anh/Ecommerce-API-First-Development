@@ -1,7 +1,7 @@
 #!/bin/bash
 
-OWNER="ndha1511"
-REPO="hrm-dev"
+OWNER="ndh-anh"
+REPO="e-commerce"
 
 # Get current branch
 BRANCH=$(git rev-parse --abbrev-ref HEAD)

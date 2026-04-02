@@ -2,7 +2,7 @@
 
 ENV_FILE=".env"
 
-ENV_HRM_API="./hrm-api/.env"
+ENV_E_COMMERCE_API="./e-commerce-api/.env"
 
 echo "setup environtment"
 

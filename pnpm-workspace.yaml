@@ -1,0 +1,6 @@
+packages:
+  - "packages/e-commerce-api"
+  - "packages/e-commerce-front"
+  - "packages/api-client"
+  - "packages/api-type"
+  - "packages/openapi-typespec"
