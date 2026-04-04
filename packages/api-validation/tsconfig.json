@@ -7,9 +7,10 @@
     "declaration": true,
     "outDir": "dist/tsc",
     "rootDir": "src",
+    "preserveSymlinks": true,
 
     "strict": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
   },
-  "include": ["src"]
+  "include": ["src", "src/generated"]
 }
