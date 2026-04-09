@@ -1,0 +1,394 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Swagger Petstore
+  license:
+    name: MIT
+servers:
+  - url: http://petstore.swagger.io/v1
+paths:
+  /pets:
+    get:
+      summary: List all pets
+      operationId: listPets
+      tags:
+        - pets
+      parameters:
+        - name: limit
+          in: query
+          description: How many items to return at one time (max 100)
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: A paged array of pets
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PetsArray"
+              example:
+                - id: 1
+                  name: Fluffy
+                  age: 5
+                  tag: "123-45-6789"
+                  email: "fluffy@example.com"
+                  callingCode: "+420"
+                  country: "Uruguay"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                code: 500
+                message: Internal server error
+    post:
+      summary: Create a pet
+      operationId: createPets
+      tags:
+        - pets
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - tag
+              properties:
+                name:
+                  type: string
+                tag:
+                  type: string
+            example:
+              name: Max
+              tag: "555-66-7777"
+      responses:
+        "201":
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                code: 400
+                message: Bad request
+  /pets-nested-array:
+    get:
+      summary: List all pets as nested array
+      operationId: listPetsNestedArray
+      tags:
+        - pets
+      parameters:
+        - name: limit
+          in: query
+          description: How many items to return at one time (max 100)
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: A paged array of pets
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PetsNestedArray"
+              example:
+                data:
+                  - id: 1
+                    name: Bella
+                    age: 3
+                    tag: "987-65-4321"
+                    email: "bella@example.com"
+                    callingCode: "+33"
+                    country: "People's Republic of China"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                code: 404
+                message: Not found
+  /pets/{petId}:
+    get:
+      summary: Info for a specific pet
+      operationId: showPetById
+      tags:
+        - pets
+      parameters:
+        - name: petId
+          in: path
+          required: true
+          description: The id of the pet to retrieve
+          schema:
+            type: string
+        - name: testId
+          in: path
+          required: true
+          description: The id of the pet to retrieve
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Pet"
+              example:
+                id: 42
+                name: Rex
+                age: 7
+                tag: "321-54-9876"
+                email: "rex@example.com"
+                callingCode: "+33"
+                country: "Uruguay"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                code: 400
+                message: Invalid ID supplied
+  /products:
+    get:
+      summary: List all products
+      operationId: listProducts
+      tags:
+        - products
+      parameters:
+        - name: limit
+          in: query
+          description: How many items to return at one time (max 100)
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+      responses:
+        "200":
+          description: A paged array of products
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductsArray"
+              examples:
+                products:
+                  summary: List of products
+                  value:
+                    products:
+                      - product_id: 1
+                        product_name: Pokemon TCG Booster Pack
+                        thumbnail: https://i.pinimg.com/1200x/0e/3b/29/0e3b294beb09239a0625d82a2e2c0561.jpg
+                        product_code: pokemon
+                        price: 4.99
+                        tags:
+                          - tag_name: "flash sale"
+
+                      - product_id: 2
+                        product_name: Pikachu Plush Toy
+                        thumbnail: https://i.pinimg.com/736x/2b/1c/fa/2b1cfaeb9d98a1313b425c42a7d8ee25.jpg
+                        product_code: pokemon-pikachu
+                        price: 4.99
+
+                      - product_id: 3
+                        product_name: Pikachu T-Shirt
+                        thumbnail: https://i.pinimg.com/1200x/dc/70/2c/dc702c6762c873c76dae3f8fc3ef1eb7.jpg
+                        product_code: pokemon-pikachu-tshirt
+                        price: 4.99
+                        tags:
+                          - tag_name: "flash sale"
+                      - product_id: 4
+                        product_name: Pikachu T-Shirt
+                        thumbnail: https://i.pinimg.com/1200x/dc/70/2c/dc702c6762c873c76dae3f8fc3ef1eb7.jpg
+                        product_code: pokemon-pikachu-tshirt-1
+                        price: 4.99
+                        tags:
+                          - tag_name: "flash sale"
+                      - product_id: 5
+                        product_name: Pikachu T-Shirt
+                        thumbnail: https://i.pinimg.com/1200x/dc/70/2c/dc702c6762c873c76dae3f8fc3ef1eb7.jpg
+                        product_code: pokemon-pikachu-tshirt-2
+                        price: 4.99
+                        tags:
+                          - tag_name: "flash sale"
+                      - product_id: 6
+                        product_name: Pikachu T-Shirt
+                        thumbnail: https://i.pinimg.com/1200x/dc/70/2c/dc702c6762c873c76dae3f8fc3ef1eb7.jpg
+                        product_code: pokemon-pikachu-tshirt-3
+                        price: 4.99
+                        tags:
+                          - tag_name: "flash sale"
+                      - product_id: 7
+                        product_name: Pikachu T-Shirt
+                        thumbnail: https://i.pinimg.com/1200x/dc/70/2c/dc702c6762c873c76dae3f8fc3ef1eb7.jpg
+                        product_code: pokemon-pikachu-tshirt-4
+                        price: 4.99
+                        tags:
+                          - tag_name: "flash sale"
+                      - product_id: 8
+                        product_name: Pikachu T-Shirt
+                        thumbnail: https://i.pinimg.com/1200x/dc/70/2c/dc702c6762c873c76dae3f8fc3ef1eb7.jpg
+                        product_code: pokemon-pikachu-tshirt-5
+                        price: 4.99
+                        tags:
+                          - tag_name: "flash sale"
+                      - product_id: 9
+                        product_name: Pikachu T-Shirt
+                        thumbnail: https://i.pinimg.com/1200x/dc/70/2c/dc702c6762c873c76dae3f8fc3ef1eb7.jpg
+                        product_code: pokemon-pikachu-tshirt-6
+                        price: 4.99
+                        tags:
+                          - tag_name: "flash sale"
+                      - product_id: 10
+                        product_name: Pikachu T-Shirt
+                        thumbnail: https://i.pinimg.com/1200x/dc/70/2c/dc702c6762c873c76dae3f8fc3ef1eb7.jpg
+                        product_code: pokemon-pikachu-tshirt-7
+                        price: 4.99
+                        tags:
+                          - tag_name: "flash sale"
+
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                code: 500
+                message: Internal server error
+
+components:
+  schemas:
+    Pet:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 123
+        name:
+          type: string
+          description: "Name of pet"
+          minLength: 0
+          maxLength: 40
+          example: "Fluffy"
+        age:
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 30
+          exclusiveMinimum: true
+          exclusiveMaximum: true
+          example: 5
+        tag:
+          type: string
+          pattern: '^\\d{3}-\\d{2}-\\d{4}$'
+          nullable: true
+          example: "123-45-6789"
+        email:
+          type: string
+          format: email
+          example: "fluffy@example.com"
+        callingCode:
+          type: string
+          enum: ["+33", "+420", "+33"]
+          example: "+420"
+        country:
+          type: string
+          enum: ["People's Republic of China", "Uruguay"]
+          example: "Uruguay"
+    PetsNestedArray:
+      type: object
+      required:
+        - pets
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Pet"
+    PetsArray:
+      type: array
+      minItems: 1
+      maxItems: 20
+      items:
+        $ref: "#/components/schemas/Pet"
+
+    Product:
+      type: object
+      required:
+        - product_id
+        - product_name
+        - product_code
+        - price
+      properties:
+        product_id:
+          type: integer
+          format: int64
+          example: 1
+        product_name:
+          type: string
+          description: Product name
+          maxLength: 255
+          example: Pokemon TCG Booster Pack
+        thumbnail:
+          type: string
+          format: uri
+          example: https://i.pinimg.com/1200x/0e/3b/29/0e3b294beb09239a0625d82a2e2c0561.jpg
+        product_code:
+          type: string
+          example: pokemon
+        price:
+          type: number
+          format: float
+          minimum: 0
+          example: 4.99
+        tags:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProductTag"
+
+    ProductTag:
+      type: object
+      required:
+        - tag_name
+      properties:
+        tag_name:
+          type: string
+          example: flash sale
+
+    ProductsArray:
+      type: object
+      required:
+        - products
+      properties:
+        products:
+          type: array
+          items:
+            $ref: "#/components/schemas/Product"
+
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+          example: 400
+        message:
+          type: string
+          example: "Something went wrong"

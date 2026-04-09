@@ -8,11 +8,7 @@ const inputDir = "../../docs/openapi";
 const apis: ConfigExternal = {};
 
 fs.readdirSync(inputDir).forEach((file) => {
-  if (
-    file.endsWith(".yaml") ||
-    file.endsWith(".yml") ||
-    file.endsWith(".json")
-  ) {
+  if (file.endsWith(".yaml") || file.endsWith(".yml")) {
     const name = path.basename(file, path.extname(file));
     apis[name] = {
       input: {

@@ -4,7 +4,7 @@
       "path": "."
     },
     {
-      "path": "../../docs"
+      "path": "../docs"
     }
   ],
   "settings": {

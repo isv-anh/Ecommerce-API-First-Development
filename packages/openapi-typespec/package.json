@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "generate": "cd ../.. && chmod +x ./scripts/generate.sh && ./scripts/generate.sh"
+    "generate": "cd .. && chmod +x ./scripts/generate.sh && ./scripts/generate.sh"
   },
   "dependencies": {
     "@typespec/compiler": "latest",
