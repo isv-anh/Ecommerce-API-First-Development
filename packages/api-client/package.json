@@ -15,6 +15,14 @@
       "import": "./dist/esm/generated/endpoints/system/*.js",
       "types": "./dist/tsc/generated/endpoints/system/*.d.ts"
     },
+    "./endpoints/auth/*": {
+      "import": "./dist/esm/generated/endpoints/auth/*.js",
+      "types": "./dist/tsc/generated/endpoints/auth/*.d.ts"
+    },
+    "./endpoints/product/*": {
+      "import": "./dist/esm/generated/endpoints/product/*.js",
+      "types": "./dist/tsc/generated/endpoints/product/*.d.ts"
+    },
     "./zod/*": {
       "import": "./dist/esm/generated/zod/*.js",
       "types": "./dist/tsc/generated/zod/*.d.ts"
