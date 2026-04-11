@@ -3,16 +3,18 @@
     "allow": [
       "Bash(pnpm run *)",
       "Bash(git commit *)",
-      "Bash(git * develop)",
+      "Bash(git status)",
+      "Bash(git diff *)",
       "Bash(* --version)",
       "Bash(* --help *)",
-      "Read(./**)",              
-      "Write(./**)",         
-      "Edit(./**)",         
-      "MultiEdit(./**)"     
+      "Read(./packages/**)",
+      "Edit(./packages/**)"
     ],
     "deny": [
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(git reset *)",
+      "Bash(git clean *)",
+      "Bash(git rebase *)"
     ]
   }
 }
