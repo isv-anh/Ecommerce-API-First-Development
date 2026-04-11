@@ -9,7 +9,10 @@
     "dev": "pnpm -r --parallel dev",
     "build": "pnpm -r build",
     "lint": "pnpm -r lint",
-    "generate": "pnpm --filter openapi-typespec generate"
+
+    "generate:open-api": "pnpm --filter openapi-typespec generate",
+    "api-client:dev": "pnpm --filter @e-commerce/api-client dev",
+    "api-validation:dev": "pnpm --filter @e-commerce/api-validation dev"
   },
   "pnpm": {
     "overrides": {
