@@ -1,10 +1,924 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "(title)",
+    "title": "Shop API",
     "version": "0.0.0"
   },
-  "tags": [],
-  "paths": {},
-  "components": {}
+  "tags": [
+    {
+      "name": "shops"
+    },
+    {
+      "name": "commission-settings"
+    }
+  ],
+  "paths": {
+    "/shops": {
+      "get": {
+        "operationId": "getShops",
+        "parameters": [
+          {
+            "name": "ownerId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            },
+            "explode": false
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "explode": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShopsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "shops"
+        ]
+      },
+      "post": {
+        "operationId": "postShop",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "The request has succeeded and a new resource has been created as a result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostShopResponseBody"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access is unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "shops"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostShopRequestBody"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/shops/commission-settings": {
+      "get": {
+        "operationId": "getCommissionSettings",
+        "parameters": [
+          {
+            "name": "scope",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "explode": false
+          },
+          {
+            "name": "isActive",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "explode": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionSettingsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "commission-settings"
+        ]
+      },
+      "post": {
+        "operationId": "postCommissionSetting",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "The request has succeeded and a new resource has been created as a result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostCommissionSettingResponseBody"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access is unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "commission-settings"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostCommissionSettingRequestBody"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/shops/commission-settings/{commissionId}": {
+      "get": {
+        "operationId": "getCommissionSettingById",
+        "parameters": [
+          {
+            "name": "commissionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommissionSettingResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "commission-settings"
+        ]
+      },
+      "patch": {
+        "operationId": "patchCommissionSetting",
+        "parameters": [
+          {
+            "name": "commissionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "There is no content to send for this request, but the headers may be useful. "
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access is unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "commission-settings"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchCommissionSettingRequestBody"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteCommissionSetting",
+        "parameters": [
+          {
+            "name": "commissionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "There is no content to send for this request, but the headers may be useful. "
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access is unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "commission-settings"
+        ]
+      }
+    },
+    "/shops/{shopId}": {
+      "get": {
+        "operationId": "getShopById",
+        "parameters": [
+          {
+            "name": "shopId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShopResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "shops"
+        ]
+      },
+      "patch": {
+        "operationId": "patchShop",
+        "parameters": [
+          {
+            "name": "shopId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "There is no content to send for this request, but the headers may be useful. "
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access is unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "shops"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchShopRequestBody"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteShop",
+        "parameters": [
+          {
+            "name": "shopId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "There is no content to send for this request, but the headers may be useful. "
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access is unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "shops"
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CommissionSettingResponse": {
+        "type": "object",
+        "required": [
+          "commissionId",
+          "scope",
+          "refId",
+          "rate",
+          "fixedFee",
+          "minFee",
+          "maxFee",
+          "startDate",
+          "endDate",
+          "isActive",
+          "createdAt"
+        ],
+        "properties": {
+          "commissionId": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "scope": {
+            "type": "string"
+          },
+          "refId": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "rate": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "fixedFee": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "minFee": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "maxFee": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "startDate": {
+            "type": "string"
+          },
+          "endDate": {
+            "type": "string"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "examples": [
+          {
+            "commissionId": "123e4567-e89b-12d3-a456-426614175200",
+            "scope": "shop",
+            "refId": "123e4567-e89b-12d3-a456-426614175000",
+            "rate": 0.05,
+            "fixedFee": 1000,
+            "minFee": 500,
+            "maxFee": 5000,
+            "startDate": "2026-04-01T00:00:00.000Z",
+            "endDate": "2026-12-31T23:59:59.000Z",
+            "isActive": true,
+            "createdAt": "2026-04-09T08:00:00.000Z"
+          }
+        ]
+      },
+      "CommissionSettingsResponse": {
+        "type": "object",
+        "required": [
+          "commissionSettings"
+        ],
+        "properties": {
+          "commissionSettings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CommissionSettingResponse"
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "message"
+        ],
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "NonEmptyString": {
+        "type": "string",
+        "minLength": 1
+      },
+      "PatchCommissionSettingRequestBody": {
+        "type": "object",
+        "properties": {
+          "scope": {
+            "type": "string"
+          },
+          "refId": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "rate": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "fixedFee": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "minFee": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "maxFee": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "startDate": {
+            "type": "string"
+          },
+          "endDate": {
+            "type": "string"
+          },
+          "isActive": {
+            "type": "boolean"
+          }
+        }
+      },
+      "PatchShopRequestBody": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "$ref": "#/components/schemas/NonEmptyString"
+          },
+          "slug": {
+            "$ref": "#/components/schemas/NonEmptyString"
+          },
+          "description": {
+            "type": "string"
+          },
+          "logoUrl": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "PostCommissionSettingRequestBody": {
+        "type": "object",
+        "required": [
+          "scope",
+          "refId",
+          "rate"
+        ],
+        "properties": {
+          "scope": {
+            "type": "string"
+          },
+          "refId": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "rate": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "fixedFee": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "minFee": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "maxFee": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "startDate": {
+            "type": "string"
+          },
+          "endDate": {
+            "type": "string"
+          },
+          "isActive": {
+            "type": "boolean"
+          }
+        }
+      },
+      "PostCommissionSettingResponseBody": {
+        "type": "object",
+        "required": [
+          "commissionId"
+        ],
+        "properties": {
+          "commissionId": {
+            "$ref": "#/components/schemas/UUID"
+          }
+        }
+      },
+      "PostShopRequestBody": {
+        "type": "object",
+        "required": [
+          "ownerId",
+          "name",
+          "slug"
+        ],
+        "properties": {
+          "ownerId": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "name": {
+            "$ref": "#/components/schemas/NonEmptyString"
+          },
+          "slug": {
+            "$ref": "#/components/schemas/NonEmptyString"
+          },
+          "description": {
+            "type": "string"
+          },
+          "logoUrl": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "PostShopResponseBody": {
+        "type": "object",
+        "required": [
+          "shopId"
+        ],
+        "properties": {
+          "shopId": {
+            "$ref": "#/components/schemas/UUID"
+          }
+        }
+      },
+      "ShopResponse": {
+        "type": "object",
+        "required": [
+          "shopId",
+          "ownerId",
+          "name",
+          "slug",
+          "status",
+          "rating",
+          "totalProducts",
+          "totalOrders",
+          "createdAt",
+          "updatedAt"
+        ],
+        "properties": {
+          "shopId": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "ownerId": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "name": {
+            "$ref": "#/components/schemas/NonEmptyString"
+          },
+          "slug": {
+            "$ref": "#/components/schemas/NonEmptyString"
+          },
+          "description": {
+            "type": "string"
+          },
+          "logoUrl": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "rating": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "totalProducts": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalOrders": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "examples": [
+          {
+            "shopId": "123e4567-e89b-12d3-a456-426614175000",
+            "ownerId": "123e4567-e89b-12d3-a456-426614175100",
+            "name": "Fashion Store",
+            "slug": "fashion-store",
+            "description": "Chuyên bán thời trang nam nữ",
+            "logoUrl": "https://example.com/images/shops/fashion-store-logo.png",
+            "status": "active",
+            "rating": 4.8,
+            "totalProducts": 150,
+            "totalOrders": 320,
+            "createdAt": "2026-04-09T08:00:00.000Z",
+            "updatedAt": "2026-04-09T08:00:00.000Z"
+          }
+        ]
+      },
+      "ShopsResponse": {
+        "type": "object",
+        "required": [
+          "shops"
+        ],
+        "properties": {
+          "shops": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ShopResponse"
+            }
+          }
+        }
+      },
+      "UUID": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+      }
+    }
+  }
 }
