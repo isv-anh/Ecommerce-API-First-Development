@@ -6,6 +6,9 @@
     {
       "path": "../docs",
     },
+    {
+      "path": "../custom",
+    },
   ],
   "settings": {
     "editor.fontSize": 14,
@@ -75,6 +78,17 @@
         "detail": "Generate Schema and Prisma client",
         "type": "shell",
         "command": "npx prisma db pull && npx prisma generate",
+        "args": [],
+        "options": {
+          "cwd": "${workspaceFolder}",
+        },
+        "problemMatcher": [],
+      },
+      {
+        "label": "Generate Controllers",
+        "detail": "Generate API controllers",
+        "type": "shell",
+        "command": "npm run generate:controllers",
         "args": [],
         "options": {
           "cwd": "${workspaceFolder}",

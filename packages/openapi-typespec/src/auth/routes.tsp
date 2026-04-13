@@ -7,7 +7,7 @@ using TypeSpec.Http;
 using TypeSpec.OpenAPI;
 
 @route("/auth")
-namespace Auth {
+namespace Auth.Auth {
     @post
     @route("/login")
     @operationId("postLogin")

@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Product API",
-    "version": "0.0.0"
+    "version": "1.0"
   },
   "tags": [
     {
@@ -28,7 +28,7 @@
     }
   ],
   "paths": {
-    "/categories": {
+    "/v1/categories": {
       "get": {
         "operationId": "getCategories",
         "parameters": [
@@ -144,7 +144,7 @@
         }
       }
     },
-    "/categories/{categoryId}": {
+    "/v1/categories/{categoryId}": {
       "get": {
         "operationId": "getCategoryByCategoryId",
         "parameters": [
@@ -306,7 +306,7 @@
         ]
       }
     },
-    "/product-images": {
+    "/v1/product-images": {
       "get": {
         "operationId": "getProductImages",
         "parameters": [
@@ -416,7 +416,7 @@
         }
       }
     },
-    "/product-images/{productImageId}": {
+    "/v1/product-images/{productImageId}": {
       "get": {
         "operationId": "getProductImageById",
         "parameters": [
@@ -578,7 +578,7 @@
         ]
       }
     },
-    "/product-variant-images": {
+    "/v1/product-variant-images": {
       "get": {
         "operationId": "getProductVariantImages",
         "parameters": [
@@ -688,7 +688,7 @@
         }
       }
     },
-    "/product-variant-images/{productVariantImageId}": {
+    "/v1/product-variant-images/{productVariantImageId}": {
       "get": {
         "operationId": "getProductVariantImageById",
         "parameters": [
@@ -850,7 +850,7 @@
         ]
       }
     },
-    "/product-variants": {
+    "/v1/product-variants": {
       "get": {
         "operationId": "getProductVariants",
         "parameters": [
@@ -960,7 +960,7 @@
         }
       }
     },
-    "/product-variants/{productVariantId}": {
+    "/v1/product-variants/{productVariantId}": {
       "get": {
         "operationId": "getProductVariantById",
         "parameters": [
@@ -1122,7 +1122,7 @@
         ]
       }
     },
-    "/products": {
+    "/v1/products": {
       "get": {
         "operationId": "getProducts",
         "parameters": [
@@ -1244,7 +1244,7 @@
         }
       }
     },
-    "/products/{productId}": {
+    "/v1/products/{productId}": {
       "get": {
         "operationId": "getProductByProductId",
         "parameters": [
@@ -1406,7 +1406,7 @@
         ]
       }
     },
-    "/warehouse-inventories": {
+    "/v1/warehouse-inventories": {
       "get": {
         "operationId": "getWarehouseInventories",
         "parameters": [
@@ -1525,7 +1525,7 @@
         }
       }
     },
-    "/warehouse-inventories/{warehouseId}/{productVariantId}": {
+    "/v1/warehouse-inventories/{warehouseId}/{productVariantId}": {
       "get": {
         "operationId": "getWarehouseInventoryByIds",
         "parameters": [
@@ -1711,7 +1711,7 @@
         ]
       }
     },
-    "/warehouses": {
+    "/v1/warehouses": {
       "get": {
         "operationId": "getWarehouses",
         "parameters": [
@@ -1821,7 +1821,7 @@
         }
       }
     },
-    "/warehouses/{warehouseId}": {
+    "/v1/warehouses/{warehouseId}": {
       "get": {
         "operationId": "getWarehouseById",
         "parameters": [

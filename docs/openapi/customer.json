@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Customer API",
-    "version": "0.0.0"
+    "version": "1.0"
   },
   "tags": [
     {
@@ -19,7 +19,7 @@
     }
   ],
   "paths": {
-    "/customers/addresses": {
+    "/v1/customers/addresses": {
       "get": {
         "operationId": "getAddresses",
         "parameters": [
@@ -129,7 +129,7 @@
         }
       }
     },
-    "/customers/addresses/{addressId}": {
+    "/v1/customers/addresses/{addressId}": {
       "get": {
         "operationId": "getAddressById",
         "parameters": [
@@ -291,7 +291,7 @@
         ]
       }
     },
-    "/customers/reviews": {
+    "/v1/customers/reviews": {
       "get": {
         "operationId": "getReviews",
         "parameters": [
@@ -410,7 +410,7 @@
         }
       }
     },
-    "/customers/reviews/{reviewId}": {
+    "/v1/customers/reviews/{reviewId}": {
       "get": {
         "operationId": "getReviewById",
         "parameters": [
@@ -572,7 +572,7 @@
         ]
       }
     },
-    "/customers/wishlists": {
+    "/v1/customers/wishlists": {
       "get": {
         "operationId": "getWishlists",
         "parameters": [
@@ -682,7 +682,7 @@
         }
       }
     },
-    "/customers/wishlists/{wishlistId}": {
+    "/v1/customers/wishlists/{wishlistId}": {
       "get": {
         "operationId": "getWishlistById",
         "parameters": [
@@ -783,7 +783,7 @@
         ]
       }
     },
-    "/customers/wishlists/{wishlistId}/items": {
+    "/v1/customers/wishlists/{wishlistId}/items": {
       "get": {
         "operationId": "getWishlistItems",
         "parameters": [
@@ -901,7 +901,7 @@
         }
       }
     },
-    "/customers/wishlists/{wishlistId}/items/{wishlistItemId}": {
+    "/v1/customers/wishlists/{wishlistId}/items/{wishlistItemId}": {
       "delete": {
         "operationId": "deleteWishlistItem",
         "parameters": [

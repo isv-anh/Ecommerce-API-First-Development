@@ -1,0 +1,34 @@
+import { Injectable } from '@nestjs/common';
+import { {{className}}Service } from './{{moduleName}}.service';
+import type {
+{{#operations}}
+  {{#vendorExtensions.x-type-params}}{{vendorExtensions.x-type-params}},{{/vendorExtensions.x-type-params}}
+  {{#vendorExtensions.x-type-query}}{{vendorExtensions.x-type-query}},{{/vendorExtensions.x-type-query}}
+  {{#vendorExtensions.x-type-body}}{{vendorExtensions.x-type-body}},{{/vendorExtensions.x-type-body}}
+  {{#vendorExtensions.x-type-response}}{{vendorExtensions.x-type-response}},{{/vendorExtensions.x-type-response}}
+{{/operations}}
+} from '@e-commerce/api-validation/types/{{specName}}';
+import type { Base{{className}}ControllerInterface } from './base-{{moduleName}}.controller.interface';
+
+@Injectable()
+export class {{className}}Controller implements Base{{className}}ControllerInterface {
+  constructor(private readonly service: {{className}}Service) {}
+
+{{#operations}}
+  /**
+   * {{httpMethod}} {{path}}
+   */
+  async {{operationId}}(
+    {{#vendorExtensions.x-has-param}}params: {{vendorExtensions.x-type-params}},{{/vendorExtensions.x-has-param}}
+    {{#vendorExtensions.x-has-query}}query: {{vendorExtensions.x-type-query}},{{/vendorExtensions.x-has-query}}
+    {{#vendorExtensions.x-has-body}}body: {{vendorExtensions.x-type-body}}{{/vendorExtensions.x-has-body}}
+  ): Promise<{{#vendorExtensions.x-type-response}}{{vendorExtensions.x-type-response}}{{/vendorExtensions.x-type-response}}{{#vendorExtensions.x-is-void}}void{{/vendorExtensions.x-is-void}}> {
+    {{^vendorExtensions.x-is-void}}return {{/vendorExtensions.x-is-void}}await this.service.{{operationId}}(
+      {{#vendorExtensions.x-has-param}}params,{{/vendorExtensions.x-has-param}}
+      {{#vendorExtensions.x-has-query}}query,{{/vendorExtensions.x-has-query}}
+      {{#vendorExtensions.x-has-body}}body{{/vendorExtensions.x-has-body}}
+    );
+  }
+
+{{/operations}}
+}

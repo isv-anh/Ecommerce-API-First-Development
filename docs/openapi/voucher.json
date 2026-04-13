@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Voucher API",
-    "version": "0.0.0"
+    "version": "1.0"
   },
   "tags": [
     {
@@ -19,7 +19,7 @@
     }
   ],
   "paths": {
-    "/flash-sales": {
+    "/v1/flash-sales": {
       "get": {
         "operationId": "getFlashSales",
         "parameters": [
@@ -129,7 +129,7 @@
         }
       }
     },
-    "/flash-sales/{flashSaleId}": {
+    "/v1/flash-sales/{flashSaleId}": {
       "get": {
         "operationId": "getFlashSaleById",
         "parameters": [
@@ -291,7 +291,7 @@
         ]
       }
     },
-    "/order-vouchers": {
+    "/v1/order-vouchers": {
       "get": {
         "operationId": "getOrderVouchers",
         "parameters": [
@@ -401,7 +401,7 @@
         }
       }
     },
-    "/order-vouchers/{orderVoucherId}": {
+    "/v1/order-vouchers/{orderVoucherId}": {
       "get": {
         "operationId": "getOrderVoucherById",
         "parameters": [
@@ -502,7 +502,7 @@
         ]
       }
     },
-    "/vouchers": {
+    "/v1/vouchers": {
       "get": {
         "operationId": "getVouchers",
         "parameters": [
@@ -621,7 +621,7 @@
         }
       }
     },
-    "/vouchers/{voucherId}": {
+    "/v1/vouchers/{voucherId}": {
       "get": {
         "operationId": "getVoucherById",
         "parameters": [
@@ -783,7 +783,7 @@
         ]
       }
     },
-    "/vouchers/{voucherId}/conditions": {
+    "/v1/vouchers/{voucherId}/conditions": {
       "get": {
         "operationId": "getVoucherConditions",
         "parameters": [
@@ -901,7 +901,7 @@
         }
       }
     },
-    "/vouchers/{voucherId}/conditions/{conditionId}": {
+    "/v1/vouchers/{voucherId}/conditions/{conditionId}": {
       "get": {
         "operationId": "getVoucherConditionById",
         "parameters": [
