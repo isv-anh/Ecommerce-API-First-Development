@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Shop API",
-    "version": "0.0.0"
+    "version": "1.0"
   },
   "tags": [
     {
@@ -13,7 +13,7 @@
     }
   ],
   "paths": {
-    "/shops": {
+    "/v1/shops": {
       "get": {
         "operationId": "getShops",
         "parameters": [
@@ -132,7 +132,7 @@
         }
       }
     },
-    "/shops/commission-settings": {
+    "/v1/shops/commission-settings": {
       "get": {
         "operationId": "getCommissionSettings",
         "parameters": [
@@ -251,7 +251,7 @@
         }
       }
     },
-    "/shops/commission-settings/{commissionId}": {
+    "/v1/shops/commission-settings/{commissionId}": {
       "get": {
         "operationId": "getCommissionSettingById",
         "parameters": [
@@ -413,7 +413,7 @@
         ]
       }
     },
-    "/shops/{shopId}": {
+    "/v1/shops/{shopId}": {
       "get": {
         "operationId": "getShopById",
         "parameters": [

@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Cart API",
-    "version": "0.0.0"
+    "version": "1.0"
   },
   "tags": [
     {
@@ -13,7 +13,7 @@
     }
   ],
   "paths": {
-    "/carts": {
+    "/v1/carts": {
       "get": {
         "operationId": "getCart",
         "parameters": [
@@ -113,7 +113,7 @@
         }
       }
     },
-    "/carts/{cartId}": {
+    "/v1/carts/{cartId}": {
       "delete": {
         "operationId": "deleteCart",
         "parameters": [
@@ -156,7 +156,7 @@
         ]
       }
     },
-    "/carts/{cartId}/items": {
+    "/v1/carts/{cartId}/items": {
       "get": {
         "operationId": "getCartItems",
         "parameters": [
@@ -264,7 +264,7 @@
         }
       }
     },
-    "/carts/{cartId}/items/{productVariantId}": {
+    "/v1/carts/{cartId}/items/{productVariantId}": {
       "patch": {
         "operationId": "patchCartItem",
         "parameters": [

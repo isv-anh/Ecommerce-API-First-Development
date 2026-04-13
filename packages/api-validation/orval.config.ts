@@ -23,6 +23,11 @@ fs.readdirSync(inputDir).forEach((file) => {
         mode: "split",
         target: `./src/generated/zod/${name}.ts`,
         client: "zod",
+        override: {
+          zod: {
+            generateEachHttpStatus: true,
+          },
+        },
       },
     };
   }
