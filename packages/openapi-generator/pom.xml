@@ -10,8 +10,21 @@
   <packaging>jar</packaging>
 
   <name>openapi-generator</name>
-  <!-- FIXME change it to the project's website -->
-  <url>http://www.example.com</url>
+  <url>https://github.com/ndh-anh/e-commerce</url>
+
+  <scm>
+    <connection>scm:git:git://github.com/ndh-anh/e-commerce.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com:ndh-anh/e-commerce.git</developerConnection>
+    <url>https://github.com/ndh-anh/e-commerce</url>
+  </scm>
+
+  <developers>
+    <developer>
+      <id>ndh-anh</id>
+      <name>ndh-anh</name>
+      <email>ndha1115@gmail.com</email>
+    </developer>
+  </developers>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
