@@ -11,6 +11,9 @@ RUN mvn clean package -DskipTests
 
 FROM openapitools/openapi-generator-cli:v7.21.0
 
+ARG UID
+ARG GID
+
 WORKDIR /app
 
 RUN mkdir -p /app/output && \
