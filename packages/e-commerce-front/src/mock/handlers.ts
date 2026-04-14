@@ -1,7 +1,3 @@
-import { getSwaggerPetstoreMock } from "@e-commerce/api-client/endpoints/petstore/petstore.msw";
-import { getSwaggerSystemMock } from "@e-commerce/api-client/endpoints/system/system.msw";
+import { getAuthAPIMock } from "@e-commerce/api-client/endpoints/auth/auth.msw";
 
-export const handlers = [
-  ...getSwaggerPetstoreMock(),
-  ...getSwaggerSystemMock(),
-];
+export const handlers = [...getAuthAPIMock()];

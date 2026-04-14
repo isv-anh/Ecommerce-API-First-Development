@@ -1,72 +1,7 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
+import { palette } from "@/theme/palette";
+import { typography } from "@/theme/typography";
 import { alpha, createTheme, Shadows } from "@mui/material/styles";
-
-declare module "@mui/material/styles" {
-  interface TypeText {
-    white: string;
-  }
-
-  interface TypographyVariants {
-    title: React.CSSProperties;
-    subtitle: React.CSSProperties;
-    header: React.CSSProperties;
-    regularXxs: React.CSSProperties;
-    regularXs: React.CSSProperties;
-    regularS: React.CSSProperties;
-    regularM: React.CSSProperties;
-    regularL: React.CSSProperties;
-    boldXs: React.CSSProperties;
-    boldS: React.CSSProperties;
-    boldM: React.CSSProperties;
-    boldL: React.CSSProperties;
-  }
-
-  interface TypographyVariantsOptions {
-    title?: React.CSSProperties;
-    subtitle?: React.CSSProperties;
-    header?: React.CSSProperties;
-    regularXxs?: React.CSSProperties;
-    regularXs?: React.CSSProperties;
-    regularS?: React.CSSProperties;
-    regularM?: React.CSSProperties;
-    regularL?: React.CSSProperties;
-    boldXs?: React.CSSProperties;
-    boldS?: React.CSSProperties;
-    boldM?: React.CSSProperties;
-    boldL?: React.CSSProperties;
-  }
-}
-
-declare module "@mui/material/Typography" {
-  interface TypographyPropsVariantOverrides {
-    h1: false;
-    h2: false;
-    h3: false;
-    h4: false;
-    h5: false;
-    h6: false;
-    subtitle1: false;
-    subtitle2: false;
-    body1: false;
-    body2: false;
-    button: false;
-    caption: false;
-    overline: false;
-
-    title: true;
-    subtitle: true;
-    header: true;
-    regularXxs: true;
-    regularXs: true;
-    regularS: true;
-    regularM: true;
-    regularL: true;
-    boldXs: true;
-    boldS: true;
-    boldM: true;
-    boldL: true;
-  }
-}
 
 const createPrimaryShadow = (mainColor: string): Shadows => {
   return [
@@ -100,69 +35,8 @@ const createPrimaryShadow = (mainColor: string): Shadows => {
 
 const theme = createTheme({
   shadows: createPrimaryShadow("#9B5DE0"),
-  typography: {
-    title: {
-      fontSize: "24px",
-      fontWeight: 600,
-    },
-    subtitle: {
-      fontSize: "16px",
-      fontWeight: 400,
-    },
-    header: {
-      fontSize: "20px",
-      fontWeight: 500,
-    },
-    regularXxs: {
-      fontSize: "10px",
-      fontWeight: 400,
-    },
-    regularXs: {
-      fontSize: "12px",
-      fontWeight: 400,
-    },
-    regularS: {
-      fontSize: "14px",
-      fontWeight: 400,
-    },
-    regularM: {
-      fontSize: "16px",
-      fontWeight: 400,
-    },
-    regularL: {
-      fontSize: "18px",
-      fontWeight: 400,
-    },
-    boldXs: {
-      fontSize: "12px",
-      fontWeight: 700,
-    },
-    boldS: {
-      fontSize: "14px",
-      fontWeight: 700,
-    },
-    boldM: {
-      fontSize: "16px",
-      fontWeight: 700,
-    },
-    boldL: {
-      fontSize: "18px",
-      fontWeight: 700,
-    },
-  },
-  palette: {
-    primary: {
-      main: "#9B5DE0",
-      light: "#C77DFF",
-    },
-    text: {
-      white: "#FFFFFF",
-    },
-    common: {
-      white: "#FFFFFF",
-      black: "#000000",
-    },
-  },
+  typography: typography,
+  palette: palette,
   breakpoints: {
     values: {
       xs: 600,
@@ -231,7 +105,7 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           "& .MuiOutlinedInput-root": {
-            borderRadius: "48px",
+            borderRadius: "16px",
           },
         },
       },
