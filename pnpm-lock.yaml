@@ -154,8 +154,8 @@ importers:
         specifier: ^11.0.0
         version: 11.0.16(@types/node@22.19.15)(esbuild@0.27.5)
       '@nestjs/schematics':
-        specifier: ^11.0.0
-        version: 11.0.9(chokidar@4.0.3)(typescript@5.9.3)
+        specifier: ^11.0.10
+        version: 11.0.10(chokidar@4.0.3)(typescript@5.9.3)
       '@nestjs/testing':
         specifier: ^11.0.1
         version: 11.1.17(@nestjs/common@11.1.17(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.17)(@nestjs/platform-express@11.1.17)
@@ -357,22 +357,22 @@ importers:
     dependencies:
       '@typespec/compiler':
         specifier: latest
-        version: 1.10.0(@types/node@22.19.15)
+        version: 1.11.0(@types/node@22.19.15)
       '@typespec/http':
         specifier: latest
-        version: 1.10.0(@typespec/compiler@1.10.0(@types/node@22.19.15))
+        version: 1.11.0(@typespec/compiler@1.11.0(@types/node@22.19.15))
       '@typespec/openapi':
         specifier: latest
-        version: 1.10.0(@typespec/compiler@1.10.0(@types/node@22.19.15))(@typespec/http@1.10.0(@typespec/compiler@1.10.0(@types/node@22.19.15)))
+        version: 1.11.0(@typespec/compiler@1.11.0(@types/node@22.19.15))(@typespec/http@1.11.0(@typespec/compiler@1.11.0(@types/node@22.19.15)))
       '@typespec/openapi3':
         specifier: latest
-        version: 1.10.0(@typespec/compiler@1.10.0(@types/node@22.19.15))(@typespec/http@1.10.0(@typespec/compiler@1.10.0(@types/node@22.19.15)))(@typespec/openapi@1.10.0(@typespec/compiler@1.10.0(@types/node@22.19.15))(@typespec/http@1.10.0(@typespec/compiler@1.10.0(@types/node@22.19.15))))(@typespec/versioning@0.81.0(@typespec/compiler@1.10.0(@types/node@22.19.15)))
+        version: 1.11.0(@typespec/compiler@1.11.0(@types/node@22.19.15))(@typespec/http@1.11.0(@typespec/compiler@1.11.0(@types/node@22.19.15)))(@typespec/openapi@1.11.0(@typespec/compiler@1.11.0(@types/node@22.19.15))(@typespec/http@1.11.0(@typespec/compiler@1.11.0(@types/node@22.19.15))))(@typespec/versioning@0.81.0(@typespec/compiler@1.11.0(@types/node@22.19.15)))
       '@typespec/rest':
         specifier: latest
-        version: 0.80.0(@typespec/compiler@1.10.0(@types/node@22.19.15))(@typespec/http@1.10.0(@typespec/compiler@1.10.0(@types/node@22.19.15)))
+        version: 0.81.0(@typespec/compiler@1.11.0(@types/node@22.19.15))(@typespec/http@1.11.0(@typespec/compiler@1.11.0(@types/node@22.19.15)))
       '@typespec/versioning':
         specifier: latest
-        version: 0.81.0(@typespec/compiler@1.10.0(@types/node@22.19.15))
+        version: 0.81.0(@typespec/compiler@1.11.0(@types/node@22.19.15))
 
 packages:
 
@@ -383,8 +383,8 @@ packages:
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
 
-  '@angular-devkit/core@19.2.17':
-    resolution: {integrity: sha512-Ah008x2RJkd0F+NLKqIpA34/vUGwjlprRCkvddjDopAWRzYn6xCkz1Tqwuhn0nR1Dy47wTLKYD999TYl5ONOAQ==}
+  '@angular-devkit/core@19.2.19':
+    resolution: {integrity: sha512-JbLL+4IMLMBgjLZlnPG4lYDfz4zGrJ/s6Aoon321NJKuw1Kb1k5KpFu9dUY0BqLIe8xPQ2UJBpI+xXdK5MXMHQ==}
     engines: {node: ^18.19.1 || ^20.11.1 || >=22.0.0, npm: ^6.11.0 || ^7.5.6 || >=8.0.0, yarn: '>= 1.13.0'}
     peerDependencies:
       chokidar: ^4.0.0
@@ -392,8 +392,8 @@ packages:
       chokidar:
         optional: true
 
-  '@angular-devkit/core@19.2.19':
-    resolution: {integrity: sha512-JbLL+4IMLMBgjLZlnPG4lYDfz4zGrJ/s6Aoon321NJKuw1Kb1k5KpFu9dUY0BqLIe8xPQ2UJBpI+xXdK5MXMHQ==}
+  '@angular-devkit/core@19.2.23':
+    resolution: {integrity: sha512-RazHPQkUEsNU/OZ75w9UeHxGFMthRiuAW2B/uA7eXExBj/1meHrrBfoCA56ujW2GUxVjRtSrMjylKh4R4meiYA==}
     engines: {node: ^18.19.1 || ^20.11.1 || >=22.0.0, npm: ^6.11.0 || ^7.5.6 || >=8.0.0, yarn: '>= 1.13.0'}
     peerDependencies:
       chokidar: ^4.0.0
@@ -406,12 +406,12 @@ packages:
     engines: {node: ^18.19.1 || ^20.11.1 || >=22.0.0, npm: ^6.11.0 || ^7.5.6 || >=8.0.0, yarn: '>= 1.13.0'}
     hasBin: true
 
-  '@angular-devkit/schematics@19.2.17':
-    resolution: {integrity: sha512-ADfbaBsrG8mBF6Mfs+crKA/2ykB8AJI50Cv9tKmZfwcUcyAdmTr+vVvhsBCfvUAEokigSsgqgpYxfkJVxhJYeg==}
-    engines: {node: ^18.19.1 || ^20.11.1 || >=22.0.0, npm: ^6.11.0 || ^7.5.6 || >=8.0.0, yarn: '>= 1.13.0'}
-
   '@angular-devkit/schematics@19.2.19':
     resolution: {integrity: sha512-J4Jarr0SohdrHcb40gTL4wGPCQ952IMWF1G/MSAQfBAPvA9ZKApYhpxcY7PmehVePve+ujpus1dGsJ7dPxz8Kg==}
+    engines: {node: ^18.19.1 || ^20.11.1 || >=22.0.0, npm: ^6.11.0 || ^7.5.6 || >=8.0.0, yarn: '>= 1.13.0'}
+
+  '@angular-devkit/schematics@19.2.23':
+    resolution: {integrity: sha512-Jzs7YM4X6azmHU7Mw5tQSPMuvaqYS8SLnZOJbtiXCy1JyuW9bm/WBBecNHMiuZ8LHXKhvQ6AVX1tKrzF6uiDmw==}
     engines: {node: ^18.19.1 || ^20.11.1 || >=22.0.0, npm: ^6.11.0 || ^7.5.6 || >=8.0.0, yarn: '>= 1.13.0'}
 
   '@apidevtools/json-schema-ref-parser@14.0.1':
@@ -2530,8 +2530,8 @@ packages:
       '@nestjs/common': ^11.0.0
       '@nestjs/core': ^11.0.0
 
-  '@nestjs/schematics@11.0.9':
-    resolution: {integrity: sha512-0NfPbPlEaGwIT8/TCThxLzrlz3yzDNkfRNpbL7FiplKq3w4qXpJg0JYwqgMEJnLQZm3L/L/5XjoyfJHUO3qX9g==}
+  '@nestjs/schematics@11.0.10':
+    resolution: {integrity: sha512-q9lr0wGwgBHLarD4uno3XiW4JX60WPlg2VTgbqPHl/6bT4u1IEEzj+q9Tad3bVnqL5mlDF3vrZ2tj+x13CJpmw==}
     peerDependencies:
       typescript: '>=4.8.2'
 
@@ -3535,34 +3535,34 @@ packages:
     peerDependencies:
       '@typespec/compiler': ^1.10.0
 
-  '@typespec/compiler@1.10.0':
-    resolution: {integrity: sha512-R6BATDkughntPpaxeESJF+wxma5PEjgmnnKvH0/ByqUH8VyhIckQWE9kkP0Uc/EJ0o0VYhe8qCwWQvV70k5lTw==}
+  '@typespec/compiler@1.11.0':
+    resolution: {integrity: sha512-4vuWtoepc4rYJ81K+P7xn2ByXIRhBM40rfzAGnpagNuGSVHuKEC6lqJqs3ePvhCpnxiYAC8XWpaOi+BEDzyhnQ==}
     engines: {node: '>=20.0.0'}
     hasBin: true
 
-  '@typespec/http@1.10.0':
-    resolution: {integrity: sha512-/fj55fmUj4m/FmNdfH0V52menVrmS2r5Xj9d1H+pnjQbxvvaxS906RSRcoF8kbg3PvlibP/Py5u82TAk53AyqA==}
+  '@typespec/http@1.11.0':
+    resolution: {integrity: sha512-/DOkN2+MUZyLdmqYmSMZDjxikJTOuNxikTeOwG2fVOibnu8e6S1jzPAuN/mn6YyQBKeBCItMPmUOXIj61Wy8Bg==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
-      '@typespec/compiler': ^1.10.0
-      '@typespec/streams': ^0.80.0
+      '@typespec/compiler': ^1.11.0
+      '@typespec/streams': ^0.81.0
     peerDependenciesMeta:
       '@typespec/streams':
         optional: true
 
-  '@typespec/openapi3@1.10.0':
-    resolution: {integrity: sha512-G2UTfsDuUprvhFIymHiLKly6FoA9UkRmTImqgmROP4JkKCdY/Mo6Xo03sufY8urywVjIWE3dryXpy5DjpOt9Eg==}
+  '@typespec/openapi3@1.11.0':
+    resolution: {integrity: sha512-AjMpTkIUy8+YlRaqUyQ1NZxbmVbWyT4fPpztVzclyX+TXyvxo9gqLEdqoMfvQ9KUjcU0nsOjfPdaYb5rj25oIA==}
     engines: {node: '>=20.0.0'}
     hasBin: true
     peerDependencies:
-      '@typespec/compiler': ^1.10.0
-      '@typespec/events': ^0.80.0
-      '@typespec/http': ^1.10.0
-      '@typespec/json-schema': ^1.10.0
-      '@typespec/openapi': ^1.10.0
-      '@typespec/sse': ^0.80.0
-      '@typespec/streams': ^0.80.0
-      '@typespec/versioning': ^0.80.0
+      '@typespec/compiler': ^1.11.0
+      '@typespec/events': ^0.81.0
+      '@typespec/http': ^1.11.0
+      '@typespec/json-schema': ^1.11.0
+      '@typespec/openapi': ^1.11.0
+      '@typespec/sse': ^0.81.0
+      '@typespec/streams': ^0.81.0
+      '@typespec/versioning': ^0.81.0
       '@typespec/xml': '*'
     peerDependenciesMeta:
       '@typespec/events':
@@ -3578,19 +3578,19 @@ packages:
       '@typespec/xml':
         optional: true
 
-  '@typespec/openapi@1.10.0':
-    resolution: {integrity: sha512-tukmyp+c9CFlA2FdF61XfT9eTe5WXWz6J8pOrJ9+IYg0BcBwhJkvDj6BYpDD6SjxbRr1wO5ZL2Whe6MequsyVw==}
+  '@typespec/openapi@1.11.0':
+    resolution: {integrity: sha512-xUQrHExKBh0XSP4cn+HcondDXjHJM5HCq2Xfy9tB1QflsFh5uP1JJt1+67g73VmHlhZVSUDcoFrnU95pfjyubg==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
-      '@typespec/compiler': ^1.10.0
-      '@typespec/http': ^1.10.0
+      '@typespec/compiler': ^1.11.0
+      '@typespec/http': ^1.11.0
 
-  '@typespec/rest@0.80.0':
-    resolution: {integrity: sha512-xczXLoB2akSIDner41gQYTS9CG6TdCN0QHYvXBT6ZrYEnBh+pMvdymW//5CSOTamZLOGo9AOJVJaFfwbFA4vQQ==}
+  '@typespec/rest@0.81.0':
+    resolution: {integrity: sha512-qQXZRKEvq5aNlDFEUqBiiXXPIFyr/+PWgBY0kIrnhyZzMjfUqPInkB12QgXpVp2O2Wm3jmETJD45SaLHTCYBbg==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
-      '@typespec/compiler': ^1.10.0
-      '@typespec/http': ^1.10.0
+      '@typespec/compiler': ^1.11.0
+      '@typespec/http': ^1.11.0
 
   '@typespec/versioning@0.81.0':
     resolution: {integrity: sha512-5bha4t64xA85zLY8VGm/6jNd2kwPHzjPq/dlCUjtgGfGXv2R6Ow/YIukqhqZnwnIgNAIlZ7nguekRMRx+2oO2w==}
@@ -4415,8 +4415,8 @@ packages:
     resolution: {integrity: sha512-OkTL9umf+He2DZkUq8f8J9of7yL6RJKI24dVITBmNfZBmri9zYZQrKkuXiKhyfPSu8tUhnVBB1iKXevvnlR4Ww==}
     engines: {node: '>= 12'}
 
-  comment-json@4.4.1:
-    resolution: {integrity: sha512-r1To31BQD5060QdkC+Iheai7gHwoSZobzunqkf2/kQ6xIAfJyrKNAFUwdKvkK7Qgu7pVTKQEa7ok7Ed3ycAJgg==}
+  comment-json@4.6.2:
+    resolution: {integrity: sha512-R2rze/hDX30uul4NZoIZ76ImSJLFxn/1/ZxtKC1L77y2X1k+yYu1joKbAtMA2Fg3hZrTOiw0I5mwVMo0cf250w==}
     engines: {node: '>= 6'}
 
   common-path-prefix@3.0.0:
@@ -8375,7 +8375,7 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.13
       '@jridgewell/trace-mapping': 0.3.31
 
-  '@angular-devkit/core@19.2.17(chokidar@4.0.3)':
+  '@angular-devkit/core@19.2.19(chokidar@4.0.3)':
     dependencies:
       ajv: 8.17.1
       ajv-formats: 3.0.1(ajv@8.17.1)
@@ -8386,12 +8386,12 @@ snapshots:
     optionalDependencies:
       chokidar: 4.0.3
 
-  '@angular-devkit/core@19.2.19(chokidar@4.0.3)':
+  '@angular-devkit/core@19.2.23(chokidar@4.0.3)':
     dependencies:
-      ajv: 8.17.1
-      ajv-formats: 3.0.1(ajv@8.17.1)
+      ajv: 8.18.0
+      ajv-formats: 3.0.1(ajv@8.18.0)
       jsonc-parser: 3.3.1
-      picomatch: 4.0.2
+      picomatch: 4.0.4
       rxjs: 7.8.1
       source-map: 0.7.4
     optionalDependencies:
@@ -8409,9 +8409,9 @@ snapshots:
       - '@types/node'
       - chokidar
 
-  '@angular-devkit/schematics@19.2.17(chokidar@4.0.3)':
+  '@angular-devkit/schematics@19.2.19(chokidar@4.0.3)':
     dependencies:
-      '@angular-devkit/core': 19.2.17(chokidar@4.0.3)
+      '@angular-devkit/core': 19.2.19(chokidar@4.0.3)
       jsonc-parser: 3.3.1
       magic-string: 0.30.17
       ora: 5.4.1
@@ -8419,9 +8419,9 @@ snapshots:
     transitivePeerDependencies:
       - chokidar
 
-  '@angular-devkit/schematics@19.2.19(chokidar@4.0.3)':
+  '@angular-devkit/schematics@19.2.23(chokidar@4.0.3)':
     dependencies:
-      '@angular-devkit/core': 19.2.19(chokidar@4.0.3)
+      '@angular-devkit/core': 19.2.23(chokidar@4.0.3)
       jsonc-parser: 3.3.1
       magic-string: 0.30.17
       ora: 5.4.1
@@ -10563,7 +10563,7 @@ snapshots:
       '@angular-devkit/schematics': 19.2.19(chokidar@4.0.3)
       '@angular-devkit/schematics-cli': 19.2.19(@types/node@22.19.15)(chokidar@4.0.3)
       '@inquirer/prompts': 7.10.1(@types/node@22.19.15)
-      '@nestjs/schematics': 11.0.9(chokidar@4.0.3)(typescript@5.9.3)
+      '@nestjs/schematics': 11.0.10(chokidar@4.0.3)(typescript@5.9.3)
       ansis: 4.2.0
       chokidar: 4.0.3
       cli-table3: 0.6.5
@@ -10629,11 +10629,11 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@nestjs/schematics@11.0.9(chokidar@4.0.3)(typescript@5.9.3)':
+  '@nestjs/schematics@11.0.10(chokidar@4.0.3)(typescript@5.9.3)':
     dependencies:
-      '@angular-devkit/core': 19.2.17(chokidar@4.0.3)
-      '@angular-devkit/schematics': 19.2.17(chokidar@4.0.3)
-      comment-json: 4.4.1
+      '@angular-devkit/core': 19.2.23(chokidar@4.0.3)
+      '@angular-devkit/schematics': 19.2.23(chokidar@4.0.3)
+      comment-json: 4.6.2
       jsonc-parser: 3.3.1
       pluralize: 8.0.0
       typescript: 5.9.3
@@ -11919,11 +11919,11 @@ snapshots:
       '@typescript-eslint/types': 8.58.0
       eslint-visitor-keys: 5.0.1
 
-  '@typespec/asset-emitter@0.79.1(@typespec/compiler@1.10.0(@types/node@22.19.15))':
+  '@typespec/asset-emitter@0.79.1(@typespec/compiler@1.11.0(@types/node@22.19.15))':
     dependencies:
-      '@typespec/compiler': 1.10.0(@types/node@22.19.15)
+      '@typespec/compiler': 1.11.0(@types/node@22.19.15)
 
-  '@typespec/compiler@1.10.0(@types/node@22.19.15)':
+  '@typespec/compiler@1.11.0(@types/node@22.19.15)':
     dependencies:
       '@babel/code-frame': 7.29.0
       '@inquirer/prompts': 8.3.2(@types/node@22.19.15)
@@ -11945,36 +11945,36 @@ snapshots:
     transitivePeerDependencies:
       - '@types/node'
 
-  '@typespec/http@1.10.0(@typespec/compiler@1.10.0(@types/node@22.19.15))':
+  '@typespec/http@1.11.0(@typespec/compiler@1.11.0(@types/node@22.19.15))':
     dependencies:
-      '@typespec/compiler': 1.10.0(@types/node@22.19.15)
+      '@typespec/compiler': 1.11.0(@types/node@22.19.15)
 
-  '@typespec/openapi3@1.10.0(@typespec/compiler@1.10.0(@types/node@22.19.15))(@typespec/http@1.10.0(@typespec/compiler@1.10.0(@types/node@22.19.15)))(@typespec/openapi@1.10.0(@typespec/compiler@1.10.0(@types/node@22.19.15))(@typespec/http@1.10.0(@typespec/compiler@1.10.0(@types/node@22.19.15))))(@typespec/versioning@0.81.0(@typespec/compiler@1.10.0(@types/node@22.19.15)))':
+  '@typespec/openapi3@1.11.0(@typespec/compiler@1.11.0(@types/node@22.19.15))(@typespec/http@1.11.0(@typespec/compiler@1.11.0(@types/node@22.19.15)))(@typespec/openapi@1.11.0(@typespec/compiler@1.11.0(@types/node@22.19.15))(@typespec/http@1.11.0(@typespec/compiler@1.11.0(@types/node@22.19.15))))(@typespec/versioning@0.81.0(@typespec/compiler@1.11.0(@types/node@22.19.15)))':
     dependencies:
       '@scalar/json-magic': 0.11.7
       '@scalar/openapi-parser': 0.24.17
       '@scalar/openapi-types': 0.5.4
-      '@typespec/asset-emitter': 0.79.1(@typespec/compiler@1.10.0(@types/node@22.19.15))
-      '@typespec/compiler': 1.10.0(@types/node@22.19.15)
-      '@typespec/http': 1.10.0(@typespec/compiler@1.10.0(@types/node@22.19.15))
-      '@typespec/openapi': 1.10.0(@typespec/compiler@1.10.0(@types/node@22.19.15))(@typespec/http@1.10.0(@typespec/compiler@1.10.0(@types/node@22.19.15)))
+      '@typespec/asset-emitter': 0.79.1(@typespec/compiler@1.11.0(@types/node@22.19.15))
+      '@typespec/compiler': 1.11.0(@types/node@22.19.15)
+      '@typespec/http': 1.11.0(@typespec/compiler@1.11.0(@types/node@22.19.15))
+      '@typespec/openapi': 1.11.0(@typespec/compiler@1.11.0(@types/node@22.19.15))(@typespec/http@1.11.0(@typespec/compiler@1.11.0(@types/node@22.19.15)))
       yaml: 2.8.3
     optionalDependencies:
-      '@typespec/versioning': 0.81.0(@typespec/compiler@1.10.0(@types/node@22.19.15))
+      '@typespec/versioning': 0.81.0(@typespec/compiler@1.11.0(@types/node@22.19.15))
 
-  '@typespec/openapi@1.10.0(@typespec/compiler@1.10.0(@types/node@22.19.15))(@typespec/http@1.10.0(@typespec/compiler@1.10.0(@types/node@22.19.15)))':
+  '@typespec/openapi@1.11.0(@typespec/compiler@1.11.0(@types/node@22.19.15))(@typespec/http@1.11.0(@typespec/compiler@1.11.0(@types/node@22.19.15)))':
     dependencies:
-      '@typespec/compiler': 1.10.0(@types/node@22.19.15)
-      '@typespec/http': 1.10.0(@typespec/compiler@1.10.0(@types/node@22.19.15))
+      '@typespec/compiler': 1.11.0(@types/node@22.19.15)
+      '@typespec/http': 1.11.0(@typespec/compiler@1.11.0(@types/node@22.19.15))
 
-  '@typespec/rest@0.80.0(@typespec/compiler@1.10.0(@types/node@22.19.15))(@typespec/http@1.10.0(@typespec/compiler@1.10.0(@types/node@22.19.15)))':
+  '@typespec/rest@0.81.0(@typespec/compiler@1.11.0(@types/node@22.19.15))(@typespec/http@1.11.0(@typespec/compiler@1.11.0(@types/node@22.19.15)))':
     dependencies:
-      '@typespec/compiler': 1.10.0(@types/node@22.19.15)
-      '@typespec/http': 1.10.0(@typespec/compiler@1.10.0(@types/node@22.19.15))
+      '@typespec/compiler': 1.11.0(@types/node@22.19.15)
+      '@typespec/http': 1.11.0(@typespec/compiler@1.11.0(@types/node@22.19.15))
 
-  '@typespec/versioning@0.81.0(@typespec/compiler@1.10.0(@types/node@22.19.15))':
+  '@typespec/versioning@0.81.0(@typespec/compiler@1.11.0(@types/node@22.19.15))':
     dependencies:
-      '@typespec/compiler': 1.10.0(@types/node@22.19.15)
+      '@typespec/compiler': 1.11.0(@types/node@22.19.15)
 
   '@ungap/structured-clone@1.3.0': {}
 
@@ -12875,10 +12875,9 @@ snapshots:
 
   commander@8.3.0: {}
 
-  comment-json@4.4.1:
+  comment-json@4.6.2:
     dependencies:
       array-timsort: 1.0.3
-      core-util-is: 1.0.3
       esprima: 4.0.1
 
   common-path-prefix@3.0.0: {}
