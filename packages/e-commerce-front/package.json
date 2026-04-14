@@ -37,7 +37,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "@faker-js/faker": "^9.8.0",
+    "@faker-js/faker": "^10.4.0",
     "@storybook/addon-a11y": "^9.0.16",
     "@storybook/nextjs": "^9.0.16",
     "@testing-library/dom": "^10.4.0",
