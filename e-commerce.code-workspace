@@ -7,6 +7,8 @@
   "settings": {
     "workbench.iconTheme": "material-icon-theme",
     "java.configuration.updateBuildConfiguration": "interactive",
+    "typescript.preferences.includePackageJsonAutoImports": "on",
+    "typescript.preferences.importModuleSpecifier": "non-relative",
   },
   
   "tasks": {

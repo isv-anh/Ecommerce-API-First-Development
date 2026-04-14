@@ -25,6 +25,8 @@
         "path": "wsl.exe",
       },
     },
+    "typescript.preferences.includePackageJsonAutoImports": "on",
+    "typescript.preferences.importModuleSpecifier": "non-relative",
   },
   "tasks": {
     "version": "2.0.0",

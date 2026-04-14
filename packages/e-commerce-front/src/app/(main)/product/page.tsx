@@ -1,7 +1,7 @@
 import Hydration from "@/components/ssr/Hydration/Hydration";
 import ProductList from "@/features/main/components/ProductList/ProductList";
 import { getQueryClient } from "@/utils/query";
-import { getListProductsSuspenseQueryOptions } from "@e-commerce/api-client/endpoints/petstore/petstore";
+import { getGetProductsSuspenseQueryOptions } from "@e-commerce/api-client/endpoints/product/product";
 
 import { dehydrate } from "@tanstack/react-query";
 
@@ -9,7 +9,7 @@ const ProductPage = () => {
   const queryClient = getQueryClient();
 
   queryClient.prefetchQuery({
-    ...getListProductsSuspenseQueryOptions(),
+    ...getGetProductsSuspenseQueryOptions(),
   });
 
   return (
