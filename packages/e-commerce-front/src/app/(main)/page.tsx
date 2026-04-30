@@ -1,7 +1,7 @@
-import Portal from "@/features/main/portal/Portal";
+import Home from "@/features/main/home/Home";
 
-const Home = () => {
-  return <Portal />;
+const HomePage = () => {
+  return <Home />;
 };
 
-export default Home;
+export default HomePage;

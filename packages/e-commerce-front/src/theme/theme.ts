@@ -174,8 +174,6 @@ const theme = createTheme({
           }
 
           return {
-            borderRadius: 12,
-
             '&[data-active="true"]': {
               backgroundColor: alpha(paletteColor, 0.08),
             },

@@ -9,6 +9,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import theme from "@/theme/theme";
 import { getQueryClient } from "@/utils/query";
 import MockBrowser from "@/app/MockBrowser";
+import BreadcrumbsProvider from "@/components/navigation/Breadcrumbs/components/BreadcrumbsProvider/BreadcrumbsProvider";
 
 const Providers = ({ children }: { children: ReactNode }) => {
   const [queryClient] = useState(() => getQueryClient());
@@ -18,7 +19,9 @@ const Providers = ({ children }: { children: ReactNode }) => {
         <ReactQueryDevtools initialIsOpen={false} />
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <MockBrowser>{children}</MockBrowser>
+          <MockBrowser>
+            <BreadcrumbsProvider>{children}</BreadcrumbsProvider>
+          </MockBrowser>
         </ThemeProvider>
       </QueryClientProvider>
     </AppRouterCacheProvider>
