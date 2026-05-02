@@ -46,8 +46,6 @@ model categories {
   categories       categories?  @relation("categoriesTocategories", fields: [parent_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_categories_parent")
   other_categories categories[] @relation("categoriesTocategories")
   products         products[]
-
-  @@index([slug], map: "idx_categories_slug")
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
