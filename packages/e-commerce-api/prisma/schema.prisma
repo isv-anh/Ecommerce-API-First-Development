@@ -42,6 +42,7 @@ model categories {
   id               String       @id @db.Uuid
   name             String       @db.VarChar(255)
   parent_id        String?      @db.Uuid
+  slug             String       @unique(map: "uq_categories_slug") @db.VarChar(100)
   categories       categories?  @relation("categoriesTocategories", fields: [parent_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_categories_parent")
   other_categories categories[] @relation("categoriesTocategories")
   products         products[]

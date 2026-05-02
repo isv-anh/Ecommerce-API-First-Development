@@ -3,12 +3,20 @@
 import 'dotenv/config';
 import { defineConfig } from 'prisma/config';
 
+const { DB_USERNAME, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME } = process.env;
+
+if (!DB_USERNAME || !DB_PASSWORD || !DB_HOST || !DB_PORT || !DB_NAME) {
+  throw new Error(
+    'Missing required environment variables: DB_USERNAME, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME',
+  );
+}
+
 export default defineConfig({
   schema: 'prisma/schema.prisma',
   migrations: {
     path: 'prisma/migrations',
   },
   datasource: {
-    url: process.env['DATABASE_URL'],
+    url: `postgresql://${encodeURIComponent(DB_USERNAME)}:${encodeURIComponent(DB_PASSWORD)}@${DB_HOST}:${DB_PORT}/${DB_NAME}`,
   },
 });
