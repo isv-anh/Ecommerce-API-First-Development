@@ -401,9 +401,3 @@ databaseChangeLog:
             tableName: categories
             columnNames: slug
             constraintName: uq_categories_slug
-        - createIndex:
-            tableName: categories
-            indexName: idx_categories_slug
-            columns:
-              - column:
-                  name: slug
