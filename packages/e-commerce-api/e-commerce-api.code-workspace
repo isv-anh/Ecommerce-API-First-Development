@@ -4,7 +4,7 @@
       "path": ".",
     },
     {
-      "path": "../docs",
+      "path": "../../docs",
     },
     {
       "path": "../custom",
@@ -69,6 +69,17 @@
         "detail": "Execute CI Check on github",
         "command": "docker compose up -d seft-runner && chmod +x ../../scripts/ci-check.sh && ../../scripts/ci-check.sh",
         "type": "shell",
+        "args": [],
+        "problemMatcher": [],
+        "presentation": {
+          "reveal": "always",
+        },
+      },
+      {
+        "label": "Generate",
+        "detail": "Generate API client",
+        "type": "shell",
+        "command": "pnpm run generate:types",
         "args": [],
         "problemMatcher": [],
         "presentation": {
