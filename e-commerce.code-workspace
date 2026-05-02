@@ -55,6 +55,17 @@
         "presentation": {
           "reveal": "always"
         }
+      },
+       {
+        "label": "Database Migration",
+        "detail": "Execute database migration scripts",
+        "command": "docker compose run --rm liquibase",
+        "type": "shell",
+        "args": [],
+        "problemMatcher": [],
+        "presentation": {
+          "reveal": "always"
+        }
       }
     ]
   }
