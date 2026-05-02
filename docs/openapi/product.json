@@ -9,6 +9,9 @@
       "name": "categories"
     },
     {
+      "name": "brands"
+    },
+    {
       "name": "products"
     },
     {
@@ -28,6 +31,287 @@
     }
   ],
   "paths": {
+    "/v1/brands": {
+      "get": {
+        "operationId": "getBrands",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/GetBrandRequestParams.brandId"
+          },
+          {
+            "$ref": "#/components/parameters/GetBrandRequestParams.brandName"
+          },
+          {
+            "$ref": "#/components/parameters/GetBrandRequestParams.slug"
+          },
+          {
+            "$ref": "#/components/parameters/PageQueryParams.page"
+          },
+          {
+            "$ref": "#/components/parameters/PageQueryParams.pageSize"
+          },
+          {
+            "$ref": "#/components/parameters/PageQueryParams.orderBy"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetBrandsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "brands"
+        ]
+      },
+      "post": {
+        "operationId": "postBrand",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "The request has succeeded and a new resource has been created as a result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostBrandResponseBody"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access is unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "brands"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostBrandRequestBody"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/brands/{brandId}": {
+      "get": {
+        "operationId": "getBrandByBrandId",
+        "parameters": [
+          {
+            "name": "brandId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BrandResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "brands"
+        ]
+      },
+      "patch": {
+        "operationId": "patchBrand",
+        "parameters": [
+          {
+            "name": "brandId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "There is no content to send for this request, but the headers may be useful. "
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access is unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "brands"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchBrandRequestBody"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteBrand",
+        "parameters": [
+          {
+            "name": "brandId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "There is no content to send for this request, but the headers may be useful. "
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access is unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "brands"
+        ]
+      }
+    },
     "/v1/categories": {
       "get": {
         "operationId": "getCategories",
@@ -1992,6 +2276,33 @@
   },
   "components": {
     "parameters": {
+      "GetBrandRequestParams.brandId": {
+        "name": "brandId",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        },
+        "explode": false
+      },
+      "GetBrandRequestParams.brandName": {
+        "name": "brandName",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/NonEmptyString"
+        },
+        "explode": false
+      },
+      "GetBrandRequestParams.slug": {
+        "name": "slug",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/NonEmptyString"
+        },
+        "explode": false
+      },
       "GetCategoryRequestParams.categoryId": {
         "name": "categoryId",
         "in": "query",
@@ -2100,6 +2411,32 @@
       }
     },
     "schemas": {
+      "BrandResponse": {
+        "type": "object",
+        "required": [
+          "brandId",
+          "brandName",
+          "slug"
+        ],
+        "properties": {
+          "brandId": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "brandName": {
+            "$ref": "#/components/schemas/NonEmptyString"
+          },
+          "slug": {
+            "$ref": "#/components/schemas/NonEmptyString"
+          }
+        },
+        "examples": [
+          {
+            "brandId": "123e4567-e89b-12d3-a456-426614174000",
+            "brandName": "Apple",
+            "slug": "apple"
+          }
+        ]
+      },
       "CategoriesResponse": {
         "type": "object",
         "required": [
@@ -2225,9 +2562,68 @@
           }
         }
       },
+      "GetBrandsResponse": {
+        "type": "object",
+        "required": [
+          "totalCount",
+          "totalPages",
+          "brands"
+        ],
+        "properties": {
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "brands": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BrandResponse"
+            }
+          }
+        },
+        "examples": [
+          {
+            "brands": [
+              {
+                "brandId": "123e4567-e89b-12d3-a456-426614174001",
+                "brandName": "Apple",
+                "slug": "apple"
+              },
+              {
+                "brandId": "123e4567-e89b-12d3-a456-426614174002",
+                "brandName": "Samsung",
+                "slug": "samsung"
+              }
+            ],
+            "totalCount": 2,
+            "totalPages": 1
+          }
+        ]
+      },
       "NonEmptyString": {
         "type": "string",
         "minLength": 1
+      },
+      "PatchBrandRequestBody": {
+        "type": "object",
+        "properties": {
+          "brandName": {
+            "$ref": "#/components/schemas/NonEmptyString"
+          },
+          "slug": {
+            "$ref": "#/components/schemas/NonEmptyString"
+          }
+        },
+        "examples": [
+          {
+            "brandName": "Apple",
+            "slug": "apple"
+          }
+        ]
       },
       "PatchCategoryRequestBody": {
         "type": "object",
@@ -2346,6 +2742,43 @@
             "type": "string"
           }
         }
+      },
+      "PostBrandRequestBody": {
+        "type": "object",
+        "required": [
+          "brandName",
+          "slug"
+        ],
+        "properties": {
+          "brandName": {
+            "$ref": "#/components/schemas/NonEmptyString"
+          },
+          "slug": {
+            "$ref": "#/components/schemas/NonEmptyString"
+          }
+        },
+        "examples": [
+          {
+            "brandName": "Apple",
+            "slug": "apple"
+          }
+        ]
+      },
+      "PostBrandResponseBody": {
+        "type": "object",
+        "required": [
+          "brandId"
+        ],
+        "properties": {
+          "brandId": {
+            "$ref": "#/components/schemas/UUID"
+          }
+        },
+        "examples": [
+          {
+            "brandId": "123e4567-e89b-12d3-a456-426614174000"
+          }
+        ]
       },
       "PostCategoryRequestBody": {
         "type": "object",

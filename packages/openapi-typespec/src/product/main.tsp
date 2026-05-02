@@ -3,6 +3,7 @@ import "@typespec/openapi";
 import "@typespec/versioning";
 
 import "./categories/routes.tsp";
+import "./brands/routes.tsp";
 import "./products/routes.tsp";
 import "./product-images/routes.tsp";
 import "./product-variants/routes.tsp";
