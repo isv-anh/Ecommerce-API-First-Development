@@ -14,7 +14,7 @@ export class PrismaService
       throw new Error('Missing required database environment variables');
     }
 
-    const connectionString = `postgresql://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;
+    const connectionString = `postgresql://${encodeURIComponent(DB_USERNAME)}:${encodeURIComponent(DB_PASSWORD)}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;
     if (!connectionString) {
       throw new Error('DATABASE_URL environment variable is not set');
     }

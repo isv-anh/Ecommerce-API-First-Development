@@ -6,16 +6,31 @@ import {
   PatchCategoryBody,
   PostCategoryBody,
 } from '@e-commerce/api-validation/types/product';
-import { Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
 
 @Injectable()
 export class CategoriesRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async deleteCategory(categoryId: string): Promise<void> {
-    await this.prisma.categories.delete({
-      where: { id: categoryId },
-    });
+    try {
+      await this.prisma.categories.delete({
+        where: { id: categoryId },
+      });
+    } catch (error) {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        throw new NotFoundException('Category not found');
+      }
+      throw error;
+    }
   }
 
   async getCategories(
@@ -25,6 +40,7 @@ export class CategoriesRepository {
       name: query.categoryName,
       id: query.categoryId,
       slug: query.slug,
+      parentId: query.parentId,
     };
 
     const categories = (
@@ -58,7 +74,7 @@ export class CategoriesRepository {
       where: { id: categoryId },
     });
     if (!category) {
-      throw new Error('Category not found');
+      throw new NotFoundException('Category not found');
     }
     return {
       categoryId: category.id,
@@ -77,17 +93,18 @@ export class CategoriesRepository {
       data: {
         name: data.categoryName,
         parent_id: data.parentId,
+        slug: data.slug,
       },
     });
   }
 
   async createCategory(data: PostCategoryBody): Promise<string> {
     const categoryId = crypto.randomUUID();
-    const existingCategory = await this.prisma.categories.count({
+    const duplicateCount = await this.prisma.categories.count({
       where: { OR: [{ slug: data.slug }, { name: data.categoryName }] },
     });
-    if (existingCategory > 0) {
-      throw new Error('Category already exists');
+    if (duplicateCount > 0) {
+      throw new ConflictException('Category already exists');
     }
     await this.prisma.categories.create({
       data: {
