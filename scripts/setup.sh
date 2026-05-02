@@ -2,7 +2,7 @@
 
 ENV_FILE=".env"
 
-ENV_E_COMMERCE_API="./e-commerce-api/.env"
+ENV_E_COMMERCE_API="./packages/e-commerce-api/.env"
 
 echo "setup environtment"
 
@@ -23,19 +23,19 @@ fi
 
 echo "DB_USERNAME=$username" > "$ENV_FILE"
 echo "DB_PASSWORD=$password" >> "$ENV_FILE"
-echo "DB_USERNAME=$username" > "$ENV_HRM_API"
-echo "DB_PASSWORD=$password" >> "$ENV_HRM_API"
+echo "DB_USERNAME=$username" > "$ENV_E_COMMERCE_API"
+echo "DB_PASSWORD=$password" >> "$ENV_E_COMMERCE_API"
 
 echo "DB_HOST=$db_host" >> "$ENV_FILE"
 echo "DB_PORT=$db_port" >> "$ENV_FILE"
 echo "DB_NAME=$db_name" >> "$ENV_FILE"
-echo "DB_HOST=$db_host" >> "$ENV_HRM_API"
-echo "DB_PORT=$db_port" >> "$ENV_HRM_API"
-echo "DB_NAME=$db_name" >> "$ENV_HRM_API"
+echo "DB_HOST=$db_host" >> "$ENV_E_COMMERCE_API"
+echo "DB_PORT=$db_port" >> "$ENV_E_COMMERCE_API"
+echo "DB_NAME=$db_name" >> "$ENV_E_COMMERCE_API"
 
 echo "RUNNER_TOKEN=$seft_token" >> "$ENV_FILE"
 echo "JWT_SECRET=$jwt_secret" >> "$ENV_FILE"
-echo "JWT_SECRET=$jwt_secret" >> "$ENV_HRM_API"
+echo "JWT_SECRET=$jwt_secret" >> "$ENV_E_COMMERCE_API"
 
 echo "UID=$(id -u)" >> "$ENV_FILE"
 echo "GID=$(id -g)" >> "$ENV_FILE"

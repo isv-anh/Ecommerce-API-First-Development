@@ -1,5 +1,5 @@
-import { Product } from "@e-commerce/api-client/schemas/petstore";
+import { ProductResponse } from "@e-commerce/api-client/schemas/product";
 
 export type ProductCardProps = {
-  product: Product;
+  product: ProductResponse;
 };
