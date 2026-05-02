@@ -19,7 +19,8 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "prettier:fix": "prettier --write . --ignore-path .prettierignore",
-    "generate:controllers": "docker compose -f ../../docker-compose.yaml run --rm openapi-generator && pnpm run prettier:fix"
+    "generate:controllers": "docker compose -f ../../docker-compose.yaml run --rm openapi-generator && pnpm run prettier:fix",
+    "generate:types": "pnpm run -w api-validation:dev"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
@@ -75,6 +76,9 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/$1"
+    }
   }
 }

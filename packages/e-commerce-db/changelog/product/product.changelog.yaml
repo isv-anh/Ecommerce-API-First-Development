@@ -381,3 +381,29 @@ databaseChangeLog:
             constraintName: fk_warehouse_inventory_variant
             referencedTableName: product_variants
             referencedColumnNames: id
+
+    # add slug in categories
+  - changeSet:
+      id: product-008-add-slug-to-categories
+      author: hoanganh
+      changes:
+        - addColumn:
+            tableName: categories
+            columns:
+              - column:
+                  name: slug
+                  type: varchar(100)
+        - addNotNullConstraint:
+            tableName: categories
+            columnName: slug
+            columnDataType: varchar(100)
+        - addUniqueConstraint:
+            tableName: categories
+            columnNames: slug
+            constraintName: uq_categories_slug
+        - createIndex:
+            tableName: categories
+            indexName: idx_categories_slug
+            columns:
+              - column:
+                  name: slug

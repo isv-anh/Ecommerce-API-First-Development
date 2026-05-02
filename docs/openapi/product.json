@@ -39,6 +39,12 @@
             "$ref": "#/components/parameters/GetCategoryRequestParams.categoryName"
           },
           {
+            "$ref": "#/components/parameters/GetCategoryRequestParams.parentId"
+          },
+          {
+            "$ref": "#/components/parameters/GetCategoryRequestParams.slug"
+          },
+          {
             "$ref": "#/components/parameters/PageQueryParams.page"
           },
           {
@@ -2004,6 +2010,24 @@
         },
         "explode": false
       },
+      "GetCategoryRequestParams.parentId": {
+        "name": "parentId",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/UUID"
+        },
+        "explode": false
+      },
+      "GetCategoryRequestParams.slug": {
+        "name": "slug",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/NonEmptyString"
+        },
+        "explode": false
+      },
       "GetProductRequestParams.categoryId": {
         "name": "categoryId",
         "in": "query",
@@ -2079,9 +2103,19 @@
       "CategoriesResponse": {
         "type": "object",
         "required": [
+          "totalCount",
+          "totalPages",
           "categories"
         ],
         "properties": {
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
           "categories": {
             "type": "array",
             "items": {
@@ -2094,44 +2128,55 @@
             "categories": [
               {
                 "categoryId": "123e4567-e89b-12d3-a456-426614174001",
-                "categoryName": "Home Appliances"
+                "categoryName": "Home Appliances",
+                "slug": "home-appliances"
               },
               {
                 "categoryId": "123e4567-e89b-12d3-a456-426614174000",
                 "categoryName": "Electronics",
+                "slug": "electronics",
                 "parentId": "123e4567-e89b-12d3-a456-426614174001"
               },
               {
                 "categoryId": "123e4567-e89b-12d3-a456-426614174002",
-                "categoryName": "Clothing"
+                "categoryName": "Clothing",
+                "slug": "clothing"
               },
               {
                 "categoryId": "123e4567-e89b-12d3-a456-426614174003",
-                "categoryName": "Books"
+                "categoryName": "Books",
+                "slug": "books"
               },
               {
                 "categoryId": "123e4567-e89b-12d3-a456-426614174004",
-                "categoryName": "Toys"
+                "categoryName": "Toys",
+                "slug": "toys"
               },
               {
                 "categoryId": "123e4567-e89b-12d3-a456-426614174005",
-                "categoryName": "Sports"
+                "categoryName": "Sports",
+                "slug": "sports"
               },
               {
                 "categoryId": "123e4567-e89b-12d3-a456-426614174007",
                 "categoryName": "Automotive",
+                "slug": "automotive",
                 "parentId": "123e4567-e89b-12d3-a456-426614174001"
               },
               {
                 "categoryId": "123e4567-e89b-12d3-a456-426614174006",
                 "categoryName": "Beauty",
+                "slug": "beauty",
                 "parentId": "123e4567-e89b-12d3-a456-426614174001"
               },
               {
                 "categoryId": "123e4567-e89b-12d3-a456-426614174008",
-                "categoryName": "Garden"
+                "categoryName": "Garden",
+                "slug": "garden"
               }
-            ]
+            ],
+            "totalCount": 9,
+            "totalPages": 1
           }
         ]
       },
@@ -2139,13 +2184,17 @@
         "type": "object",
         "required": [
           "categoryId",
-          "categoryName"
+          "categoryName",
+          "slug"
         ],
         "properties": {
           "categoryId": {
             "$ref": "#/components/schemas/UUID"
           },
           "categoryName": {
+            "$ref": "#/components/schemas/NonEmptyString"
+          },
+          "slug": {
             "$ref": "#/components/schemas/NonEmptyString"
           },
           "parentId": {
@@ -2156,6 +2205,7 @@
           {
             "categoryId": "123e4567-e89b-12d3-a456-426614174000",
             "categoryName": "Electronics",
+            "slug": "electronics",
             "parentId": "123e4567-e89b-12d3-a456-426614174001"
           }
         ]
@@ -2187,12 +2237,16 @@
           },
           "parentId": {
             "$ref": "#/components/schemas/UUID"
+          },
+          "slug": {
+            "$ref": "#/components/schemas/NonEmptyString"
           }
         },
         "examples": [
           {
             "categoryName": "Electronics",
-            "parentId": "123e4567-e89b-12d3-a456-426614174000"
+            "parentId": "123e4567-e89b-12d3-a456-426614174000",
+            "slug": "electronics"
           }
         ]
       },
@@ -2296,7 +2350,8 @@
       "PostCategoryRequestBody": {
         "type": "object",
         "required": [
-          "categoryName"
+          "categoryName",
+          "slug"
         ],
         "properties": {
           "categoryName": {
@@ -2304,12 +2359,16 @@
           },
           "parentId": {
             "$ref": "#/components/schemas/UUID"
+          },
+          "slug": {
+            "$ref": "#/components/schemas/NonEmptyString"
           }
         },
         "examples": [
           {
             "categoryName": "Electronics",
-            "parentId": "123e4567-e89b-12d3-a456-426614174000"
+            "parentId": "123e4567-e89b-12d3-a456-426614174000",
+            "slug": "electronics"
           }
         ]
       },
