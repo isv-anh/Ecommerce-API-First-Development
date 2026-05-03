@@ -79,30 +79,44 @@ export class BrandsRepository {
   }
 
   async updateBrand(brandId: string, data: PatchBrandBody): Promise<void> {
-    await this.prisma.brands.update({
-      where: { id: brandId },
-      data: {
-        name: data.brandName,
-        slug: data.slug,
-      },
-    });
+    try {
+      await this.prisma.brands.update({
+        where: { id: brandId },
+        data: {
+          name: data.brandName,
+          slug: data.slug,
+        },
+      });
+    } catch (error) {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        throw new NotFoundException('Brand not found');
+      }
+      throw error;
+    }
   }
 
   async createBrand(data: PostBrandBody): Promise<string> {
     const brandId = crypto.randomUUID();
-    const duplicateCount = await this.prisma.brands.count({
-      where: { OR: [{ slug: data.slug }, { name: data.brandName }] },
-    });
-    if (duplicateCount > 0) {
-      throw new ConflictException('Brand already exists');
+    try {
+      await this.prisma.brands.create({
+        data: {
+          id: brandId,
+          name: data.brandName,
+          slug: data.slug,
+        },
+      });
+      return brandId;
+    } catch (error) {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        throw new ConflictException('Brand already exists');
+      }
+      throw error;
     }
-    await this.prisma.brands.create({
-      data: {
-        id: brandId,
-        name: data.brandName,
-        slug: data.slug,
-      },
-    });
-    return brandId;
   }
 }

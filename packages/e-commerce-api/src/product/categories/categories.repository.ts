@@ -88,32 +88,47 @@ export class CategoriesRepository {
     categoryId: string,
     data: PatchCategoryBody,
   ): Promise<void> {
-    await this.prisma.categories.update({
-      where: { id: categoryId },
-      data: {
-        name: data.categoryName,
-        parent_id: data.parentId,
-        slug: data.slug,
-      },
-    });
+    try {
+      await this.prisma.categories.update({
+        where: { id: categoryId },
+        data: {
+          name: data.categoryName,
+          parent_id: data.parentId,
+          slug: data.slug,
+        },
+      });
+    } catch (error) {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        throw new NotFoundException('Category not found');
+      }
+      throw error;
+    }
   }
 
   async createCategory(data: PostCategoryBody): Promise<string> {
     const categoryId = crypto.randomUUID();
-    const duplicateCount = await this.prisma.categories.count({
-      where: { OR: [{ slug: data.slug }, { name: data.categoryName }] },
-    });
-    if (duplicateCount > 0) {
-      throw new ConflictException('Category already exists');
+    try {
+      await this.prisma.categories.create({
+        data: {
+          id: categoryId,
+          name: data.categoryName,
+          parent_id: data.parentId,
+          slug: data.slug,
+        },
+      });
+
+      return categoryId;
+    } catch (error) {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        throw new ConflictException('Category already exists');
+      }
+      throw error;
     }
-    await this.prisma.categories.create({
-      data: {
-        id: categoryId,
-        name: data.categoryName,
-        parent_id: data.parentId,
-        slug: data.slug,
-      },
-    });
-    return categoryId;
   }
 }
