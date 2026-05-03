@@ -106,9 +106,6 @@ model CategoriesResponse {
 
 model GetCategoryRequestParams extends PageQueryParams {
     @query
-    categoryId?: UUID;
-
-    @query
     categoryName?: NonEmptyString;
 
     @query

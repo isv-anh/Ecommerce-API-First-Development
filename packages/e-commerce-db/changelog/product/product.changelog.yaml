@@ -18,9 +18,18 @@ databaseChangeLog:
                   type: varchar(255)
                   constraints:
                     nullable: false
+                    unique: true
+                    uniqueConstraintName: uq_categories_name
               - column:
                   name: parent_id
                   type: uuid
+              - column:
+                  name: slug
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: uq_categories_slug
 
   - changeSet:
       id: product-001-categories-self-ref-fk
@@ -382,22 +391,31 @@ databaseChangeLog:
             referencedTableName: product_variants
             referencedColumnNames: id
 
-    # add slug in categories
+  # ─── BRANDS ────────────────────────────────────────────
   - changeSet:
-      id: product-008-add-slug-to-categories
+      id: product-009-create-brands
       author: hoanganh
       changes:
-        - addColumn:
-            tableName: categories
+        - createTable:
+            tableName: brands
             columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: uq_brands_name
               - column:
                   name: slug
                   type: varchar(100)
-        - addNotNullConstraint:
-            tableName: categories
-            columnName: slug
-            columnDataType: varchar(100)
-        - addUniqueConstraint:
-            tableName: categories
-            columnNames: slug
-            constraintName: uq_categories_slug
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: uq_brands_slug

@@ -1,4 +1,5 @@
 import { PrismaService } from '@/common/services/prisma.service';
+import { parseSort } from '@/utils/parse-sort';
 import {
   GetCategories200Response,
   GetCategoriesQueryParams,
@@ -6,46 +7,44 @@ import {
   PatchCategoryBody,
   PostCategoryBody,
 } from '@e-commerce/api-validation/types/product';
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { Prisma } from 'generated/prisma/client';
 
 @Injectable()
 export class CategoriesRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async deleteCategory(categoryId: string): Promise<void> {
-    try {
-      await this.prisma.categories.delete({
-        where: { id: categoryId },
-      });
-    } catch (error) {
-      if (
-        error instanceof PrismaClientKnownRequestError &&
-        error.code === 'P2025'
-      ) {
-        throw new NotFoundException('Category not found');
-      }
-      throw error;
-    }
+    await this.prisma.categories.delete({
+      where: { id: categoryId },
+    });
   }
 
   async getCategories(
     query: GetCategoriesQueryParams,
   ): Promise<GetCategories200Response> {
-    const whereClause = {
-      name: query.categoryName,
-      id: query.categoryId,
-      slug: query.slug,
-      parentId: query.parentId,
+    const whereClause: Prisma.categoriesWhereInput = {
+      ...(query.categoryName && {
+        name: {
+          contains: query.categoryName,
+          mode: 'insensitive',
+        },
+      }),
+      ...(query.slug && {
+        slug: {
+          contains: query.slug,
+          mode: 'insensitive',
+        },
+      }),
+      ...(query.parentId && {
+        parent_id: query.parentId,
+      }),
     };
 
     const categories = (
       await this.prisma.categories.findMany({
         where: whereClause,
+        orderBy: parseSort(query.orderBy) || [{ id: 'asc' }],
         take: query.pageSize,
         skip: query.pageSize * (query.page - 1),
       })
@@ -100,12 +99,7 @@ export class CategoriesRepository {
 
   async createCategory(data: PostCategoryBody): Promise<string> {
     const categoryId = crypto.randomUUID();
-    const duplicateCount = await this.prisma.categories.count({
-      where: { OR: [{ slug: data.slug }, { name: data.categoryName }] },
-    });
-    if (duplicateCount > 0) {
-      throw new ConflictException('Category already exists');
-    }
+
     await this.prisma.categories.create({
       data: {
         id: categoryId,
@@ -114,6 +108,7 @@ export class CategoriesRepository {
         slug: data.slug,
       },
     });
+
     return categoryId;
   }
 }
