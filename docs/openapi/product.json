@@ -36,9 +36,6 @@
         "operationId": "getBrands",
         "parameters": [
           {
-            "$ref": "#/components/parameters/GetBrandRequestParams.brandId"
-          },
-          {
             "$ref": "#/components/parameters/GetBrandRequestParams.brandName"
           },
           {
@@ -316,9 +313,6 @@
       "get": {
         "operationId": "getCategories",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/GetCategoryRequestParams.categoryId"
-          },
           {
             "$ref": "#/components/parameters/GetCategoryRequestParams.categoryName"
           },
@@ -2276,15 +2270,6 @@
   },
   "components": {
     "parameters": {
-      "GetBrandRequestParams.brandId": {
-        "name": "brandId",
-        "in": "query",
-        "required": false,
-        "schema": {
-          "$ref": "#/components/schemas/UUID"
-        },
-        "explode": false
-      },
       "GetBrandRequestParams.brandName": {
         "name": "brandName",
         "in": "query",
@@ -2300,15 +2285,6 @@
         "required": false,
         "schema": {
           "$ref": "#/components/schemas/NonEmptyString"
-        },
-        "explode": false
-      },
-      "GetCategoryRequestParams.categoryId": {
-        "name": "categoryId",
-        "in": "query",
-        "required": false,
-        "schema": {
-          "$ref": "#/components/schemas/UUID"
         },
         "explode": false
       },

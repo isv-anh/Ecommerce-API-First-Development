@@ -1,4 +1,5 @@
 import { PrismaService } from '@/common/services/prisma.service';
+import { parseSort } from '@/utils/parse-sort';
 import {
   GetBrandByBrandId200Response,
   GetBrands200Response,
@@ -7,43 +8,39 @@ import {
   PostBrandBody,
 } from '@e-commerce/api-validation/types/product';
 
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { Prisma } from 'generated/prisma/client';
 
 @Injectable()
 export class BrandsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async deleteBrand(brandId: string): Promise<void> {
-    try {
-      await this.prisma.brands.delete({
-        where: { id: brandId },
-      });
-    } catch (error) {
-      if (
-        error instanceof PrismaClientKnownRequestError &&
-        error.code === 'P2025'
-      ) {
-        throw new NotFoundException('Brand not found');
-      }
-      throw error;
-    }
+    await this.prisma.brands.delete({
+      where: { id: brandId },
+    });
   }
 
   async getBrands(query: GetBrandsQueryParams): Promise<GetBrands200Response> {
-    const whereClause = {
-      name: query.brandName,
-      id: query.brandId,
-      slug: query.slug,
+    const whereClause: Prisma.brandsWhereInput = {
+      ...(query.brandName && {
+        name: {
+          contains: query.brandName,
+          mode: 'insensitive',
+        },
+      }),
+      ...(query.slug && {
+        slug: {
+          contains: query.slug,
+          mode: 'insensitive',
+        },
+      }),
     };
 
     const brands = (
       await this.prisma.brands.findMany({
         where: whereClause,
+        orderBy: parseSort(query.orderBy) || [{ id: 'asc' }],
         take: query.pageSize,
         skip: query.pageSize * (query.page - 1),
       })
@@ -79,44 +76,25 @@ export class BrandsRepository {
   }
 
   async updateBrand(brandId: string, data: PatchBrandBody): Promise<void> {
-    try {
-      await this.prisma.brands.update({
-        where: { id: brandId },
-        data: {
-          name: data.brandName,
-          slug: data.slug,
-        },
-      });
-    } catch (error) {
-      if (
-        error instanceof PrismaClientKnownRequestError &&
-        error.code === 'P2025'
-      ) {
-        throw new NotFoundException('Brand not found');
-      }
-      throw error;
-    }
+    await this.prisma.brands.update({
+      where: { id: brandId },
+      data: {
+        name: data.brandName,
+        slug: data.slug,
+      },
+    });
   }
 
   async createBrand(data: PostBrandBody): Promise<string> {
     const brandId = crypto.randomUUID();
-    try {
-      await this.prisma.brands.create({
-        data: {
-          id: brandId,
-          name: data.brandName,
-          slug: data.slug,
-        },
-      });
-      return brandId;
-    } catch (error) {
-      if (
-        error instanceof PrismaClientKnownRequestError &&
-        error.code === 'P2002'
-      ) {
-        throw new ConflictException('Brand already exists');
-      }
-      throw error;
-    }
+
+    await this.prisma.brands.create({
+      data: {
+        id: brandId,
+        name: data.brandName,
+        slug: data.slug,
+      },
+    });
+    return brandId;
   }
 }

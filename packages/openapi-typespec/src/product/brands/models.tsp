@@ -56,9 +56,6 @@ model GetBrandsResponse {
 
 model GetBrandRequestParams extends PageQueryParams {
     @query
-    brandId?: UUID;
-
-    @query
     brandName?: NonEmptyString;
 
     @query
