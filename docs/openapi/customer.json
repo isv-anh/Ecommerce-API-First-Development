@@ -19,7 +19,7 @@
     }
   ],
   "paths": {
-    "/v1/customers/addresses": {
+    "/api/v1/customers/addresses": {
       "get": {
         "operationId": "getAddresses",
         "parameters": [
@@ -129,7 +129,7 @@
         }
       }
     },
-    "/v1/customers/addresses/{addressId}": {
+    "/api/v1/customers/addresses/{addressId}": {
       "get": {
         "operationId": "getAddressById",
         "parameters": [
@@ -291,7 +291,7 @@
         ]
       }
     },
-    "/v1/customers/reviews": {
+    "/api/v1/customers/reviews": {
       "get": {
         "operationId": "getReviews",
         "parameters": [
@@ -410,7 +410,7 @@
         }
       }
     },
-    "/v1/customers/reviews/{reviewId}": {
+    "/api/v1/customers/reviews/{reviewId}": {
       "get": {
         "operationId": "getReviewById",
         "parameters": [
@@ -572,7 +572,7 @@
         ]
       }
     },
-    "/v1/customers/wishlists": {
+    "/api/v1/customers/wishlists": {
       "get": {
         "operationId": "getWishlists",
         "parameters": [
@@ -682,7 +682,7 @@
         }
       }
     },
-    "/v1/customers/wishlists/{wishlistId}": {
+    "/api/v1/customers/wishlists/{wishlistId}": {
       "get": {
         "operationId": "getWishlistById",
         "parameters": [
@@ -783,7 +783,7 @@
         ]
       }
     },
-    "/v1/customers/wishlists/{wishlistId}/items": {
+    "/api/v1/customers/wishlists/{wishlistId}/items": {
       "get": {
         "operationId": "getWishlistItems",
         "parameters": [
@@ -901,7 +901,7 @@
         }
       }
     },
-    "/v1/customers/wishlists/{wishlistId}/items/{wishlistItemId}": {
+    "/api/v1/customers/wishlists/{wishlistId}/items/{wishlistItemId}": {
       "delete": {
         "operationId": "deleteWishlistItem",
         "parameters": [

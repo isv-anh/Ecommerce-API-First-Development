@@ -13,7 +13,7 @@
     }
   ],
   "paths": {
-    "/v1/carts": {
+    "/api/v1/carts": {
       "get": {
         "operationId": "getCart",
         "parameters": [
@@ -113,7 +113,7 @@
         }
       }
     },
-    "/v1/carts/{cartId}": {
+    "/api/v1/carts/{cartId}": {
       "delete": {
         "operationId": "deleteCart",
         "parameters": [
@@ -156,7 +156,7 @@
         ]
       }
     },
-    "/v1/carts/{cartId}/items": {
+    "/api/v1/carts/{cartId}/items": {
       "get": {
         "operationId": "getCartItems",
         "parameters": [
@@ -264,7 +264,7 @@
         }
       }
     },
-    "/v1/carts/{cartId}/items/{productVariantId}": {
+    "/api/v1/carts/{cartId}/items/{productVariantId}": {
       "patch": {
         "operationId": "patchCartItem",
         "parameters": [

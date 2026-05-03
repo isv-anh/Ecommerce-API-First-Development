@@ -13,7 +13,7 @@
     }
   ],
   "paths": {
-    "/v1/shops": {
+    "/api/v1/shops": {
       "get": {
         "operationId": "getShops",
         "parameters": [
@@ -132,7 +132,7 @@
         }
       }
     },
-    "/v1/shops/commission-settings": {
+    "/api/v1/shops/commission-settings": {
       "get": {
         "operationId": "getCommissionSettings",
         "parameters": [
@@ -251,7 +251,7 @@
         }
       }
     },
-    "/v1/shops/commission-settings/{commissionId}": {
+    "/api/v1/shops/commission-settings/{commissionId}": {
       "get": {
         "operationId": "getCommissionSettingById",
         "parameters": [
@@ -413,7 +413,7 @@
         ]
       }
     },
-    "/v1/shops/{shopId}": {
+    "/api/v1/shops/{shopId}": {
       "get": {
         "operationId": "getShopById",
         "parameters": [
