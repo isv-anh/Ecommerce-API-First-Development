@@ -11,7 +11,7 @@ import type {
   PostBrand201Response,
 } from '@e-commerce/api-validation/types/product';
 import type { BaseBrandsControllerInterface } from '@generated-controller/product/brands/base-brands.controller.interface';
-import { BrandsRepository } from '@/product/brands/brands.repository';
+import { BrandsRepository } from '@/api/v1/product/brands/brands.repository';
 
 @Injectable()
 export class BrandsService implements BaseBrandsControllerInterface {
