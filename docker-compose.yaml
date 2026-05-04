@@ -38,22 +38,6 @@ services:
     networks:
       - e-commerce-network
 
-  openapi-generator:
-    container_name: openapi-generator
-    build:
-      context: .
-      dockerfile: docker/openapi-generator/dev/dev.dockerfile
-      args:
-        - UID=${UID}
-        - GID=${GID}
-    volumes:
-      - ./packages/openapi-generator:/app/packages/openapi-generator
-      - ./docs/openapi:/app/docs/openapi
-      - ./packages/e-commerce-api/generated-controller:/app/output/generated-controller
-      - ./packages/custom:/app/output/custom
-    networks:
-      - e-commerce-network
-
   postgres-db:
     container_name: postgres-db
     image: postgres:16
@@ -118,7 +102,7 @@ networks:
   e-commerce-network:
     driver: bridge
 volumes:
-  pg_data: # maven dependency cache
+  pg_data:
 
   m2_data:
 

@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/require-await */
+// TODO: Implement AuthService methods and remove eslint-disable comments
 import { Injectable } from '@nestjs/common';
 import type {
   GetProfile200Response,

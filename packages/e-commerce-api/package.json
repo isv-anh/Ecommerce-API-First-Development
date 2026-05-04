@@ -12,15 +12,15 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
-    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "lint": "prettier --check \"{src,apps,libs,test}/**/*.ts\" && eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "prettier:fix": "prettier --write . --ignore-path .prettierignore",
-    "generate:controllers": "docker compose -f ../../docker-compose.yaml run --rm openapi-generator && pnpm run prettier:fix",
-    "generate:types": "pnpm run -w api-validation:dev"
+    "generate:controllers": "bash ../openapi-generator/scripts/generate.sh ./ ../custom && pnpm run prettier:fix",
+    "generate:types": "pnpm run -w api-validation:build"
   },
   "dependencies": {
     "@e-commerce/api-validation": "workspace:*",
