@@ -48,7 +48,7 @@ jobs:
         with:
           node-version: ${{env.NODE_VERSION}}
           cache: "pnpm"
-          cache-dependency-path: packages/openapi-typespec/pnpm-lock.yaml
+          cache-dependency-path: pnpm-lock.yaml
 
       - name: Install Typespec Compiler
         run: pnpm add -g @typespec/compiler
