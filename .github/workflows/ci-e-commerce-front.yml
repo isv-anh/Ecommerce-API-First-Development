@@ -1,0 +1,74 @@
+name: "[CI] HRM Frontend Build and Test"
+
+on:
+  pull_request:
+    types: [assigned]
+    paths:
+      - "packages/e-commerce-front/**"
+      - "packages/openapi-typespec/**"
+      - "packages/api-client/**"
+      - ".github/workflows/ci-e-commerce-front.yml"
+      - "!packages/e-commerce-front/.vscode/**"
+      - "!packages/e-commerce-front/*.code-workspace"
+jobs:
+  resolve-runner:
+    runs-on: ubuntu-24.04
+    outputs:
+      runner: ${{ steps.set.outputs.runner }}
+    steps:
+      - name: Set runner
+        id: set
+        run: |
+          if echo '${{ toJSON(github.event.pull_request.labels.*.name) }}' | grep -q 'self-hosted'; then
+            echo 'runner=["self-hosted", "${{ github.event.sender.login }}"]' >> $GITHUB_OUTPUT
+          else
+            echo 'runner=["ubuntu-24.04"]' >> $GITHUB_OUTPUT
+          fi
+
+ci-check:
+  needs: resolve-runner
+  runs-on: ${{ fromJSON(needs.resolve-runner.outputs.runner) }}
+  env:
+    NODE_VERSION: "22.17.0"
+  defaults:
+    run:
+      working-directory: ./packages/e-commerce-front
+  permissions:
+    contents: read
+
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v6
+      with:
+        fetch-depth: 0
+
+    - name: Install pnpm
+      uses: pnpm/action-setup@v6
+
+    - name: Install Node.js ${{env.NODE_VERSION}}
+      uses: actions/setup-node@v6
+      with:
+        node-version: ${{env.NODE_VERSION}}
+        cache: "pnpm"
+        cache-dependency-path: pnpm-lock.yaml
+
+    - name: Generate API Client
+      run: pnpm run generate:api-client
+
+    - name: Prettier & Lint check
+      run: pnpm run lint
+
+    - name: Build
+      run: pnpm run build
+
+    - name: Component Test Coverage
+      run: pnpm run coverage
+
+    - name: Storybook Deploy
+      uses: chromaui/action@latest
+      with:
+        projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+        # https://www.chromatic.com/docs/github-actions/#run-chromatic-on-monorepos
+        workingDir: packages/e-commerce-front
+        exitOnceUploaded: true
+        autoAcceptChanges: true
