@@ -42,7 +42,6 @@ export class AuthController implements BaseAuthControllerInterface {
    * POST /auth/register
    */
   async postRegister(body: PostRegisterBody): Promise<PostRegister200Response> {
-    console.log('test ci');
     return await this.service.postRegister(body);
   }
 }
