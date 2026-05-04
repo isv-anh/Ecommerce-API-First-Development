@@ -11,7 +11,7 @@ import type {
   PostCategory201Response,
 } from '@e-commerce/api-validation/types/product';
 import type { BaseCategoriesControllerInterface } from '@generated-controller/product/categories/base-categories.controller.interface';
-import { CategoriesRepository } from '@/product/categories/categories.repository';
+import { CategoriesRepository } from '@/api/v1/product/categories/categories.repository';
 
 @Injectable()
 export class CategoriesService implements BaseCategoriesControllerInterface {

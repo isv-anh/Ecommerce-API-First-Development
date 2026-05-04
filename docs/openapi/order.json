@@ -19,7 +19,7 @@
     }
   ],
   "paths": {
-    "/v1/orders": {
+    "/api/v1/orders": {
       "get": {
         "operationId": "getOrders",
         "parameters": [
@@ -138,7 +138,7 @@
         }
       }
     },
-    "/v1/orders/{orderId}": {
+    "/api/v1/orders/{orderId}": {
       "get": {
         "operationId": "getOrderById",
         "parameters": [
@@ -239,7 +239,7 @@
         ]
       }
     },
-    "/v1/orders/{orderId}/items": {
+    "/api/v1/orders/{orderId}/items": {
       "get": {
         "operationId": "getOrderItems",
         "parameters": [
@@ -357,7 +357,7 @@
         }
       }
     },
-    "/v1/orders/{orderId}/items/{orderItemId}": {
+    "/api/v1/orders/{orderId}/items/{orderItemId}": {
       "get": {
         "operationId": "getOrderItemById",
         "parameters": [
@@ -543,7 +543,7 @@
         ]
       }
     },
-    "/v1/orders/{orderId}/payments": {
+    "/api/v1/orders/{orderId}/payments": {
       "get": {
         "operationId": "getPayments",
         "parameters": [
@@ -661,7 +661,7 @@
         }
       }
     },
-    "/v1/orders/{orderId}/payments/{paymentId}": {
+    "/api/v1/orders/{orderId}/payments/{paymentId}": {
       "get": {
         "operationId": "getPaymentById",
         "parameters": [
@@ -847,7 +847,7 @@
         ]
       }
     },
-    "/v1/orders/{orderId}/shops": {
+    "/api/v1/orders/{orderId}/shops": {
       "get": {
         "operationId": "getOrderShops",
         "parameters": [
@@ -965,7 +965,7 @@
         }
       }
     },
-    "/v1/orders/{orderId}/shops/{orderShopId}": {
+    "/api/v1/orders/{orderId}/shops/{orderShopId}": {
       "get": {
         "operationId": "getOrderShopById",
         "parameters": [

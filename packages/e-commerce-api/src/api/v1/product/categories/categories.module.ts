@@ -6,7 +6,7 @@ import {
   BaseCategoriesController,
   CATEGORIES_CONTROLLER,
 } from '@generated-controller/product/categories/base-categories.controller';
-import { CategoriesRepository } from '@/product/categories/categories.repository';
+import { CategoriesRepository } from '@/api/v1/product/categories/categories.repository';
 
 @Module({
   controllers: [BaseCategoriesController],

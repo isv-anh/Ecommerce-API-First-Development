@@ -9,12 +9,17 @@ using TypeSpec.OpenAPI;
 @route("/shops")
 namespace Shop.Shops {
     @get
+    @route("/me")
+    @operationId("getShopMe")
+    @tag("shops")
+    op getShopMe(): GetShopsResponse200 | BadRequestError | InternalServerError;
+
+    @get
     @route("")
     @operationId("getShops")
     @tag("shops")
     op getShops(
-        @query ownerId?: UUID,
-        @query status?: string,
+        ...GetShopsRequestParams,
     ): GetShopsResponse200 | BadRequestError | InternalServerError;
 
     @post
