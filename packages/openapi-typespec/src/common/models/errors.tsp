@@ -24,3 +24,5 @@ model InternalServerError {
     @statusCode statusCode: 500;
     @body body: ErrorResponse;
 }
+
+model TestCi {}
