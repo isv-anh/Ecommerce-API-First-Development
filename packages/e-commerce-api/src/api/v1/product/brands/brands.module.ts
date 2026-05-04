@@ -6,7 +6,7 @@ import {
   BaseBrandsController,
   BRANDS_CONTROLLER,
 } from '@generated-controller/product/brands/base-brands.controller';
-import { BrandsRepository } from '@/product/brands/brands.repository';
+import { BrandsRepository } from '@/api/v1/product/brands/brands.repository';
 
 @Module({
   controllers: [BaseBrandsController],

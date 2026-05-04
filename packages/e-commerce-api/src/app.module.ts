@@ -2,9 +2,10 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from './common/services/prisma.module';
 import { HealthModule } from './health.module';
-import { AuthModule } from './auth/auth/auth.module';
-import { CategoriesModule } from '@/product/categories/categories.module';
-import { BrandsModule } from '@/product/brands/brands.module';
+import { AuthModule } from './api/v1/auth/auth/auth.module';
+import { CategoriesModule } from '@/api/v1/product/categories/categories.module';
+import { BrandsModule } from '@/api/v1/product/brands/brands.module';
+import { ShopsModule } from '@/api/v1/shop/shops/shops.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { BrandsModule } from '@/product/brands/brands.module';
     AuthModule,
     CategoriesModule,
     BrandsModule,
+    ShopsModule,
   ],
 })
 export class AppModule {}
