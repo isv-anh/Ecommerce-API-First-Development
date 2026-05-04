@@ -68,6 +68,9 @@ jobs:
       - name: Generate Base Controllers
         run: pnpm run generate:controllers
 
+      - name: Generate Prisma Client
+        run: npx prisma db pull && npx prisma generate
+
       - name: Prettier & Linter Check
         run: pnpm run lint
 
