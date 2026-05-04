@@ -1,4 +1,4 @@
-name: "[CI] HRM Frontend Build and Test"
+name: "[CI] E-Commerce Frontend Build and Test"
 
 on:
   pull_request:
