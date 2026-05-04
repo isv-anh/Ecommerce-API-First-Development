@@ -16,13 +16,12 @@ const schema = z.object({
 type FormValues = z.infer<typeof schema>;
 
 const Newsletter = () => {
-  const { register, handleSubmit, formState } = useForm<FormValues>({
+  const { register, handleSubmit } = useForm<FormValues>({
     resolver: customZodResolver(schema),
   });
 
   const onSubmit = (values: FormValues) => {
     // For now just show console (mock). In production wire to API.
-    // eslint-disable-next-line no-console
     console.log("subscribe", values);
     alert("Cảm ơn bạn đã đăng ký!");
   };
