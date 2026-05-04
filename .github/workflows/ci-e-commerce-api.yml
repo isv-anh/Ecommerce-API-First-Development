@@ -31,7 +31,7 @@ jobs:
       JDK_VERSION: "21"
     defaults:
       run:
-        working-directory: ./packages/openapi-typespec
+        working-directory: ./packages/e-commerce-api
     permissions:
       contents: read
 
