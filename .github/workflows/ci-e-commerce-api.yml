@@ -5,6 +5,9 @@ on:
     types: [assigned]
     paths:
       - "packages/e-commerce-api/**"
+      - "packages/openapi-generator/**"
+      - "packages/api-validation/**"
+      - "packages/openapi-typespec/**"
       - ".github/workflows/ci-e-commerce-api.yml"
       - "!packages/e-commerce-api/.vscode/**"
       - "!packages/e-commerce-api/*.code-workspace"
