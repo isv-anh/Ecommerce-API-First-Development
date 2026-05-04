@@ -4,18 +4,35 @@ on:
   pull_request:
     types: [assigned]
     paths:
-      - "openapi-typespec/**"
+      - "packages/openapi-typespec/**"
       - ".github/workflows/ci-openapi-typespec.yml"
-      - "!openapi-typespec/.vscode/**"
-      - "!openapi-typespec/*.code-workspace"
+      - "!packages/openapi-typespec/.vscode/**"
+      - "!packages/openapi-typespec/*.code-workspace"
+
 jobs:
+  resolve-runner:
+    runs-on: ubuntu-24.04
+    outputs:
+      runner: ${{ steps.set.outputs.runner }}
+    steps:
+      - name: Set runner
+        id: set
+        run: |
+          if echo '${{ toJSON(github.event.pull_request.labels.*.name) }}' | grep -q 'self-hosted'; then
+            echo 'runner=["self-hosted", "${{ github.event.sender.login }}"]' >> $GITHUB_OUTPUT
+          else
+            echo 'runner=["ubuntu-24.04"]' >> $GITHUB_OUTPUT
+          fi
+
   ci-check:
-    runs-on: [self-hosted, "${{github.event.sender.login}}"]
+    needs: resolve-runner
+    runs-on: ${{ fromJSON(needs.resolve-runner.outputs.runner) }}
     env:
       NODE_VERSION: "22.17.0"
+      PNPM_VERSION: "10"
     defaults:
       run:
-        working-directory: ./openapi-typespec
+        working-directory: ./packages/openapi-typespec
     permissions:
       contents: read
     steps:
@@ -23,20 +40,24 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Install npm and Node.js ${{env.NODE_VERSION}}
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{env.PNPM_VERSION}}
+
+      - name: Install Node.js ${{env.NODE_VERSION}}
         uses: actions/setup-node@v4
         with:
           node-version: ${{env.NODE_VERSION}}
-          cache: "npm"
-          # Caching npm dependencies in monorepos
-          # https://github.com/actions/setup-node#caching-packages-data
-          cache-dependency-path: hrm-front/package-lock.json
+          cache: "pnpm"
+          cache-dependency-path: packages/openapi-typespec/pnpm-lock.yaml
 
-      - name: Install Typespec Compile
-        run: npm install -g @typespec/compiler
+      - name: Install Typespec Compiler
+        run: pnpm add -g @typespec/compiler
 
-      - name: Install npm
-        run: npm ci
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
-      - name: Generator OpenAPI files
-        run: npm run generate
+      - name: Generate OpenAPI files
+        run: pnpm run generate
