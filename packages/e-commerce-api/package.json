@@ -20,7 +20,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "prettier:fix": "prettier --write . --ignore-path .prettierignore",
     "generate:controllers": "bash ../openapi-generator/scripts/generate.sh ./ ../custom && pnpm run prettier:fix",
-    "generate:types": "pnpm run -w api-validation:dev"
+    "generate:types": "pnpm run -w api-validation:build"
   },
   "dependencies": {
     "@e-commerce/api-validation": "workspace:*",
