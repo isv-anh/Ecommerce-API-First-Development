@@ -21,7 +21,7 @@ echo "CUSTOM_PATH:    ${CUSTOM_PATH:-<not set>}"
 if [ ! -f "$CLI_JAR" ]; then
   echo "Downloading openapi-generator-cli..."
   mkdir -p "$GENERATOR_DIR/lib"
-  curl -sL https://repo1.maven.org/maven2/org/openapitools/openapi-generator-cli/7.21.0/openapi-generator-cli-7.21.0.jar \
+  curl -fSL https://repo1.maven.org/maven2/org/openapitools/openapi-generator-cli/7.21.0/openapi-generator-cli-7.21.0.jar \
     -o "$CLI_JAR"
 fi
 
@@ -39,14 +39,15 @@ for file in "$ROOT_DIR"/docs/openapi/*.json; do
   name=$(basename "$file" .json)
   echo "Generating: $name"
 
-  # Build java args
-  JAVA_ARGS="-cp $GENERATOR_JAR:$CLI_JAR"
-  JAVA_ARGS="$JAVA_ARGS -DgeneratedControllerPath=$OUTPUT_DIR/generated-controller"
+  JAVA_ARGS=(
+    -cp "$GENERATOR_JAR:$CLI_JAR"
+    "-DgeneratedControllerPath=$OUTPUT_DIR/generated-controller"
+  )
   if [ -n "$CUSTOM_PATH" ]; then
-    JAVA_ARGS="$JAVA_ARGS -DcustomPath=$(realpath -m "$CUSTOM_PATH")"
+    JAVA_ARGS+=("-DcustomPath=$(realpath -m "$CUSTOM_PATH")")
   fi
 
-  java $JAVA_ARGS \
+  java "${JAVA_ARGS[@]}" \
     org.openapitools.codegen.OpenAPIGenerator generate \
     -g custom-generator \
     --skip-validate-spec \
