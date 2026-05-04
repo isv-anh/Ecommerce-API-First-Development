@@ -29,7 +29,6 @@ jobs:
     runs-on: ${{ fromJSON(needs.resolve-runner.outputs.runner) }}
     env:
       NODE_VERSION: "22.17.0"
-      PNPM_VERSION: "10"
     defaults:
       run:
         working-directory: ./packages/openapi-typespec
@@ -43,8 +42,6 @@ jobs:
 
       - name: Install pnpm
         uses: pnpm/action-setup@v6
-        with:
-          version: ${{env.PNPM_VERSION}}
 
       - name: Install Node.js ${{env.NODE_VERSION}}
         uses: actions/setup-node@v6
