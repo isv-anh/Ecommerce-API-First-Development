@@ -1,0 +1,78 @@
+name: "[CI] E-Commerce API Build and Test"
+
+on:
+  pull_request:
+    types: [assigned]
+    paths:
+      - "packages/e-commerce-api/**"
+      - ".github/workflows/ci-e-commerce-api.yml"
+      - "!packages/e-commerce-api/.vscode/**"
+      - "!packages/e-commerce-api/*.code-workspace"
+jobs:
+  resolve-runner:
+    runs-on: ubuntu-24.04
+    outputs:
+      runner: ${{ steps.set.outputs.runner }}
+    steps:
+      - name: Set runner
+        id: set
+        run: |
+          if echo '${{ toJSON(github.event.pull_request.labels.*.name) }}' | grep -q 'self-hosted'; then
+            echo 'runner=["self-hosted", "${{ github.event.sender.login }}"]' >> $GITHUB_OUTPUT
+          else
+            echo 'runner=["ubuntu-24.04"]' >> $GITHUB_OUTPUT
+          fi
+
+  ci-check:
+    needs: resolve-runner
+    runs-on: ${{ fromJSON(needs.resolve-runner.outputs.runner) }}
+    env:
+      NODE_VERSION: "22.17.0"
+      JDK_VERSION: "21"
+    defaults:
+      run:
+        working-directory: ./packages/openapi-typespec
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Install Node.js ${{env.NODE_VERSION}}
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{env.NODE_VERSION}}
+          cache: "pnpm"
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install JDK ${{env.JDK_VERSION}}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{env.JDK_VERSION}}
+          distribution: temurin
+          cache: "maven"
+          cache-dependency-path: packages/openapi-generator/pom.xml
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate api-validation types
+        run: pnpm run generate:types
+
+      - name: Generate Base Controllers
+        run: pnpm run generate:controllers
+
+      - name: Prettier & Linter Check
+        run: pnpm run lint
+
+      - name: Build
+        run: pnpm run build
+
+      - name: Unit Test
+        run: pnpm run test
