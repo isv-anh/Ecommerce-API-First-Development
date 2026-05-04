@@ -46,8 +46,7 @@
   "type": "module",
   "scripts": {
     "generate": "orval --config ./orval.config.ts",
-    "build": "node build.mjs",
-    "dev": "pnpm generate && pnpm build"
+    "build": "pnpm generate &&node build.mjs"
   },
   "peerDependencies": {
     "@tanstack/react-query": "catalog:",

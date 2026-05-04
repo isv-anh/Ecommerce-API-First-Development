@@ -1,4 +1,6 @@
 import "../../common/scalars/scalars.tsp";
+import "../../common/models/response.tsp";
+import "../../common/models/requests.tsp";
 import "@typespec/http";
 
 using TypeSpec.Http;
@@ -15,7 +17,6 @@ using TypeSpec.Http;
     totalProducts: 150,
     totalOrders: 320,
     createdAt: "2026-04-09T08:00:00.000Z",
-    updatedAt: "2026-04-09T08:00:00.000Z",
 })
 model ShopResponse {
     shopId: UUID;
@@ -24,12 +25,11 @@ model ShopResponse {
     slug: NonEmptyString;
     description?: string;
     logoUrl?: string;
-    status: string;
-    rating: decimal;
-    totalProducts: int32;
-    totalOrders: int32;
-    createdAt: string;
-    updatedAt: string;
+    status?: string;
+    rating?: decimal;
+    totalProducts?: int32;
+    totalOrders?: int32;
+    createdAt?: string;
 }
 
 model PostShopRequestBody {
@@ -54,7 +54,18 @@ model PatchShopRequestBody {
 }
 
 model ShopsResponse {
+    ...PageResponse;
     shops: ShopResponse[];
+}
+
+model GetShopsRequestParams {
+    ...PageQueryParams;
+
+    @query
+    ownerIds?: UUID[];
+
+    @query
+    shop?: string;
 }
 
 model GetShopsResponse200 {

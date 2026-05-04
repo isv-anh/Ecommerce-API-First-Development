@@ -22,6 +22,7 @@ databaseChangeLog:
                   name: name
                   type: varchar(255)
                   constraints:
+                    unique: true
                     nullable: false
               - column:
                   name: slug
@@ -38,7 +39,9 @@ databaseChangeLog:
               - column:
                   name: status
                   type: varchar(50)
-                  remarks: "pending | active | banned"
+                  constraints:
+                    nullable: false
+                  remarks: "inactive | active | banned"
               - column:
                   name: rating
                   type: numeric(3,2)
@@ -54,9 +57,13 @@ databaseChangeLog:
               - column:
                   name: created_at
                   type: timestamp
+                  constraints:
+                    nullable: false
               - column:
                   name: updated_at
                   type: timestamp
+                  constraints:
+                    nullable: false
 
   - changeSet:
       id: shop-001-shops-indexes

@@ -20,8 +20,7 @@
   "scripts": {
     "generate": "orval --config ./orval.config.ts",
     "generate:types": "npx tsx scripts/generateZodTypes.ts",
-    "build": "node build.mjs",
-    "dev": "pnpm generate && pnpm generate:types && pnpm build"
+    "build": "pnpm generate && pnpm generate:types && node build.mjs"
   },
   "peerDependencies": {
     "@tanstack/react-query": "catalog:",

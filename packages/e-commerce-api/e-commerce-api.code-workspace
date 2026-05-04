@@ -31,7 +31,6 @@
   "tasks": {
     "version": "2.0.0",
     "tasks": [
-    
       {
         "label": "Start",
         "detail": "Start the development server",
