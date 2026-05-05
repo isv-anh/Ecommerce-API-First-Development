@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import type {
   DeleteProductParams,
-  GetProductRequestParams,
+  GetProductsQueryParams,
   GetProducts200Response,
   GetProductByProductIdParams,
   GetProductByProductId200Response,
   PatchProductParams,
-  PatchProductRequestBody,
-  PostProductRequestBody,
+  PatchProductBody,
+  PostProductBody,
   PostProduct201Response,
 } from '@e-commerce/api-validation/types/product';
 import type { BaseProductsControllerInterface } from '@generated-controller/product/products/base-products.controller.interface';
@@ -30,11 +30,11 @@ export class ProductsService implements BaseProductsControllerInterface {
   /**
    * GET /v1/products
    *
-   * @param query - Query parameters typed as {@link GetProductRequestParams}
+   * @param query - Query parameters typed as {@link GetProductsQueryParams}
    * @returns {@link GetProducts200Response}
    */
   async getProducts(
-    query: GetProductRequestParams,
+    query: GetProductsQueryParams,
   ): Promise<GetProducts200Response> {
     return await this.productsRepository.getProducts(query);
   }
@@ -61,7 +61,7 @@ export class ProductsService implements BaseProductsControllerInterface {
   async patchProduct(
     params: PatchProductParams,
 
-    body: PatchProductRequestBody,
+    body: PatchProductBody,
   ): Promise<void> {
     await this.productsRepository.updateProduct(params.productId, body);
   }
@@ -72,9 +72,7 @@ export class ProductsService implements BaseProductsControllerInterface {
    * @param body - Request body typed as {@link PostProductRequestBody}
    * @returns {@link PostProduct201Response}
    */
-  async postProduct(
-    body: PostProductRequestBody,
-  ): Promise<PostProduct201Response> {
+  async postProduct(body: PostProductBody): Promise<PostProduct201Response> {
     const productId = await this.productsRepository.createProduct(body);
     return { productId };
   }
