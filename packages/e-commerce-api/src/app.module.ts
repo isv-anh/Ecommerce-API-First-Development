@@ -18,6 +18,12 @@ import { FlashSalesModule } from '@/api/v1/voucher/flash-sales/flash-sales.modul
 import { OrderVouchersModule } from '@/api/v1/voucher/order-vouchers/order-vouchers.module';
 import { VoucherConditionsModule } from '@/api/v1/voucher/voucher-conditions/voucher-conditions.module';
 import { VouchersModule } from '@/api/v1/voucher/vouchers/vouchers.module';
+import { CartsModule } from '@/api/v1/cart/carts/carts.module';
+import { CartItemsModule } from '@/api/v1/cart/cart-items/cart-items.module';
+import { OrdersModule } from '@/api/v1/order/orders/orders.module';
+import { OrderItemsModule } from '@/api/v1/order/order-items/order-items.module';
+import { OrderPaymentsModule } from '@/api/v1/order/order-payments/order-payments.module';
+import { OrderShopsModule } from '@/api/v1/order/order-shops/order-shops.module';
 
 @Module({
   imports: [
@@ -40,6 +46,12 @@ import { VouchersModule } from '@/api/v1/voucher/vouchers/vouchers.module';
     OrderVouchersModule,
     VoucherConditionsModule,
     VouchersModule,
+    CartsModule,
+    CartItemsModule,
+    OrdersModule,
+    OrderItemsModule,
+    OrderPaymentsModule,
+    OrderShopsModule,
   ],
 })
 export class AppModule {}
