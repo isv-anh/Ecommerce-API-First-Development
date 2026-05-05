@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import type {
   DeleteCartParams,
-  CartResponse,
   PostCartBody,
   PostCart201Response,
   GetCart200Response,
+  GetCartQueryParams,
 } from '@e-commerce/api-validation/types/cart';
 import type { BaseCartsControllerInterface } from '@generated-controller/cart/carts/base-carts.controller.interface';
 import { CartsRepository } from '@/api/v1/cart/carts/carts.repository';
@@ -12,6 +12,10 @@ import { CartsRepository } from '@/api/v1/cart/carts/carts.repository';
 @Injectable()
 export class CartsService implements BaseCartsControllerInterface {
   constructor(private readonly cartsRepository: CartsRepository) {}
+  getCart(query: GetCartQueryParams): Promise<GetCart200Response> {
+    console.log('getCart called with query:', query);
+    throw new Error('Method not implemented.');
+  }
 
   /**
    * DELETE /v1/carts/:cartId
