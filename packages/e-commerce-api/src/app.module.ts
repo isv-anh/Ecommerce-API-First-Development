@@ -6,6 +6,14 @@ import { AuthModule } from './api/v1/auth/auth/auth.module';
 import { CategoriesModule } from '@/api/v1/product/categories/categories.module';
 import { BrandsModule } from '@/api/v1/product/brands/brands.module';
 import { ShopsModule } from '@/api/v1/shop/shops/shops.module';
+import { CustomerAddressesModule } from '@/api/v1/customer/customer-addresses/customer-addresses.module';
+import { CustomerReviewsModule } from '@/api/v1/customer/customer-reviews/customer-reviews.module';
+import { CustomerWishlistItemsModule } from '@/api/v1/customer/customer-wishlist-items/customer-wishlist-items.module';
+import { CustomerWishlistsModule } from '@/api/v1/customer/customer-wishlists/customer-wishlists.module';
+import { ProductsModule } from '@/api/v1/product/products/products.module';
+import { ProductVariantsModule } from '@/api/v1/product/product-variants/product-variants.module';
+import { WarehouseInventoriesModule } from '@/api/v1/product/warehouse-inventories/warehouse-inventories.module';
+import { WarehousesModule } from '@/api/v1/product/warehouses/warehouses.module';
 
 @Module({
   imports: [
@@ -16,6 +24,14 @@ import { ShopsModule } from '@/api/v1/shop/shops/shops.module';
     CategoriesModule,
     BrandsModule,
     ShopsModule,
+    CustomerAddressesModule,
+    CustomerReviewsModule,
+    CustomerWishlistItemsModule,
+    CustomerWishlistsModule,
+    ProductsModule,
+    ProductVariantsModule,
+    WarehousesModule,
+    WarehouseInventoriesModule,
   ],
 })
 export class AppModule {}
