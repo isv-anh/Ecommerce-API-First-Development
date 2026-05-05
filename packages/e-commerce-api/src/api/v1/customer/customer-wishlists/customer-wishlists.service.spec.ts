@@ -1,11 +1,11 @@
 // ─── Imports ──────────────────────────────────────────────────────────────────
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { WishlistsService } from './customer-wishlists.service';
-import { WishlistsRepository } from './customer-wishlists.repository';
+import { CustomerWishlistsService } from './customer-wishlists.service';
+import { CustomerWishlistsRepository } from './customer-wishlists.repository';
 import type {
   GetWishlistsQueryParams,
-  PostWishlistRequestBody,
+  PostWishlistBody,
 } from '@e-commerce/api-validation/types/customer';
 
 jest.mock('@/common/services/prisma.service', () => ({
@@ -19,7 +19,7 @@ jest.mock('@/common/services/prisma.service', () => ({
   })),
 }));
 
-jest.mock('./wishlists.repository');
+jest.mock('./customer-wishlists.repository');
 
 // ─── Fixtures ─────────────────────────────────────────────────────────────────
 
@@ -37,17 +37,17 @@ const mockWishlistsResponse = {
 
 // ─── Tests ────────────────────────────────────────────────────────────────────
 
-describe('WishlistsService', () => {
-  let service: WishlistsService;
-  let repository: jest.Mocked<WishlistsRepository>;
+describe('CustomerWishlistsService', () => {
+  let service: CustomerWishlistsService;
+  let repository: jest.Mocked<CustomerWishlistsRepository>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [WishlistsService, WishlistsRepository],
+      providers: [CustomerWishlistsService, CustomerWishlistsRepository],
     }).compile();
 
-    service = module.get<WishlistsService>(WishlistsService);
-    repository = module.get(WishlistsRepository);
+    service = module.get<CustomerWishlistsService>(CustomerWishlistsService);
+    repository = module.get(CustomerWishlistsRepository);
 
     jest.clearAllMocks();
   });
@@ -120,7 +120,7 @@ describe('WishlistsService', () => {
   // ─── postWishlist ────────────────────────────────────────────────────────
 
   describe('postWishlist', () => {
-    const body: PostWishlistRequestBody = {
+    const body: PostWishlistBody = {
       userId,
     };
 
