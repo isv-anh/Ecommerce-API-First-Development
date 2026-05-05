@@ -14,6 +14,10 @@ import { ProductsModule } from '@/api/v1/product/products/products.module';
 import { ProductVariantsModule } from '@/api/v1/product/product-variants/product-variants.module';
 import { WarehouseInventoriesModule } from '@/api/v1/product/warehouse-inventories/warehouse-inventories.module';
 import { WarehousesModule } from '@/api/v1/product/warehouses/warehouses.module';
+import { FlashSalesModule } from '@/api/v1/voucher/flash-sales/flash-sales.module';
+import { OrderVouchersModule } from '@/api/v1/voucher/order-vouchers/order-vouchers.module';
+import { VoucherConditionsModule } from '@/api/v1/voucher/voucher-conditions/voucher-conditions.module';
+import { VouchersModule } from '@/api/v1/voucher/vouchers/vouchers.module';
 import { CartsModule } from '@/api/v1/cart/carts/carts.module';
 import { CartItemsModule } from '@/api/v1/cart/cart-items/cart-items.module';
 import { OrdersModule } from '@/api/v1/order/orders/orders.module';
@@ -38,6 +42,10 @@ import { OrderShopsModule } from '@/api/v1/order/order-shops/order-shops.module'
     ProductVariantsModule,
     WarehousesModule,
     WarehouseInventoriesModule,
+    FlashSalesModule,
+    OrderVouchersModule,
+    VoucherConditionsModule,
+    VouchersModule,
     CartsModule,
     CartItemsModule,
     OrdersModule,
