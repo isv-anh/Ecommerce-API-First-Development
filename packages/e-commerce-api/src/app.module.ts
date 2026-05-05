@@ -14,6 +14,12 @@ import { ProductsModule } from '@/api/v1/product/products/products.module';
 import { ProductVariantsModule } from '@/api/v1/product/product-variants/product-variants.module';
 import { WarehouseInventoriesModule } from '@/api/v1/product/warehouse-inventories/warehouse-inventories.module';
 import { WarehousesModule } from '@/api/v1/product/warehouses/warehouses.module';
+import { CartsModule } from '@/api/v1/cart/carts/carts.module';
+import { CartItemsModule } from '@/api/v1/cart/cart-items/cart-items.module';
+import { OrdersModule } from '@/api/v1/order/orders/orders.module';
+import { OrderItemsModule } from '@/api/v1/order/order-items/order-items.module';
+import { OrderPaymentsModule } from '@/api/v1/order/order-payments/order-payments.module';
+import { OrderShopsModule } from '@/api/v1/order/order-shops/order-shops.module';
 
 @Module({
   imports: [
@@ -32,6 +38,12 @@ import { WarehousesModule } from '@/api/v1/product/warehouses/warehouses.module'
     ProductVariantsModule,
     WarehousesModule,
     WarehouseInventoriesModule,
+    CartsModule,
+    CartItemsModule,
+    OrdersModule,
+    OrderItemsModule,
+    OrderPaymentsModule,
+    OrderShopsModule,
   ],
 })
 export class AppModule {}
