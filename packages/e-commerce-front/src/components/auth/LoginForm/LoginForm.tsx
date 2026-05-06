@@ -1,0 +1,139 @@
+"use client";
+
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Paper from "@mui/material/Paper";
+import Typography from "@mui/material/Typography";
+import Alert from "@mui/material/Alert";
+
+import { useForm } from "react-hook-form";
+import type { SubmitHandler } from "react-hook-form";
+import TextField from "@/components/inputs/TextField/TextField";
+import { LoginRequest } from "@e-commerce/api-client/schemas/auth";
+import { usePostLogin } from "@e-commerce/api-client/endpoints/auth/auth";
+import { postLoginBody } from "@e-commerce/api-client/zod/auth";
+import { customZodResolver } from "@/utils/customZodResolve";
+import { LoginFormProps } from "@/components/auth/LoginForm/types";
+
+export default function LoginForm({
+  title = "Đăng nhập",
+  mode,
+}: LoginFormProps) {
+  const { control, handleSubmit, setError } = useForm<LoginRequest>({
+    defaultValues: { username: "", password: "" },
+    mode: "onSubmit",
+    resolver: customZodResolver(postLoginBody),
+  });
+
+  const mutation = usePostLogin();
+
+  const onSubmit: SubmitHandler<LoginRequest> = async (data) => {
+    mutation.mutate(
+      { data: { username: data.username, password: data.password } },
+      {
+        onError: (err: any) => {
+          const message =
+            err?.response?.data?.message ?? err?.message ?? "Lỗi đăng nhập";
+          setError("password", { message });
+        },
+      },
+    );
+  };
+
+  return (
+    <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      width="100%"
+      minHeight="60vh"
+      sx={{ px: 2 }}
+    >
+      <Paper sx={{ maxWidth: 480, width: "100%", p: 4 }} elevation={6}>
+        <Typography variant="title" gutterBottom>
+          {title}
+        </Typography>
+
+        {mutation.isError && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {"Đăng nhập thất bại. Vui lòng thử lại."}
+          </Alert>
+        )}
+
+        <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
+          <TextField
+            control={control}
+            name="username"
+            label="Email hoặc tên đăng nhập"
+            fullWidth
+            margin="normal"
+            size="medium"
+          />
+
+          <TextField
+            control={control}
+            name="password"
+            label="Mật khẩu"
+            type="password"
+            fullWidth
+            margin="normal"
+            size="medium"
+          />
+
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            mt={1}
+          >
+            <Button
+              color="primary"
+              variant="text"
+              onClick={() => {
+                // navigate handled by parent pages via router; keep as noop here
+                // parent pages will render links/buttons for register/reset
+              }}
+            >
+              <Typography variant="regularS">Quên mật khẩu?</Typography>
+            </Button>
+          </Box>
+
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, py: 1.5, borderRadius: 3 }}
+            loading={mutation.isPending}
+          >
+            Đăng nhập
+          </Button>
+
+          {mode === "user" && (
+            <>
+              <Button
+                fullWidth
+                variant="outlined"
+                sx={{ mt: 2, py: 1.2 }}
+                href="/api/auth/google"
+              >
+                Đăng nhập với Google
+              </Button>
+
+              <Box
+                mt={2}
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Typography variant="regularS">Chưa có tài khoản?</Typography>
+                <Button sx={{ ml: 1 }} variant="text">
+                  Đăng ký
+                </Button>
+              </Box>
+            </>
+          )}
+        </Box>
+      </Paper>
+    </Box>
+  );
+}

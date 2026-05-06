@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - includeAll:
+      path: auth/
+      relativeToChangelogFile: true
+  - includeAll:
+      path: shop/
+      relativeToChangelogFile: true
+  - includeAll:
+      path: product/
+      relativeToChangelogFile: true
+  - includeAll:
+      path: cart/
+      relativeToChangelogFile: true
+  - includeAll:
+      path: customer/
+      relativeToChangelogFile: true
+  - includeAll:
+      path: order/
+      relativeToChangelogFile: true
+  - includeAll:
+      path: voucher/
+      relativeToChangelogFile: true
+  - includeAll:
+      path: analytics/
+      relativeToChangelogFile: true

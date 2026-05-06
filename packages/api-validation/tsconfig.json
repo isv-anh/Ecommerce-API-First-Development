@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "moduleResolution": "bundler",
+    "target": "ESNext",
+    "module": "ESNext",
+    "emitDeclarationOnly": true,
+    "declaration": true,
+    "outDir": "dist/tsc",
+    "rootDir": "src",
+    "preserveSymlinks": true,
+
+    "strict": true,
+    "skipLibCheck": true,
+  },
+  "include": ["src", "src/generated"]
+}

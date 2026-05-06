@@ -98,6 +98,7 @@ nvm install 22
 ```bash
 sudo apt install maven -y
 sudo apt install openjdk-21-jre-headless -y
+sudo apt install openjdk-21-jdk -y
 ```
 
 #### install docker

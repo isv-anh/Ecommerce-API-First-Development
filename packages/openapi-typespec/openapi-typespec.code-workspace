@@ -1,0 +1,54 @@
+{
+  "folders": [
+    {
+      "path": "."
+    },
+    {
+      "path": "../../docs"
+    }
+  ],
+  "settings": {
+    "editor.fontSize": 14,
+    "editor.codeActionsOnSave": {},
+    "editor.formatOnSave": true,
+    "workbench.iconTheme": "material-icon-theme"
+  },
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Create PR to Github",
+        "detail": "Create a pull request to the HRM repository on GitHub",
+        "command": "chmod +x ../scripts/create-pr.sh && ../scripts/create-pr.sh",
+        "type": "shell",
+        "args": [],
+        "problemMatcher": [],
+        "presentation": {
+          "reveal": "always"
+        }
+      },
+      {
+        "label": "Execute CI Check",
+        "detail": "Execute CI Check on github",
+        "command": "docker compose up -d seft-runner && chmod +x ../scripts/ci-check.sh && ../scripts/ci-check.sh",
+        "type": "shell",
+        "args": [],
+        "problemMatcher": [],
+        "presentation": {
+          "reveal": "always"
+        }
+      },
+      {
+        "label": "Generate Open API",
+        "detail": "Generate Open API files",
+        "command": "pnpm run generate",
+        "type": "shell",
+        "args": [],
+        "problemMatcher": [],
+        "presentation": {
+          "reveal": "always"
+        }
+      }
+    ]
+  }
+}

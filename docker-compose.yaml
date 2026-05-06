@@ -1,19 +1,18 @@
-
-
 services:
-  hrm-api:
-    container_name: hrm-api
+  e-commerce-api:
+    container_name: e-commerce-api
     build:
-      context: .docker/hrm-api/dev
-      dockerfile: dev.dockerFile
+      context: docker/e-commerce-api/dev
+      dockerfile: dev.dockerfile
+      args:
+        - UID=${UID}
+        - GID=${GID}
     ports:
       - "8080:8080"
     volumes:
-      - ./hrm-api:/app/hrm-api
-      - m2_data:/root/.m2
+      - ./packages/e-commerce-api:/app/packages/e-commerce-api
+      - m2_data:/app/.m2
     environment:
-      - UID=${UID}
-      - GID=${GID}
       - DB_USERNAME=${DB_USERNAME}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_HOST=postgres-db
@@ -22,26 +21,26 @@ services:
     depends_on:
       - postgres-db
     networks:
-      - hrm-network
+      - e-commerce-network
 
-  hrm-front:
-    container_name: hrm-front
-    build: 
-      context: .docker/hrm-front/dev
-      dockerfile: dev.dockerFile
+  e-commerce-front:
+    container_name: e-commerce-front
+    build:
+      context: docker/e-commerce-front/dev
+      dockerfile: dev.dockerfile
+      args:
+        - UID=${UID}
+        - GID=${GID}
     ports:
       - "3000:3000"
     volumes:
-      - ./hrm-front:/app/hrm-front
-    environment:
-      - GID=${GID}
-      - UID=${UID}
+      - ./packages/e-commerce-front:/app/packages/e-commerce-front
     networks:
-      - hrm-network
-  
+      - e-commerce-network
+
   postgres-db:
     container_name: postgres-db
-    image: postgres
+    image: postgres:16
     ports:
       - "5432:5432"
     restart: always
@@ -51,19 +50,64 @@ services:
       - POSTGRES_DB=${DB_NAME}
     volumes:
       - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        ["CMD-SHELL", "pg_isready -h localhost -U ${DB_USERNAME} -d ${DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     networks:
-      - hrm-network
+      - e-commerce-network
+
+  liquibase:
+    image: liquibase/liquibase:4.33
+    container_name: liquibase
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+    volumes:
+      - ./packages/e-commerce-db/changelog:/liquibase/changelog
+    command:
+      - --url=jdbc:postgresql://postgres-db:${DB_PORT}/${DB_NAME}
+      - --username=${DB_USERNAME}
+      - --password=${DB_PASSWORD}
+      - --changeLogFile=db.changelog-master.yaml
+      - --searchPath=/liquibase/changelog
+      - update
+    networks:
+      - e-commerce-network
+
+  seft-runner:
+    container_name: seft-runner
+    build:
+      context: docker/seft-hosted-runner
+      dockerfile: dockerfile
+      args:
+        - RUNNER_TOKEN=${RUNNER_TOKEN}
+        - RUNNER_NAME=${RUNNER_NAME}
+    environment:
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=postgres-db
+      - DB_PORT=${DB_PORT}
+      - DB_NAME=${DB_NAME}
+    # volumes:
+    #   - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - postgres-db
+    networks:
+      - e-commerce-network
 
 networks:
-  hrm-network:
+  e-commerce-network:
     driver: bridge
 volumes:
   pg_data:
-  # maven dependency cache
+
   m2_data:
 
-# docker compose down containername -v -- down and remove volumes
-# docker compose up -d -- build -- build and run in detached mode
-# docker compose logs -f -- follow logs
-# docker compose exec hrm-api bash -- enter the hrm-api container
-# docker compose exec postgres-db bash -- enter the postgres-db container
+    # docker compose down containername -v -- down and remove volumes
+    # docker compose up -d -- build -- build and run in detached mode
+    # docker compose logs -f -- follow logs
+    # docker compose exec hrm-api bash -- enter the hrm-api container
+    # docker compose exec postgres-db bash -- enter the postgres-db container

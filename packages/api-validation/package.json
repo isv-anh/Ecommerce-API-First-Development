@@ -1,0 +1,45 @@
+{
+  "name": "@e-commerce/api-validation",
+  "version": "1.0.0",
+  "private": true,
+  "exports": {
+    "./types/*": {
+      "types": "./dist/tsc/types/*.d.ts"
+    },
+    "./zod/*": {
+      "types": "./dist/tsc/generated/zod/*.d.ts",
+      "import": "./dist/esm/generated/zod/*.js",
+      "require": "./dist/esm/generated/zod/*.js"
+    }
+  },
+ 
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "scripts": {
+    "generate": "orval --config ./orval.config.ts",
+    "generate:types": "npx tsx scripts/generateZodTypes.ts",
+    "build": "pnpm generate && pnpm generate:types && node build.mjs"
+  },
+  "peerDependencies": {
+    "@tanstack/react-query": "catalog:",
+    "axios": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^10.4.0",
+    "@types/node": "^20.19.37",
+    "axios": "catalog:",
+    "esbuild": "^0.27.4",
+    "fast-glob": "^3.3.3",
+    "glob": "^13.0.6",
+    "msw": "^2.10.4",
+    "orval": "^7.9.0",
+    "prettier": "3.5.3",
+    "ts-morph": "^28.0.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5",
+    "zod": "catalog:"
+  }
+}

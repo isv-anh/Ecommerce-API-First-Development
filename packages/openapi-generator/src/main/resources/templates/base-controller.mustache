@@ -1,0 +1,45 @@
+import { Controller{{#import-Get}}, Get{{/import-Get}}{{#import-Post}}, Post{{/import-Post}}{{#import-Patch}}, Patch{{/import-Patch}}{{#import-Put}}, Put{{/import-Put}}{{#import-Delete}}, Delete{{/import-Delete}}{{#import-Param}}, Param{{/import-Param}}{{#import-Query}}, Query{{/import-Query}}{{#import-Body}}, Body{{/import-Body}}, Inject } from '@nestjs/common';
+import { ZodValidationPipe } from '@/common/pipes/zod-validation.pipe';
+import {
+{{#operations}}
+  {{#vendorExtensions.x-zod-schema-param}}{{vendorExtensions.x-zod-schema-param}},{{/vendorExtensions.x-zod-schema-param}}
+  {{#vendorExtensions.x-zod-schema-query}}{{vendorExtensions.x-zod-schema-query}},{{/vendorExtensions.x-zod-schema-query}}
+  {{#vendorExtensions.x-zod-schema-body}}{{vendorExtensions.x-zod-schema-body}},{{/vendorExtensions.x-zod-schema-body}}
+{{/operations}}
+} from '@e-commerce/api-validation/zod/{{specName}}';
+import type {
+{{#operations}}
+  {{#vendorExtensions.x-type-params}}{{vendorExtensions.x-type-params}},{{/vendorExtensions.x-type-params}}
+  {{#vendorExtensions.x-type-query}}{{vendorExtensions.x-type-query}},{{/vendorExtensions.x-type-query}}
+  {{#vendorExtensions.x-type-body}}{{vendorExtensions.x-type-body}},{{/vendorExtensions.x-type-body}}
+  {{#vendorExtensions.x-type-response}}{{vendorExtensions.x-type-response}},{{/vendorExtensions.x-type-response}}
+{{/operations}}
+} from '@e-commerce/api-validation/types/{{specName}}';
+import type { Base{{className}}ControllerInterface } from './base-{{moduleName}}.controller.interface';
+
+export const {{upperCaseName}}_CONTROLLER = Symbol('{{className}}Controller');
+
+@Controller()
+export class Base{{className}}Controller implements Base{{className}}ControllerInterface {
+  constructor(
+    @Inject({{upperCaseName}}_CONTROLLER)
+    private readonly controller: Base{{className}}ControllerInterface,
+  ) {}
+
+{{#operations}}
+  // {{httpMethod}} {{path}}
+  @{{vendorExtensions.x-nest-method}}('{{path}}')
+  async {{operationId}}(
+    {{#vendorExtensions.x-has-param}}@Param(new ZodValidationPipe({{vendorExtensions.x-zod-schema-param}})) params: {{vendorExtensions.x-type-params}},{{/vendorExtensions.x-has-param}}
+    {{#vendorExtensions.x-has-query}}@Query(new ZodValidationPipe({{vendorExtensions.x-zod-schema-query}})) query: {{vendorExtensions.x-type-query}},{{/vendorExtensions.x-has-query}}
+    {{#vendorExtensions.x-has-body}}@Body(new ZodValidationPipe({{vendorExtensions.x-zod-schema-body}})) body: {{vendorExtensions.x-type-body}}{{/vendorExtensions.x-has-body}}
+  ): Promise<{{#vendorExtensions.x-type-response}}{{vendorExtensions.x-type-response}}{{/vendorExtensions.x-type-response}}{{#vendorExtensions.x-is-void}}void{{/vendorExtensions.x-is-void}}> {
+    {{^vendorExtensions.x-is-void}}return {{/vendorExtensions.x-is-void}}await this.controller.{{operationId}}(
+      {{#vendorExtensions.x-has-param}}params,{{/vendorExtensions.x-has-param}}
+      {{#vendorExtensions.x-has-query}}query,{{/vendorExtensions.x-has-query}}
+      {{#vendorExtensions.x-has-body}}body{{/vendorExtensions.x-has-body}}
+    );
+  }
+
+{{/operations}}
+}

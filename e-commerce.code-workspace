@@ -1,0 +1,72 @@
+{
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "workbench.iconTheme": "material-icon-theme",
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "typescript.preferences.includePackageJsonAutoImports": "on",
+    "typescript.preferences.importModuleSpecifier": "non-relative",
+  },
+  
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Setup Environtment",
+        "detail": "Setup the development environment for HRM project",
+        "command": "chmod +x ./scripts/setup.sh && ./scripts/setup.sh",
+        "type": "shell",
+        "args": [],
+        "problemMatcher": [],
+        "dependsOn": ["Install Extensions"]
+      },
+      {
+        "label": "Install Extensions",
+        "detail": "Install VS Code extensions for the project",
+        "command": "chmod +x ./scripts/install-extensions.sh && ./scripts/install-extensions.sh",
+        "type": "shell",
+        "args": [],
+        "problemMatcher": [],
+        "presentation": {
+          "reveal": "always"
+        },
+      },
+      {
+        "label": "Create PR to Github",
+        "detail": "Create a pull request to the HRM repository on GitHub",
+        "command": "chmod +x ./scripts/create-pr.sh && ./scripts/create-pr.sh",
+        "type": "shell",
+        "args": [],
+        "problemMatcher": [],
+        "presentation": {
+          "reveal": "always"
+        }
+      },
+      {
+        "label": "Execute CI Check",
+        "detail": "Execute CI Check on github",
+        "command": "docker compose up -d seft-runner && chmod +x ./scripts/ci-check.sh && ./scripts/ci-check.sh",
+        "type": "shell",
+        "args": [],
+        "problemMatcher": [],
+        "presentation": {
+          "reveal": "always"
+        }
+      },
+       {
+        "label": "Database Migration",
+        "detail": "Execute database migration scripts",
+        "command": "docker compose run --rm liquibase",
+        "type": "shell",
+        "args": [],
+        "problemMatcher": [],
+        "presentation": {
+          "reveal": "always"
+        }
+      }
+    ]
+  }
+}

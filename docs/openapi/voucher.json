@@ -1,0 +1,1480 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Voucher API",
+    "version": "1.0"
+  },
+  "tags": [
+    {
+      "name": "vouchers"
+    },
+    {
+      "name": "voucher-conditions"
+    },
+    {
+      "name": "order-vouchers"
+    },
+    {
+      "name": "flash-sales"
+    }
+  ],
+  "paths": {
+    "/api/v1/flash-sales": {
+      "get": {
+        "operationId": "getFlashSales",
+        "parameters": [
+          {
+            "name": "shopId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            },
+            "explode": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FlashSalesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "flash-sales"
+        ]
+      },
+      "post": {
+        "operationId": "postFlashSale",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "The request has succeeded and a new resource has been created as a result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostFlashSaleResponseBody"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access is unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "flash-sales"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostFlashSaleRequestBody"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/flash-sales/{flashSaleId}": {
+      "get": {
+        "operationId": "getFlashSaleById",
+        "parameters": [
+          {
+            "name": "flashSaleId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FlashSaleResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "flash-sales"
+        ]
+      },
+      "patch": {
+        "operationId": "patchFlashSale",
+        "parameters": [
+          {
+            "name": "flashSaleId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "There is no content to send for this request, but the headers may be useful. "
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access is unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "flash-sales"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchFlashSaleRequestBody"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteFlashSale",
+        "parameters": [
+          {
+            "name": "flashSaleId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "There is no content to send for this request, but the headers may be useful. "
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access is unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "flash-sales"
+        ]
+      }
+    },
+    "/api/v1/order-vouchers": {
+      "get": {
+        "operationId": "getOrderVouchers",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            },
+            "explode": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderVouchersResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "order-vouchers"
+        ]
+      },
+      "post": {
+        "operationId": "postOrderVoucher",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "The request has succeeded and a new resource has been created as a result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostOrderVoucherResponseBody"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access is unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "order-vouchers"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostOrderVoucherRequestBody"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/order-vouchers/{orderVoucherId}": {
+      "get": {
+        "operationId": "getOrderVoucherById",
+        "parameters": [
+          {
+            "name": "orderVoucherId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderVoucherResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "order-vouchers"
+        ]
+      },
+      "delete": {
+        "operationId": "deleteOrderVoucher",
+        "parameters": [
+          {
+            "name": "orderVoucherId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "There is no content to send for this request, but the headers may be useful. "
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access is unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "order-vouchers"
+        ]
+      }
+    },
+    "/api/v1/vouchers": {
+      "get": {
+        "operationId": "getVouchers",
+        "parameters": [
+          {
+            "name": "shopId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            },
+            "explode": false
+          },
+          {
+            "name": "isActive",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "explode": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VouchersResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "vouchers"
+        ]
+      },
+      "post": {
+        "operationId": "postVoucher",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "The request has succeeded and a new resource has been created as a result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostVoucherResponseBody"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access is unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "vouchers"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostVoucherRequestBody"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/vouchers/{voucherId}": {
+      "get": {
+        "operationId": "getVoucherById",
+        "parameters": [
+          {
+            "name": "voucherId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VoucherResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "vouchers"
+        ]
+      },
+      "patch": {
+        "operationId": "patchVoucher",
+        "parameters": [
+          {
+            "name": "voucherId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "There is no content to send for this request, but the headers may be useful. "
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access is unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "vouchers"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchVoucherRequestBody"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteVoucher",
+        "parameters": [
+          {
+            "name": "voucherId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "There is no content to send for this request, but the headers may be useful. "
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access is unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "vouchers"
+        ]
+      }
+    },
+    "/api/v1/vouchers/{voucherId}/conditions": {
+      "get": {
+        "operationId": "getVoucherConditions",
+        "parameters": [
+          {
+            "name": "voucherId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VoucherConditionsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "voucher-conditions"
+        ]
+      },
+      "post": {
+        "operationId": "postVoucherCondition",
+        "parameters": [
+          {
+            "name": "voucherId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "The request has succeeded and a new resource has been created as a result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostVoucherConditionResponseBody"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access is unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "voucher-conditions"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostVoucherConditionRequestBody"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/vouchers/{voucherId}/conditions/{conditionId}": {
+      "get": {
+        "operationId": "getVoucherConditionById",
+        "parameters": [
+          {
+            "name": "voucherId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            }
+          },
+          {
+            "name": "conditionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VoucherConditionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "voucher-conditions"
+        ]
+      },
+      "delete": {
+        "operationId": "deleteVoucherCondition",
+        "parameters": [
+          {
+            "name": "voucherId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            }
+          },
+          {
+            "name": "conditionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "There is no content to send for this request, but the headers may be useful. "
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access is unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "voucher-conditions"
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ErrorResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "message"
+        ],
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "FlashSaleResponse": {
+        "type": "object",
+        "required": [
+          "flashSaleId",
+          "shopId",
+          "name",
+          "startTime",
+          "endTime"
+        ],
+        "properties": {
+          "flashSaleId": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "shopId": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "name": {
+            "$ref": "#/components/schemas/NonEmptyString"
+          },
+          "startTime": {
+            "type": "string"
+          },
+          "endTime": {
+            "type": "string"
+          }
+        },
+        "examples": [
+          {
+            "flashSaleId": "123e4567-e89b-12d3-a456-426614175700",
+            "shopId": "123e4567-e89b-12d3-a456-426614175400",
+            "name": "Flash Sale Điện Thoại",
+            "startTime": "2026-04-15T00:00:00.000Z",
+            "endTime": "2026-04-15T23:59:59.000Z"
+          }
+        ]
+      },
+      "FlashSalesResponse": {
+        "type": "object",
+        "required": [
+          "flashSales"
+        ],
+        "properties": {
+          "flashSales": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FlashSaleResponse"
+            }
+          }
+        }
+      },
+      "NonEmptyString": {
+        "type": "string",
+        "minLength": 1
+      },
+      "OrderVoucherResponse": {
+        "type": "object",
+        "required": [
+          "orderVoucherId",
+          "orderId",
+          "voucherId",
+          "discountAmount"
+        ],
+        "properties": {
+          "orderVoucherId": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "orderId": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "voucherId": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "discountAmount": {
+            "type": "number",
+            "format": "decimal"
+          }
+        },
+        "examples": [
+          {
+            "orderVoucherId": "123e4567-e89b-12d3-a456-426614175600",
+            "orderId": "123e4567-e89b-12d3-a456-426614174B00",
+            "voucherId": "123e4567-e89b-12d3-a456-426614175300",
+            "discountAmount": 50000
+          }
+        ]
+      },
+      "OrderVouchersResponse": {
+        "type": "object",
+        "required": [
+          "orderVouchers"
+        ],
+        "properties": {
+          "orderVouchers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderVoucherResponse"
+            }
+          }
+        }
+      },
+      "PatchFlashSaleRequestBody": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "$ref": "#/components/schemas/NonEmptyString"
+          },
+          "startTime": {
+            "type": "string"
+          },
+          "endTime": {
+            "type": "string"
+          }
+        }
+      },
+      "PatchVoucherRequestBody": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "$ref": "#/components/schemas/NonEmptyString"
+          },
+          "discountType": {
+            "type": "string"
+          },
+          "discountValue": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "maxDiscount": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "minOrderValue": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "usageLimit": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "startDate": {
+            "type": "string"
+          },
+          "endDate": {
+            "type": "string"
+          },
+          "isActive": {
+            "type": "boolean"
+          }
+        }
+      },
+      "PostFlashSaleRequestBody": {
+        "type": "object",
+        "required": [
+          "shopId",
+          "name",
+          "startTime",
+          "endTime"
+        ],
+        "properties": {
+          "shopId": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "name": {
+            "$ref": "#/components/schemas/NonEmptyString"
+          },
+          "startTime": {
+            "type": "string"
+          },
+          "endTime": {
+            "type": "string"
+          }
+        }
+      },
+      "PostFlashSaleResponseBody": {
+        "type": "object",
+        "required": [
+          "flashSaleId"
+        ],
+        "properties": {
+          "flashSaleId": {
+            "$ref": "#/components/schemas/UUID"
+          }
+        }
+      },
+      "PostOrderVoucherRequestBody": {
+        "type": "object",
+        "required": [
+          "orderId",
+          "voucherId",
+          "discountAmount"
+        ],
+        "properties": {
+          "orderId": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "voucherId": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "discountAmount": {
+            "type": "number",
+            "format": "decimal"
+          }
+        }
+      },
+      "PostOrderVoucherResponseBody": {
+        "type": "object",
+        "required": [
+          "orderVoucherId"
+        ],
+        "properties": {
+          "orderVoucherId": {
+            "$ref": "#/components/schemas/UUID"
+          }
+        }
+      },
+      "PostVoucherConditionRequestBody": {
+        "type": "object",
+        "required": [
+          "voucherId",
+          "type",
+          "refId"
+        ],
+        "properties": {
+          "voucherId": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "type": {
+            "type": "string"
+          },
+          "refId": {
+            "$ref": "#/components/schemas/UUID"
+          }
+        }
+      },
+      "PostVoucherConditionResponseBody": {
+        "type": "object",
+        "required": [
+          "conditionId"
+        ],
+        "properties": {
+          "conditionId": {
+            "$ref": "#/components/schemas/UUID"
+          }
+        }
+      },
+      "PostVoucherRequestBody": {
+        "type": "object",
+        "required": [
+          "shopId",
+          "code",
+          "discountType",
+          "discountValue",
+          "startDate",
+          "endDate"
+        ],
+        "properties": {
+          "shopId": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "code": {
+            "$ref": "#/components/schemas/NonEmptyString"
+          },
+          "discountType": {
+            "type": "string"
+          },
+          "discountValue": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "maxDiscount": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "minOrderValue": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "usageLimit": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "startDate": {
+            "type": "string"
+          },
+          "endDate": {
+            "type": "string"
+          },
+          "isActive": {
+            "type": "boolean"
+          }
+        }
+      },
+      "PostVoucherResponseBody": {
+        "type": "object",
+        "required": [
+          "voucherId"
+        ],
+        "properties": {
+          "voucherId": {
+            "$ref": "#/components/schemas/UUID"
+          }
+        }
+      },
+      "UUID": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+      },
+      "VoucherConditionResponse": {
+        "type": "object",
+        "required": [
+          "conditionId",
+          "voucherId",
+          "type",
+          "refId"
+        ],
+        "properties": {
+          "conditionId": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "voucherId": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "type": {
+            "type": "string"
+          },
+          "refId": {
+            "$ref": "#/components/schemas/UUID"
+          }
+        },
+        "examples": [
+          {
+            "conditionId": "123e4567-e89b-12d3-a456-426614175500",
+            "voucherId": "123e4567-e89b-12d3-a456-426614175300",
+            "type": "product",
+            "refId": "123e4567-e89b-12d3-a456-426614174000"
+          }
+        ]
+      },
+      "VoucherConditionsResponse": {
+        "type": "object",
+        "required": [
+          "voucherConditions"
+        ],
+        "properties": {
+          "voucherConditions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VoucherConditionResponse"
+            }
+          }
+        }
+      },
+      "VoucherResponse": {
+        "type": "object",
+        "required": [
+          "voucherId",
+          "shopId",
+          "code",
+          "discountType",
+          "discountValue",
+          "startDate",
+          "endDate",
+          "isActive"
+        ],
+        "properties": {
+          "voucherId": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "shopId": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "code": {
+            "$ref": "#/components/schemas/NonEmptyString"
+          },
+          "discountType": {
+            "type": "string"
+          },
+          "discountValue": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "maxDiscount": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "minOrderValue": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "usageLimit": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "usedCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "startDate": {
+            "type": "string"
+          },
+          "endDate": {
+            "type": "string"
+          },
+          "isActive": {
+            "type": "boolean"
+          }
+        },
+        "examples": [
+          {
+            "voucherId": "123e4567-e89b-12d3-a456-426614175300",
+            "shopId": "123e4567-e89b-12d3-a456-426614175400",
+            "code": "SUMMER20",
+            "discountType": "percentage",
+            "discountValue": 20,
+            "maxDiscount": 100000,
+            "minOrderValue": 500000,
+            "usageLimit": 1000,
+            "usedCount": 50,
+            "startDate": "2026-04-01T00:00:00.000Z",
+            "endDate": "2026-04-30T23:59:59.000Z",
+            "isActive": true
+          }
+        ]
+      },
+      "VouchersResponse": {
+        "type": "object",
+        "required": [
+          "vouchers"
+        ],
+        "properties": {
+          "vouchers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VoucherResponse"
+            }
+          }
+        }
+      }
+    }
+  }
+}

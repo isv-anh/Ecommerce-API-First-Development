@@ -1,0 +1,69 @@
+{
+  "name": "@e-commerce/api-client",
+  "version": "1.0.0",
+  "private": true,
+  "exports": {
+    "./schemas/*": {
+      "import": "./dist/esm/generated/schemas/*/index.js",
+      "types": "./dist/tsc/generated/schemas/*/index.d.ts"
+    },
+    "./endpoints/auth/*": {
+      "import": "./dist/esm/generated/endpoints/auth/*.js",
+      "types": "./dist/tsc/generated/endpoints/auth/*.d.ts"
+    },
+    "./endpoints/product/*": {
+      "import": "./dist/esm/generated/endpoints/product/*.js",
+      "types": "./dist/tsc/generated/endpoints/product/*.d.ts"
+    },
+     "./endpoints/cart/*": {
+      "import": "./dist/esm/generated/endpoints/cart/*.js",
+      "types": "./dist/tsc/generated/endpoints/cart/*.d.ts"
+    },
+     "./endpoints/order/*": {
+      "import": "./dist/esm/generated/endpoints/order/*.js",
+      "types": "./dist/tsc/generated/endpoints/order/*.d.ts"
+    },
+     "./endpoints/customer/*": {
+      "import": "./dist/esm/generated/endpoints/customer/*.js",
+      "types": "./dist/tsc/generated/endpoints/customer/*.d.ts"
+    },
+     "./endpoints/shop/*": {
+      "import": "./dist/esm/generated/endpoints/shop/*.js",
+      "types": "./dist/tsc/generated/endpoints/shop/*.d.ts"
+    },
+     "./endpoints/voucher/*": {
+      "import": "./dist/esm/generated/endpoints/voucher/*.js",
+      "types": "./dist/tsc/generated/endpoints/voucher/*.d.ts"
+    },
+    "./zod/*": {
+      "import": "./dist/esm/generated/zod/*.js",
+      "types": "./dist/tsc/generated/zod/*.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "scripts": {
+    "generate": "orval --config ./orval.config.ts",
+    "build": "pnpm generate &&node build.mjs"
+  },
+  "peerDependencies": {
+    "@tanstack/react-query": "catalog:",
+    "axios": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^10.4.0",
+    "@types/node": "^20.19.37",
+    "axios": "catalog:",
+    "esbuild": "^0.27.4",
+    "fast-glob": "^3.3.3",
+    "glob": "^13.0.6",
+    "msw": "^2.10.4",
+    "orval": "^7.9.0",
+    "prettier": "3.5.3",
+    "typescript": "^5",
+    "zod": "catalog:"
+  }
+}

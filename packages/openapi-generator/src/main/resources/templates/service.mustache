@@ -1,0 +1,35 @@
+import { Injectable } from '@nestjs/common';
+import type {
+{{#operations}}
+  {{#vendorExtensions.x-type-params}}{{vendorExtensions.x-type-params}},{{/vendorExtensions.x-type-params}}
+  {{#vendorExtensions.x-type-query}}{{vendorExtensions.x-type-query}},{{/vendorExtensions.x-type-query}}
+  {{#vendorExtensions.x-type-body}}{{vendorExtensions.x-type-body}},{{/vendorExtensions.x-type-body}}
+  {{#vendorExtensions.x-type-response}}{{vendorExtensions.x-type-response}},{{/vendorExtensions.x-type-response}}
+{{/operations}}
+} from '@e-commerce/api-validation/types/{{specName}}';
+import type { Base{{className}}ControllerInterface } from '@generated-controller/{{specName}}/{{moduleName}}/base-{{moduleName}}.controller.interface';
+
+@Injectable()
+export class {{className}}Service implements Base{{className}}ControllerInterface {
+
+{{#operations}}
+  /**
+   * {{httpMethod}} {{path}}
+   *
+   {{#vendorExtensions.x-has-param}} * @param params - Path parameters typed as {@link {{vendorExtensions.x-type-params}}}
+   {{/vendorExtensions.x-has-param}}{{#vendorExtensions.x-has-query}} * @param query - Query parameters typed as {@link {{vendorExtensions.x-type-query}}}
+   {{/vendorExtensions.x-has-query}}{{#vendorExtensions.x-has-body}} * @param body - Request body typed as {@link {{vendorExtensions.x-type-body}}}
+   {{/vendorExtensions.x-has-body}} * @returns {{#vendorExtensions.x-type-response}}{@link {{vendorExtensions.x-type-response}}}{{/vendorExtensions.x-type-response}}{{#vendorExtensions.x-is-void}}void{{/vendorExtensions.x-is-void}}
+   */
+  async {{operationId}}(
+    {{#vendorExtensions.x-has-param}}params: {{vendorExtensions.x-type-params}},{{/vendorExtensions.x-has-param}}
+    {{#vendorExtensions.x-has-query}}query: {{vendorExtensions.x-type-query}},{{/vendorExtensions.x-has-query}}
+    {{#vendorExtensions.x-has-body}}body: {{vendorExtensions.x-type-body}}{{/vendorExtensions.x-has-body}}
+  ): Promise<{{#vendorExtensions.x-type-response}}{{vendorExtensions.x-type-response}}{{/vendorExtensions.x-type-response}}{{#vendorExtensions.x-is-void}}void{{/vendorExtensions.x-is-void}}> {
+    throw new Error('Not implemented');
+  }
+
+{{/operations}}
+}
+
+

@@ -1,0 +1,40 @@
+FROM ubuntu:latest
+
+ARG RUNNER_TOKEN
+
+ARG RUNNER_NAME
+
+ENV RUNNER_TOKEN=${RUNNER_TOKEN}
+
+ENV RUNNER_NAME=${RUNNER_NAME}
+
+ENV BINARY_URL=https://github.com/actions/runner/releases/download/v2.325.0/actions-runner-linux-x64-2.325.0.tar.gz
+
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+# create user runner
+RUN apt-get update && \
+    apt-get install -y curl sudo libicu-dev maven git && \
+    useradd -m runner && \
+    echo "runner ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+USER runner
+WORKDIR /home/runner/actions-runner
+
+# setup docker
+# RUN curl -fsSL https://get.docker.com | sh && \
+#     sudo usermod -aG docker runner
+
+RUN curl -o actions-runner-linux-x64-2.325.0.tar.gz -L $BINARY_URL && \
+    tar xzf ./actions-runner-linux-x64-2.325.0.tar.gz && \
+    rm actions-runner-linux-x64-2.325.0.tar.gz && \
+    echo $RUNNER_TOKEN
+
+RUN ./config.sh --url https://github.com/ndh-anh/e-commerce-dev \
+    --token $RUNNER_TOKEN \
+    --name $RUNNER_NAME \
+    --unattended \
+    --labels "self-hosted,Linux,x64,${RUNNER_NAME}"
+
+CMD ["./run.sh"]

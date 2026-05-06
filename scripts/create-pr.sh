@@ -1,7 +1,7 @@
 #!/bin/bash
 
-OWNER="ndha1511"
-REPO="hrm-dev"
+OWNER="ndh-anh"
+REPO="e-commerce"
 
 # get user login
 USERNAME=$(gh api user --jq .login)

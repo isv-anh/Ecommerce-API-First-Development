@@ -1,0 +1,34 @@
+language: en
+early_access: false
+
+reviews:
+  auto_review:
+    enabled: true
+    base_branches:
+      - "develop"
+
+  review_status: false
+
+  high_level_summary: true
+  changed_files_summary: true
+
+
+  path_instructions:
+    - path: "**/*"
+      instructions: |
+        Review this pull request as a senior fullstack engineer.
+
+        The repository is a monorepo containing:
+        - Next.js frontend using TanStack Query and Material UI
+        - NestJS backend
+        - OpenAPI / TypeSpec for API contracts
+        - Liquibase for database migrations
+
+        Focus on:
+        - bugs
+        - security issues
+        - performance problems
+        - bad architecture decisions
+        - maintainability problems
+
+        Ignore formatting issues.
