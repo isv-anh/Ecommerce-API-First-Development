@@ -3,7 +3,8 @@ INSERT INTO
     roles (role_id, role_name)
 VALUES (gen_random_uuid (), 'USER'),
     (gen_random_uuid (), 'SELLER'),
-    (gen_random_uuid (), 'ADMIN');
+    (gen_random_uuid (), 'ADMIN')
+ON CONFLICT (role_name) DO NOTHING;
 
 
 -- PERMISSIONS
