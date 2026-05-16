@@ -1,4 +1,4 @@
-import { Controller{{#import-Get}}, Get{{/import-Get}}{{#import-Post}}, Post{{/import-Post}}{{#import-Patch}}, Patch{{/import-Patch}}{{#import-Put}}, Put{{/import-Put}}{{#import-Delete}}, Delete{{/import-Delete}}{{#import-Param}}, Param{{/import-Param}}{{#import-Query}}, Query{{/import-Query}}{{#import-Body}}, Body{{/import-Body}}, Inject } from '@nestjs/common';
+import { HttpCode, Controller{{#import-Get}}, Get{{/import-Get}}{{#import-Post}}, Post{{/import-Post}}{{#import-Patch}}, Patch{{/import-Patch}}{{#import-Put}}, Put{{/import-Put}}{{#import-Delete}}, Delete{{/import-Delete}}{{#import-Param}}, Param{{/import-Param}}{{#import-Query}}, Query{{/import-Query}}{{#import-Body}}, Body{{/import-Body}}, Inject } from '@nestjs/common';
 import { ZodValidationPipe } from '@/common/pipes/zod-validation.pipe';
 import {
 {{#operations}}
@@ -15,6 +15,13 @@ import type {
   {{#vendorExtensions.x-type-response}}{{vendorExtensions.x-type-response}},{{/vendorExtensions.x-type-response}}
 {{/operations}}
 } from '@e-commerce/api-validation/types/{{specName}}';
+{{#import-Public}}
+import { Public } from '@/common/decorators/public.decorator';
+{{/import-Public}}
+{{#import-CheckPolicies}}
+import { CheckPolicies } from '@/common/decorators/check-policies.decorator';
+import { getPermissions } from '@/common/casl/endpoint-permissions';
+{{/import-CheckPolicies}}
 import type { Base{{className}}ControllerInterface } from './base-{{moduleName}}.controller.interface';
 
 export const {{upperCaseName}}_CONTROLLER = Symbol('{{className}}Controller');
@@ -28,7 +35,14 @@ export class Base{{className}}Controller implements Base{{className}}ControllerI
 
 {{#operations}}
   // {{httpMethod}} {{path}}
+  {{#vendorExtensions.x-is-public}}
+  @Public()
+  {{/vendorExtensions.x-is-public}}
   @{{vendorExtensions.x-nest-method}}('{{path}}')
+  @HttpCode({{vendorExtensions.x-http-code}})
+  {{^vendorExtensions.x-is-public}}
+  @CheckPolicies(getPermissions['{{operationId}}'])
+  {{/vendorExtensions.x-is-public}}
   async {{operationId}}(
     {{#vendorExtensions.x-has-param}}@Param(new ZodValidationPipe({{vendorExtensions.x-zod-schema-param}})) params: {{vendorExtensions.x-type-params}},{{/vendorExtensions.x-has-param}}
     {{#vendorExtensions.x-has-query}}@Query(new ZodValidationPipe({{vendorExtensions.x-zod-schema-query}})) query: {{vendorExtensions.x-type-query}},{{/vendorExtensions.x-has-query}}

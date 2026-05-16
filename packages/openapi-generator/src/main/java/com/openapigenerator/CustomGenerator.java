@@ -72,6 +72,11 @@ public class CustomGenerator extends DefaultCodegen {
             op.vendorExtensions.put("x-has-query", !op.queryParams.isEmpty());
             op.vendorExtensions.put("x-has-param", !op.pathParams.isEmpty());
 
+            // Public endpoint flag
+            boolean isPublic = Boolean.TRUE.equals(op.vendorExtensions.get("x-public"));
+            op.vendorExtensions.put("x-is-public", isPublic);
+            op.vendorExtensions.put("x-check-policies", !isPublic);
+
             // Type names matching api-validation naming convention
             String opPascal = capitalize(op.operationId);
             if (!op.pathParams.isEmpty()) {
@@ -98,6 +103,7 @@ public class CustomGenerator extends DefaultCodegen {
             // Success response type: find first 2xx response
             for (CodegenResponse response : op.responses) {
                 if (response.code != null && response.code.startsWith("2")) {
+                    op.vendorExtensions.put("x-http-code", Integer.parseInt(response.code));
                     if ("204".equals(response.code)) {
                         op.vendorExtensions.put("x-is-void", true);
                     } else {
@@ -136,27 +142,51 @@ public class CustomGenerator extends DefaultCodegen {
                 boolean hasGet = false, hasPost = false, hasPatch = false,
                         hasPut = false, hasDelete = false;
                 boolean hasParam = false, hasQuery = false, hasBody = false;
+                boolean hasPublic = false, hasCheckPolicies = false;
+                boolean hasHttpCode = false;
+
                 for (CodegenOperation op : ops) {
                     String method = op.httpMethod.toUpperCase();
-                    if ("GET".equals(method))    hasGet    = true;
-                    if ("POST".equals(method))   hasPost   = true;
-                    if ("PATCH".equals(method))  hasPatch  = true;
-                    if ("PUT".equals(method))    hasPut    = true;
-                    if ("DELETE".equals(method)) hasDelete = true;
-                    if (!op.pathParams.isEmpty())  hasParam = true;
-                    if (!op.queryParams.isEmpty()) hasQuery = true;
-                    if (!op.bodyParams.isEmpty())  hasBody  = true;
-                }
-                data.put("import-Get",    hasGet);
-                data.put("import-Post",   hasPost);
-                data.put("import-Patch",  hasPatch);
-                data.put("import-Put",    hasPut);
-                data.put("import-Delete", hasDelete);
-                data.put("import-Param",  hasParam);
-                data.put("import-Query",  hasQuery);
-                data.put("import-Body",   hasBody);
+                    if ("GET".equals(method))
+                        hasGet = true;
+                    if ("POST".equals(method))
+                        hasPost = true;
+                    if ("PATCH".equals(method))
+                        hasPatch = true;
+                    if ("PUT".equals(method))
+                        hasPut = true;
+                    if ("DELETE".equals(method))
+                        hasDelete = true;
+                    if (!op.pathParams.isEmpty())
+                        hasParam = true;
+                    if (!op.queryParams.isEmpty())
+                        hasQuery = true;
+                    if (!op.bodyParams.isEmpty())
+                        hasBody = true;
 
-                // generated-controller: base-controller + interface (read-only, committed to repo)
+                    boolean isPublic = Boolean.TRUE.equals(op.vendorExtensions.get("x-is-public"));
+                    if (isPublic)
+                        hasPublic = true;
+                    if (!isPublic)
+                        hasCheckPolicies = true;
+
+                    if (op.vendorExtensions.containsKey("x-http-code"))
+                        hasHttpCode = true;
+                }
+                data.put("import-Get", hasGet);
+                data.put("import-Post", hasPost);
+                data.put("import-Patch", hasPatch);
+                data.put("import-Put", hasPut);
+                data.put("import-Delete", hasDelete);
+                data.put("import-Param", hasParam);
+                data.put("import-Query", hasQuery);
+                data.put("import-Body", hasBody);
+                data.put("import-Public", hasPublic);
+                data.put("import-CheckPolicies", hasCheckPolicies);
+                data.put("import-HttpCode", hasHttpCode);
+
+                // generated-controller: base-controller + interface (read-only, committed to
+                // repo)
                 String generatedPath = System.getProperty("generatedControllerPath", "/app/output/generated-controller")
                         + "/" + specName + "/" + moduleName;
 
@@ -292,7 +322,7 @@ public class CustomGenerator extends DefaultCodegen {
 
         return str
                 .replaceAll("([a-z])([A-Z])", "$1_$2") // camelCase → camel_Case
-                .replaceAll("[-\\s]+", "_")             // kebab-case / space → _
+                .replaceAll("[-\\s]+", "_") // kebab-case / space → _
                 .toUpperCase();
     }
 

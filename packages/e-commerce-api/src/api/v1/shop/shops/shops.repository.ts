@@ -114,6 +114,8 @@ export class ShopsRepository {
         description: data.description,
         logo_url: data.logoUrl,
         status: data.status || 'active',
+        created_at: new Date(),
+        updated_at: new Date(),
       },
     });
     return shopId;

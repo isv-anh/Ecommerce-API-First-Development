@@ -2,3 +2,4 @@ src/generated
 dist
 node_modules
 src/types
+src/operations

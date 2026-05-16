@@ -26,6 +26,9 @@ fs.readdirSync(inputDir).forEach((file) => {
         override: {
           zod: {
             generateEachHttpStatus: true,
+            coerce: {
+              query: ["string", "number", "boolean", "date"],
+            },
           },
         },
       },
