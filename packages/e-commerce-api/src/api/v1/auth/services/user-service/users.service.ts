@@ -94,7 +94,7 @@ export class UsersService {
         error instanceof Prisma.PrismaClientKnownRequestError &&
         error.code === 'P2002'
       ) {
-        throw new ConflictException('Email already exists');
+        throw new ConflictException('Email or username already exists');
       }
 
       throw error;
