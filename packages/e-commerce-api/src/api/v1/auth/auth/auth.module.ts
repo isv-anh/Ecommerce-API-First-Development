@@ -5,8 +5,10 @@ import {
   AUTH_CONTROLLER,
   BaseAuthController,
 } from '@generated-controller/auth/auth/base-auth.controller';
+import { UsersModule } from '@/api/v1/auth/services/user-service/users.module';
 
 @Module({
+  imports: [UsersModule],
   controllers: [BaseAuthController],
   providers: [
     AuthService,

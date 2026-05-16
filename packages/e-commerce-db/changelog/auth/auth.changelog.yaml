@@ -151,12 +151,30 @@ databaseChangeLog:
                   constraints:
                     primaryKey: true
                     nullable: false
+
               - column:
-                  name: permission_name
-                  type: varchar(255)
+                  name: code
+                  type: varchar(100)
                   constraints:
                     unique: true
                     nullable: false
+
+              - column:
+                  name: action
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: subject
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+
+        - addUniqueConstraint:
+            tableName: permissions
+            columnNames: action, subject
+            constraintName: uq_permissions_action_subject
 
   # ─── USER_GROUPS ─────────────────────────────────────────
   - changeSet:
@@ -199,7 +217,7 @@ databaseChangeLog:
       author: hoanganh
       changes:
         - createTable:
-            tableName: user_role
+            tableName: user_roles
             columns:
               - column:
                   name: uid
@@ -212,19 +230,19 @@ databaseChangeLog:
                   constraints:
                     nullable: false
         - addPrimaryKey:
-            tableName: user_role
+            tableName: user_roles
             columnNames: uid, role_id
-            constraintName: pk_user_role
+            constraintName: pk_user_roles
         - addForeignKeyConstraint:
-            baseTableName: user_role
+            baseTableName: user_roles
             baseColumnNames: uid
-            constraintName: fk_user_role_uid
+            constraintName: fk_user_roles_uid
             referencedTableName: users
             referencedColumnNames: uid
         - addForeignKeyConstraint:
-            baseTableName: user_role
+            baseTableName: user_roles
             baseColumnNames: role_id
-            constraintName: fk_user_role_role
+            constraintName: fk_user_roles_role
             referencedTableName: roles
             referencedColumnNames: role_id
 
@@ -234,7 +252,7 @@ databaseChangeLog:
       author: hoanganh
       changes:
         - createTable:
-            tableName: group_role
+            tableName: group_roles
             columns:
               - column:
                   name: gid
@@ -247,17 +265,17 @@ databaseChangeLog:
                   constraints:
                     nullable: false
         - addPrimaryKey:
-            tableName: group_role
+            tableName: group_roles
             columnNames: gid, role_id
             constraintName: pk_group_role
         - addForeignKeyConstraint:
-            baseTableName: group_role
+            baseTableName: group_roles
             baseColumnNames: gid
             constraintName: fk_group_role_gid
             referencedTableName: groups
             referencedColumnNames: gid
         - addForeignKeyConstraint:
-            baseTableName: group_role
+            baseTableName: group_roles
             baseColumnNames: role_id
             constraintName: fk_group_role_role
             referencedTableName: roles
@@ -269,7 +287,7 @@ databaseChangeLog:
       author: hoanganh
       changes:
         - createTable:
-            tableName: role_permission
+            tableName: role_permissions
             columns:
               - column:
                   name: role_id
@@ -282,18 +300,28 @@ databaseChangeLog:
                   constraints:
                     nullable: false
         - addPrimaryKey:
-            tableName: role_permission
+            tableName: role_permissions
             columnNames: role_id, permission_id
-            constraintName: pk_role_permission
+            constraintName: pk_role_permissions
         - addForeignKeyConstraint:
-            baseTableName: role_permission
+            baseTableName: role_permissions
             baseColumnNames: role_id
-            constraintName: fk_role_permission_role
+            constraintName: fk_role_permissions_role
             referencedTableName: roles
             referencedColumnNames: role_id
         - addForeignKeyConstraint:
-            baseTableName: role_permission
+            baseTableName: role_permissions
             baseColumnNames: permission_id
-            constraintName: fk_role_permission_perm
+            constraintName: fk_role_permissions_perm
             referencedTableName: permissions
             referencedColumnNames: pid
+
+  - changeSet:
+      id: auth-009-add-default-role-permissions
+      author: hoanganh
+      changes:
+        - sqlFile:
+            path: ../sql/default-role-permission.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+            stripComments: false

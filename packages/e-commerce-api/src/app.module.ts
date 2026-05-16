@@ -24,10 +24,15 @@ import { OrdersModule } from '@/api/v1/order/orders/orders.module';
 import { OrderItemsModule } from '@/api/v1/order/order-items/order-items.module';
 import { OrderPaymentsModule } from '@/api/v1/order/order-payments/order-payments.module';
 import { OrderShopsModule } from '@/api/v1/order/order-shops/order-shops.module';
+import { JwtModule } from '@/api/v1/auth/services/jwt-service/jwt.module';
+import { AuthGuard } from '@/common/guards/auth.guard';
+import { CaslAbilityFactory } from '@/common/casl/casl-ability.factory';
+import { PoliciesGuard } from '@/common/guards/policies.guard';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    JwtModule,
     PrismaModule,
     HealthModule,
     AuthModule,
@@ -52,6 +57,17 @@ import { OrderShopsModule } from '@/api/v1/order/order-shops/order-shops.module'
     OrderItemsModule,
     OrderPaymentsModule,
     OrderShopsModule,
+  ],
+  providers: [
+    CaslAbilityFactory,
+    {
+      provide: 'APP_GUARD',
+      useClass: AuthGuard,
+    },
+    {
+      provide: 'APP_GUARD',
+      useClass: PoliciesGuard,
+    },
   ],
 })
 export class AppModule {}

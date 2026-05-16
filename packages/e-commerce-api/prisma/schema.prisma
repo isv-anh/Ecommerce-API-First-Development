@@ -108,15 +108,6 @@ model flash_sales {
   @@index([start_time, end_time], map: "idx_flash_sales_time_range")
 }
 
-model group_role {
-  gid     String @db.Uuid
-  role_id String @db.Uuid
-  groups  groups @relation(fields: [gid], references: [gid], onDelete: NoAction, onUpdate: NoAction, map: "fk_group_role_gid")
-  roles   roles  @relation(fields: [role_id], references: [role_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_group_role_role")
-
-  @@id([gid, role_id], map: "pk_group_role")
-}
-
 model groups {
   gid          String        @id @db.Uuid
   group_name   String        @unique @db.VarChar(255)
@@ -124,7 +115,7 @@ model groups {
   created_at   DateTime?     @db.Timestamp(6)
   updated_at   DateTime?     @db.Timestamp(6)
   is_deleted   Boolean?      @default(false)
-  group_role   group_role[]
+  group_roles  group_roles[]
   groups       groups?       @relation("groupsTogroups", fields: [parent_gid], references: [gid], onDelete: NoAction, onUpdate: NoAction, map: "fk_groups_parent")
   other_groups groups[]      @relation("groupsTogroups")
   user_groups  user_groups[]
@@ -219,9 +210,13 @@ model payments {
 }
 
 model permissions {
-  pid             String            @id @db.Uuid
-  permission_name String            @unique @db.VarChar(255)
-  role_permission role_permission[]
+  pid              String             @id @db.Uuid
+  code             String             @unique @db.VarChar(100)
+  action           String             @db.VarChar(100)
+  subject          String             @db.VarChar(100)
+  role_permissions role_permissions[]
+
+  @@unique([action, subject], map: "uq_permissions_action_subject")
 }
 
 model product_images {
@@ -300,21 +295,12 @@ model reviews {
   users      users    @relation(fields: [user_id], references: [uid], onDelete: NoAction, onUpdate: NoAction, map: "fk_reviews_user")
 }
 
-model role_permission {
-  role_id       String      @db.Uuid
-  permission_id String      @db.Uuid
-  permissions   permissions @relation(fields: [permission_id], references: [pid], onDelete: NoAction, onUpdate: NoAction, map: "fk_role_permission_perm")
-  roles         roles       @relation(fields: [role_id], references: [role_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_role_permission_role")
-
-  @@id([role_id, permission_id], map: "pk_role_permission")
-}
-
 model roles {
-  role_id         String            @id @db.Uuid
-  role_name       String            @unique @db.VarChar(255)
-  group_role      group_role[]
-  role_permission role_permission[]
-  user_role       user_role[]
+  role_id          String             @id @db.Uuid
+  role_name        String             @unique @db.VarChar(255)
+  group_roles      group_roles[]
+  role_permissions role_permissions[]
+  user_roles       user_roles[]
 }
 
 model shop_daily_stats {
@@ -331,16 +317,16 @@ model shop_daily_stats {
 model shops {
   id                String              @id @db.Uuid
   owner_id          String              @db.Uuid
-  name              String              @db.VarChar(255)
+  name              String              @unique @db.VarChar(255)
   slug              String              @unique @db.VarChar(255)
   description       String?
   logo_url          String?             @db.VarChar(500)
-  status            String?             @db.VarChar(50)
+  status            String              @db.VarChar(50)
   rating            Decimal?            @default(0) @db.Decimal(3, 2)
   total_products    Int?                @default(0)
   total_orders      Int?                @default(0)
-  created_at        DateTime?           @db.Timestamp(6)
-  updated_at        DateTime?           @db.Timestamp(6)
+  created_at        DateTime            @db.Timestamp(6)
+  updated_at        DateTime            @db.Timestamp(6)
   flash_sales       flash_sales[]
   order_commissions order_commissions[]
   order_shops       order_shops[]
@@ -363,15 +349,6 @@ model user_groups {
   @@id([uid, gid], map: "pk_user_groups")
 }
 
-model user_role {
-  uid     String @db.Uuid
-  role_id String @db.Uuid
-  roles   roles  @relation(fields: [role_id], references: [role_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_role_role")
-  users   users  @relation(fields: [uid], references: [uid], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_role_uid")
-
-  @@id([uid, role_id], map: "pk_user_role")
-}
-
 model users {
   uid         String        @id @db.Uuid
   username    String        @unique @db.VarChar(255)
@@ -390,7 +367,7 @@ model users {
   reviews     reviews[]
   shops       shops[]
   user_groups user_groups[]
-  user_role   user_role[]
+  user_roles  user_roles[]
   wishlists   wishlists[]
 
   @@index([email], map: "idx_users_email")
@@ -470,4 +447,31 @@ model brands {
   id   String @id @db.Uuid
   name String @unique(map: "uq_brands_name") @db.VarChar(100)
   slug String @unique(map: "uq_brands_slug") @db.VarChar(100)
+}
+
+model group_roles {
+  gid     String @db.Uuid
+  role_id String @db.Uuid
+  groups  groups @relation(fields: [gid], references: [gid], onDelete: NoAction, onUpdate: NoAction, map: "fk_group_role_gid")
+  roles   roles  @relation(fields: [role_id], references: [role_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_group_role_role")
+
+  @@id([gid, role_id], map: "pk_group_role")
+}
+
+model role_permissions {
+  role_id       String      @db.Uuid
+  permission_id String      @db.Uuid
+  permissions   permissions @relation(fields: [permission_id], references: [pid], onDelete: NoAction, onUpdate: NoAction, map: "fk_role_permissions_perm")
+  roles         roles       @relation(fields: [role_id], references: [role_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_role_permissions_role")
+
+  @@id([role_id, permission_id], map: "pk_role_permissions")
+}
+
+model user_roles {
+  uid     String @db.Uuid
+  role_id String @db.Uuid
+  roles   roles  @relation(fields: [role_id], references: [role_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_roles_role")
+  users   users  @relation(fields: [uid], references: [uid], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_roles_uid")
+
+  @@id([uid, role_id], map: "pk_user_roles")
 }

@@ -1,7 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/require-await */
 // TODO: Implement AuthService methods and remove eslint-disable comments
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import type {
   GetProfile200Response,
   PostLoginBody,
@@ -11,9 +15,18 @@ import type {
   PostRegisterBody,
   PostRegister200Response,
 } from '@e-commerce/api-validation/types/auth';
+import { UsersService } from '@/api/v1/auth/services/user-service/users.service';
+import { JwtService } from '@/api/v1/auth/services/jwt-service/jwt.service';
+import { JwtPayload } from '@/api/v1/auth/services/jwt-service/types';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly jwtService: JwtService,
+  ) {}
+
   /**
    * GET /auth/profile
    */
@@ -25,7 +38,25 @@ export class AuthService {
    * POST /auth/login
    */
   async postLogin(body: PostLoginBody): Promise<PostLogin200Response> {
-    throw new Error('Not implemented');
+    const user = await this.usersService.findByEmail(body.username);
+
+    if (!user || !(await bcrypt.compare(body.password, user.password))) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    const payload: JwtPayload = {
+      sub: user.uid,
+      email: user.email,
+      roles: user.roles,
+    };
+
+    const accessToken = await this.jwtService.generateAccessToken(payload);
+    const refreshToken = await this.jwtService.generateRefreshToken(payload);
+
+    return {
+      accessToken,
+      refreshToken,
+    };
   }
 
   /**
@@ -44,6 +75,21 @@ export class AuthService {
    * POST /auth/register
    */
   async postRegister(body: PostRegisterBody): Promise<PostRegister200Response> {
-    throw new Error('Not implemented');
+    console.log('AuthService called');
+    const user = await this.usersService.register(body);
+
+    const payload: JwtPayload = {
+      sub: user.uid,
+      email: user.email,
+      roles: [user.roleId],
+    };
+
+    const accessToken = await this.jwtService.generateAccessToken(payload);
+    const refreshToken = await this.jwtService.generateRefreshToken(payload);
+
+    return {
+      accessToken,
+      refreshToken,
+    };
   }
 }

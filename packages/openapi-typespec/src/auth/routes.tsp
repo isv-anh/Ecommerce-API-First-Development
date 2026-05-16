@@ -12,6 +12,7 @@ namespace Auth.Auth {
     @route("/login")
     @operationId("postLogin")
     @tag("auth")
+    @extension("x-public", true)
     op login(@body body: LoginRequest):
         | AuthResponse200
         | UnauthorizedError
@@ -22,6 +23,7 @@ namespace Auth.Auth {
     @route("/register")
     @operationId("postRegister")
     @tag("auth")
+    @extension("x-public", true)
     op register(
         @body body: RegisterRequest,
     ): AuthResponse200 | BadRequestError | InternalServerError;
@@ -30,6 +32,7 @@ namespace Auth.Auth {
     @route("/refresh")
     @operationId("postRefreshToken")
     @tag("auth")
+    @extension("x-public", true)
     op refresh(
         @body body: RefreshTokenRequest,
     ): AuthResponse200 | BadRequestError | InternalServerError;

@@ -8,7 +8,7 @@ import type {
   {{#vendorExtensions.x-type-response}}{{vendorExtensions.x-type-response}},{{/vendorExtensions.x-type-response}}
 {{/operations}}
 } from '@e-commerce/api-validation/types/{{specName}}';
-import type { Base{{className}}ControllerInterface } from './base-{{moduleName}}.controller.interface';
+import type { Base{{className}}ControllerInterface } from '@generated-controller/base-{{moduleName}}.controller.interface';
 
 @Injectable()
 export class {{className}}Controller implements Base{{className}}ControllerInterface {

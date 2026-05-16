@@ -10,6 +10,11 @@
       "types": "./dist/tsc/generated/zod/*.d.ts",
       "import": "./dist/esm/generated/zod/*.js",
       "require": "./dist/esm/generated/zod/*.js"
+    },
+    "./operations/*": {
+      "types": "./dist/tsc/operations/*.d.ts",
+      "import": "./dist/esm/operations/*.js",
+      "require": "./dist/esm/operations/*.js"
     }
   },
  
@@ -20,7 +25,8 @@
   "scripts": {
     "generate": "orval --config ./orval.config.ts",
     "generate:types": "npx tsx scripts/generateZodTypes.ts",
-    "build": "pnpm generate && pnpm generate:types && node build.mjs"
+    "generate:operations": "npx tsx scripts/generateOperations.ts",
+    "build": "pnpm generate && pnpm generate:types && pnpm generate:operations && node build.mjs"
   },
   "peerDependencies": {
     "@tanstack/react-query": "catalog:",

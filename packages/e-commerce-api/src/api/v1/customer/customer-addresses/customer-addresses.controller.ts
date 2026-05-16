@@ -21,6 +21,7 @@ export class CustomerAddressesController
   /**
    * DELETE /v1/addresses/:addressId
    */
+
   async deleteAddress(params: DeleteAddressParams): Promise<void> {
     await this.service.deleteAddress(params);
   }
