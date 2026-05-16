@@ -7,13 +7,12 @@ export class JwtService {
   constructor(private readonly nestjsJwtService: NestjsJwtService) {}
 
   async extractAccessTokenPayload(token: string): Promise<JwtPayload> {
-    console.log('Token', token);
     try {
       return await this.nestjsJwtService.verifyAsync(token, {
         algorithms: ['HS256'],
       });
     } catch (err) {
-      console.log('JWT ERROR:', err);
+      console.error('JWT ERROR:', err);
       throw new UnauthorizedException('Invalid token');
     }
   }

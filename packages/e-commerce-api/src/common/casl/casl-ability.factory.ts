@@ -5,7 +5,6 @@ import {
   MongoAbility,
 } from '@casl/ability';
 import { Injectable } from '@nestjs/common';
-import { Prisma } from 'generated/prisma/client';
 
 export type Subjects =
   | 'Product'
@@ -42,20 +41,25 @@ export class CaslAbilityFactory {
   async createAppAbility(roleIds: string[]): Promise<AppAbility> {
     const { can, build } = new AbilityBuilder<AppAbility>(createMongoAbility);
 
-    const permissions = await this.prisma.$queryRaw<
-      {
-        action: string;
-        subject: string;
-      }[]
-    >`
-      SELECT
-        p.action,
-        p.subject
-      FROM role_permissions rp
-      INNER JOIN permissions p
-        ON p.pid = rp.permission_id
-      WHERE rp.role_id IN (${Prisma.join(roleIds)})
-    `;
+    if (roleIds.length === 0) {
+      return build();
+    }
+
+    const permissions = await this.prisma.permissions.findMany({
+      where: {
+        role_permissions: {
+          some: {
+            role_id: {
+              in: roleIds,
+            },
+          },
+        },
+      },
+      select: {
+        action: true,
+        subject: true,
+      },
+    });
 
     for (const permission of permissions) {
       can(permission.action as Action, permission.subject as Subjects);
