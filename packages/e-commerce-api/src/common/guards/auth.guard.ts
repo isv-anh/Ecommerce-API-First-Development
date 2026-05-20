@@ -31,13 +31,9 @@ export class AuthGuard implements CanActivate {
 
     if (!token) throw new UnauthorizedException('Missing token');
 
-    try {
-      const jwtPayload = await this.jwtService.extractAccessTokenPayload(token);
-      request['payload'] = jwtPayload;
-      return true;
-    } catch {
-      throw new UnauthorizedException('Invalid or expired token');
-    }
+    const jwtPayload = await this.jwtService.extractAccessTokenPayload(token);
+    request['payload'] = jwtPayload;
+    return true;
   }
 
   private extractTokenFromHeader(request: Request): string | null {

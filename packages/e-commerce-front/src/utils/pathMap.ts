@@ -1,21 +1,61 @@
-export type PathMap = {
-  url: string;
-  appId: string;
+export type MenuItem = {
+  path: string;
+  name: string;
+  icon?: string;
+  isNavigate?: boolean;
+  children?: MenuItem[];
 };
 
-export const pathMap: PathMap[] = [
+export const routes = {
+  home: "/",
+
+  admin: {
+    dashboard: "/admin",
+
+    category: {
+      list: "/admin/category",
+    },
+
+    brand: {
+      list: "/admin/brand",
+    },
+
+    product: {
+      list: "/admin/product",
+
+      create: "/admin/product/create",
+
+      detail: (id: string | number) => `/admin/product/${id}`,
+    },
+  },
+} as const;
+
+export const adminMenus: MenuItem[] = [
   {
-    appId: "1",
-    url: "/",
+    path: routes.admin.dashboard,
+    name: "Dashboard",
+    icon: "space_dashboard_rounded",
+    isNavigate: true,
+  },
+
+  {
+    path: routes.admin.category.list,
+    name: "Danh mục",
+    icon: "category_rounded",
+    isNavigate: true,
+  },
+
+  {
+    path: routes.admin.brand.list,
+    name: "Thương hiệu",
+    icon: "workspace_premium_rounded",
+    isNavigate: true,
+  },
+
+  {
+    path: routes.admin.product.list,
+    name: "Sản phẩm",
+    icon: "inventory_2_rounded",
+    isNavigate: true,
   },
 ];
-
-export const getPathByAppId = (appId: string): PathMap => {
-  const path = pathMap.find((p) => p.appId === appId);
-  return path || pathMap[0];
-};
-
-export const getPathByUrl = (url: string): PathMap => {
-  const path = pathMap.find((p) => p.url === url);
-  return path || pathMap[0];
-};

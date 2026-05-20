@@ -1,15 +1,8 @@
-import Stack from "@mui/material/Stack";
 import NavigationMenu from "../../NavigationMenu/NavigationMenu";
-
-
+import { adminMenus } from "@/utils/pathMap";
 
 const AppNavigationList = () => {
-
-  return (
-    <Stack spacing={2}>
-      <NavigationMenu appItems={[]} />
-    </Stack>
-  );
+  return <NavigationMenu menuItems={adminMenus} />;
 };
 
 export default AppNavigationList;

@@ -23,7 +23,7 @@ fs.readdirSync(inputDir).forEach((file) => {
         target: `./src/generated/endpoints/${name}/${name}.ts`,
         schemas: `./src/generated/schemas/${name}`,
         client: "react-query",
-        baseUrl: "http://localhost:8080/",
+        httpClient: "axios",
         mock: {
           type: "msw",
           locale: "vi",
@@ -33,6 +33,10 @@ fs.readdirSync(inputDir).forEach((file) => {
           query: {
             useSuspenseQuery: true,
             useQuery: false,
+          },
+          mutator: {
+            path: "./src/mutator/custom-instance.ts",
+            name: "customInstance",
           },
         },
       },

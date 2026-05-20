@@ -28,72 +28,57 @@ const ProductGrid = ({ title }: { title?: string }) => {
       </Stack>
 
       <Grid container spacing={2}>
-        {data?.data?.products?.map((product) => (
+        {data?.products?.map((product) => (
           <Grid key={product.productId} size={{ xs: 6, sm: 6, md: 4, lg: 3 }}>
             <ProductCard product={product} />
           </Grid>
         ))}
-        {data?.data?.products?.map((product) => (
+        {data?.products?.map((product) => (
           <Grid key={product.productId} size={{ xs: 6, sm: 6, md: 4, lg: 3 }}>
             <ProductCard product={product} />
           </Grid>
         ))}
-        {data?.data?.products?.map((product) => (
+        {data?.products?.map((product) => (
           <Grid key={product.productId} size={{ xs: 6, sm: 6, md: 4, lg: 3 }}>
             <ProductCard product={product} />
           </Grid>
         ))}
-        {data?.data?.products?.map((product) => (
+        {data?.products?.map((product) => (
           <Grid key={product.productId} size={{ xs: 6, sm: 6, md: 4, lg: 3 }}>
             <ProductCard product={product} />
           </Grid>
         ))}
-        {data?.data?.products?.map((product) => (
+        {data?.products?.map((product) => (
           <Grid key={product.productId} size={{ xs: 6, sm: 6, md: 4, lg: 3 }}>
             <ProductCard product={product} />
           </Grid>
         ))}
-        {data?.data?.products?.map((product) => (
+        {data?.products?.map((product) => (
           <Grid key={product.productId} size={{ xs: 6, sm: 6, md: 4, lg: 3 }}>
             <ProductCard product={product} />
           </Grid>
         ))}
-        {data?.data?.products?.map((product) => (
+        {data?.products?.map((product) => (
           <Grid key={product.productId} size={{ xs: 6, sm: 6, md: 4, lg: 3 }}>
             <ProductCard product={product} />
           </Grid>
         ))}
-        {data?.data?.products?.map((product) => (
+        {data?.products?.map((product) => (
           <Grid key={product.productId} size={{ xs: 6, sm: 6, md: 4, lg: 3 }}>
             <ProductCard product={product} />
           </Grid>
         ))}
-        {data?.data?.products?.map((product) => (
+        {data?.products?.map((product) => (
           <Grid key={product.productId} size={{ xs: 6, sm: 6, md: 4, lg: 3 }}>
             <ProductCard product={product} />
           </Grid>
         ))}
-        {data?.data?.products?.map((product) => (
+        {data?.products?.map((product) => (
           <Grid key={product.productId} size={{ xs: 6, sm: 6, md: 4, lg: 3 }}>
             <ProductCard product={product} />
           </Grid>
         ))}
-        {data?.data?.products?.map((product) => (
-          <Grid key={product.productId} size={{ xs: 6, sm: 6, md: 4, lg: 3 }}>
-            <ProductCard product={product} />
-          </Grid>
-        ))}
-        {data?.data?.products?.map((product) => (
-          <Grid key={product.productId} size={{ xs: 6, sm: 6, md: 4, lg: 3 }}>
-            <ProductCard product={product} />
-          </Grid>
-        ))}
-        {data?.data?.products?.map((product) => (
-          <Grid key={product.productId} size={{ xs: 6, sm: 6, md: 4, lg: 3 }}>
-            <ProductCard product={product} />
-          </Grid>
-        ))}
-        {data?.data?.products?.map((product) => (
+        {data?.products?.map((product) => (
           <Grid key={product.productId} size={{ xs: 6, sm: 6, md: 4, lg: 3 }}>
             <ProductCard product={product} />
           </Grid>

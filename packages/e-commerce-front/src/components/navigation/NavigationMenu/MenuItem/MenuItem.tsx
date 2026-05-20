@@ -1,3 +1,5 @@
+"use client";
+
 import { useMemo, useState } from "react";
 import { MenuItemProps } from "./types";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -9,62 +11,76 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import List from "@mui/material/List";
 import { usePathname } from "next/navigation";
-import { getPathByUrl } from "@/utils/pathMap";
+import Link from "next/link";
 
 const defaultPaddingLeft = 1.5;
 
-const MenuItem = ({ appItem, pl = defaultPaddingLeft }: MenuItemProps) => {
+const MenuItem = ({ menuItem, pl = defaultPaddingLeft }: MenuItemProps) => {
   const [open, setOpen] = useState(false);
-
-  const handleClick = () => {
-    setOpen((prev) => !prev);
-  };
 
   const pathname = usePathname();
 
-  const isActive = useMemo(() => {
-    const app = getPathByUrl(pathname);
-    return app?.appId === appItem.appId;
-  }, [appItem.appId, pathname]);
-
   const hasChildrenItem = useMemo(
-    () => appItem.children.length > 0,
-    [appItem.children],
+    () => !!menuItem.children?.length,
+    [menuItem.children],
   );
+
+  const isActive = useMemo(() => {
+    return pathname === menuItem.path;
+  }, [pathname, menuItem.path]);
+
+  const handleClick = () => {
+    if (hasChildrenItem) {
+      setOpen((prev) => !prev);
+    }
+  };
 
   return (
     <>
       <ListItemButton
+        component={menuItem.isNavigate ? Link : "button"}
+        href={menuItem.isNavigate ? menuItem.path : undefined}
+        onClick={handleClick}
         sx={{
-          pl: pl,
-          backgroundColor: (theme) =>
-            isActive ? theme.palette.common.white : theme.palette.primary.main,
-          color: (theme) =>
-            isActive ? theme.palette.common.black : theme.palette.common.white,
-          "&:hover": isActive
-            ? {
-                backgroundColor: (theme) => theme.palette.common.white,
-              }
-            : {},
-        }}
-        key={appItem.appId}
-        onClick={() => {
-          if (hasChildrenItem) {
-            handleClick();
-          }
+          pl,
+          width: "calc(100% - 16px)",
+          mx: 1,
+          borderRadius: 2,
+
+          backgroundColor: isActive ? "rgba(255,255,255,0.18)" : "transparent",
+
+          color: (theme) => theme.palette.common.white,
+
+          "&:hover": {
+            backgroundColor: "rgba(255,255,255,0.12)",
+          },
+
+          "& .MuiListItemIcon-root": {
+            color: "inherit",
+            minWidth: 36,
+          },
         }}
       >
-        <ListItemIcon>
-          <Icon>{appItem.appIcon}</Icon>
-        </ListItemIcon>
-        <ListItemText primary={appItem.appName} />
-        {hasChildrenItem ? open ? <ExpandLess /> : <ExpandMore /> : null}
+        {menuItem.icon && (
+          <ListItemIcon>
+            <Icon>{menuItem.icon}</Icon>
+          </ListItemIcon>
+        )}
+
+        <ListItemText primary={menuItem.name} />
+
+        {hasChildrenItem && (open ? <ExpandLess /> : <ExpandMore />)}
       </ListItemButton>
+
       {hasChildrenItem && (
         <Collapse in={open} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
-            {appItem.children.map((child) => (
-              <MenuItem key={child.appId} appItem={child} pl={3} />
+            {menuItem.children?.map((child) => (
+              <MenuItem
+                key={child.path}
+                menuItem={child}
+                pl={pl + defaultPaddingLeft}
+              />
             ))}
           </List>
         </Collapse>
