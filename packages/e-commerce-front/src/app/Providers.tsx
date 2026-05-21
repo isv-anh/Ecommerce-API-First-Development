@@ -11,8 +11,7 @@ import dynamic from "next/dynamic";
 
 const ReactQueryDevtools = dynamic(
   async () =>
-    (await import("@tanstack/react-query-devtools"))
-      .ReactQueryDevtools,
+    (await import("@tanstack/react-query-devtools")).ReactQueryDevtools,
   { ssr: false },
 );
 
@@ -20,13 +19,10 @@ const MockBrowser = dynamic(() => import("@/app/MockBrowser"), {
   ssr: false,
 });
 
-
 const Providers = ({ children }: { children: ReactNode }) => {
   const [queryClient] = useState(() => getQueryClient());
 
-  const content = (
-    <BreadcrumbsProvider>{children}</BreadcrumbsProvider>
-  );
+  const content = <BreadcrumbsProvider>{children}</BreadcrumbsProvider>;
 
   return (
     <AppRouterCacheProvider>
@@ -34,7 +30,7 @@ const Providers = ({ children }: { children: ReactNode }) => {
         <ThemeProvider theme={theme}>
           <CssBaseline />
 
-          {process.env.ENABLE_MOCKS === "true" ? (
+          {process.env.NEXT_PUBLIC_ENABLE_MOCKS === "true" ? (
             <MockBrowser>{content}</MockBrowser>
           ) : (
             content
