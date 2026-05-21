@@ -3,6 +3,25 @@ import { NextRequest, NextResponse } from "next/server";
 
 const API_URL = process.env.API_URL!;
 
+/**
+ * Generic reverse proxy handler for the Next.js BFF layer.
+ *
+ * Responsibilities:
+ * - Forward incoming client requests to the backend API.
+ * - Inject access token from HTTP-only cookies into Authorization header.
+ * - Preserve request method, query params, headers, and body.
+ * - Forward backend response status, headers, and stream body back to client.
+ *
+ * Notes:
+ * - Uses `arrayBuffer()` to safely proxy all payload types
+ *   including JSON, multipart/form-data, binary uploads, and files.
+ * - Hop-by-hop headers are excluded to avoid invalid proxy behavior.
+ * - Access token is attached server-side to keep authentication secure.
+ *
+ * @param req Incoming Next.js request.
+ * @param context Dynamic route params containing proxied API path segments.
+ * @returns Proxied backend response or 502 proxy error response.
+ */
 async function handler(
   req: NextRequest,
   context: { params: Promise<{ path: string[] }> },
