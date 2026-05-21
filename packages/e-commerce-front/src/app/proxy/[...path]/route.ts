@@ -35,7 +35,7 @@ async function handler(
     const response = await fetch(targetUrl, {
       method: req.method,
       headers: forwardHeaders,
-      body: isBodyless ? undefined : await req.text(),
+      body: isBodyless ? undefined : await req.arrayBuffer(),
     });
 
     // Forward response headers
