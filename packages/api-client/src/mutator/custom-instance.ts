@@ -72,10 +72,19 @@ AXIOS_INSTANCE.interceptors.response.use(
     try {
       const baseUrl = typeof window === "undefined" ? getBaseUrl() : "/proxy";
 
-      await fetch(`${baseUrl}/api/v1/auth/refresh`, {
+      const response = await fetch(`${baseUrl}/api/v1/auth/refresh`, {
         method: "POST",
         credentials: "include",
       });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+
+        throw {
+          status: response.status,
+          data: errorData,
+        };
+      }
 
       processQueue();
 
