@@ -11,10 +11,10 @@ import type { SubmitHandler } from "react-hook-form";
 import TextField from "@/components/inputs/TextField/TextField";
 import { LoginRequest } from "@e-commerce/api-client/schemas/auth";
 import { usePostLogin } from "@e-commerce/api-client/endpoints/auth/auth";
-import { postLoginBody } from "@e-commerce/api-client/zod/auth";
-import { customZodResolver } from "@/utils/customZodResolve";
 import { LoginFormProps } from "@/components/auth/LoginForm/types";
 import { useRouter } from "next/navigation";
+import { postLoginBody } from "@e-commerce/api-validation/zod/auth";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function LoginForm({
   title = "Đăng nhập",
@@ -23,7 +23,7 @@ export default function LoginForm({
   const { control, handleSubmit } = useForm<LoginRequest>({
     defaultValues: { username: "", password: "" },
     mode: "onSubmit",
-    resolver: customZodResolver(postLoginBody),
+    resolver: zodResolver(postLoginBody),
   });
 
   const mutation = usePostLogin();

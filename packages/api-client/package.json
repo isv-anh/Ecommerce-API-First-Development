@@ -35,10 +35,6 @@
       "import": "./dist/esm/generated/endpoints/voucher/*.js",
       "types": "./dist/tsc/generated/endpoints/voucher/*.d.ts"
     },
-    "./zod/*": {
-      "import": "./dist/esm/generated/zod/*.js",
-      "types": "./dist/tsc/generated/zod/*.d.ts"
-    },
     "./mutator/*": {
       "import": "./dist/esm/mutator/*.js",
       "types": "./dist/tsc/mutator/*.d.ts"

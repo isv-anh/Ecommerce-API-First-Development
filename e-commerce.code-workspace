@@ -1,8 +1,8 @@
 {
   "folders": [
     {
-      "path": "."
-    }
+      "path": ".",
+    },
   ],
   "settings": {
     "editor.fontSize": 14,
@@ -17,7 +17,7 @@
     "typescript.preferences.includePackageJsonAutoImports": "on",
     "typescript.preferences.importModuleSpecifier": "non-relative",
   },
-  
+
   "tasks": {
     "version": "2.0.0",
     "tasks": [
@@ -28,7 +28,7 @@
         "type": "shell",
         "args": [],
         "problemMatcher": [],
-        "dependsOn": ["Install Extensions"]
+        "dependsOn": ["Install Extensions"],
       },
       {
         "label": "Install Extensions",
@@ -38,7 +38,7 @@
         "args": [],
         "problemMatcher": [],
         "presentation": {
-          "reveal": "always"
+          "reveal": "always",
         },
       },
       {
@@ -49,8 +49,8 @@
         "args": [],
         "problemMatcher": [],
         "presentation": {
-          "reveal": "always"
-        }
+          "reveal": "always",
+        },
       },
       {
         "label": "Execute CI Check",
@@ -60,10 +60,10 @@
         "args": [],
         "problemMatcher": [],
         "presentation": {
-          "reveal": "always"
-        }
+          "reveal": "always",
+        },
       },
-       {
+      {
         "label": "Database Migration",
         "detail": "Execute database migration scripts",
         "command": "docker compose run --rm liquibase",
@@ -71,9 +71,20 @@
         "args": [],
         "problemMatcher": [],
         "presentation": {
-          "reveal": "always"
-        }
-      }
-    ]
-  }
+          "reveal": "always",
+        },
+      },
+      {
+        "label": "Generate",
+        "detail": "Generate OpenAPI types, SDKs, and other derived artifacts",
+        "command": "pnpm run generate:all",
+        "type": "shell",
+        "args": [],
+        "problemMatcher": [],
+        "presentation": {
+          "reveal": "always",
+        },
+      },
+    ],
+  },
 }

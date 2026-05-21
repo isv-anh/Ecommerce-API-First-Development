@@ -44,17 +44,6 @@ fs.readdirSync(inputDir).forEach((file) => {
         afterAllFilesWrite: "prettier --write",
       },
     };
-
-    apis[`${name}-zod`] = {
-      input: {
-        target: path.join(inputDir, file),
-      },
-      output: {
-        mode: "split",
-        target: `./src/generated/zod/${name}.ts`,
-        client: "zod",
-      },
-    };
   }
 });
 
