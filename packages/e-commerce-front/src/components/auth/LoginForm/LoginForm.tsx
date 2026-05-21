@@ -31,10 +31,14 @@ export default function LoginForm({
   const router = useRouter();
 
   const onSubmit: SubmitHandler<LoginRequest> = async (data) => {
-    await mutation.mutateAsync({
-      data: { username: data.username, password: data.password },
-    });
-    router.push("/");
+    try {
+      await mutation.mutateAsync({
+        data: { username: data.username, password: data.password },
+      });
+      router.push("/");
+    } catch {
+      // Error state handled by mutation.isError
+    }
   };
 
   return (
