@@ -7,7 +7,7 @@ import { useParams } from "next/navigation";
 const CategoryTree = () => {
   const { categoryId } = useParams<{ categoryId: string }>();
   const categoryQuery = useGetCategoriesSuspense();
-  const categories = categoryQuery.data.data.categories;
+  const categories = categoryQuery.data.categories;
   return (
     <Box
       sx={{

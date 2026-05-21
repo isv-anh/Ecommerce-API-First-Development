@@ -3,15 +3,17 @@ import List from "@mui/material/List";
 import MenuItem from "@/components/navigation/NavigationMenu/MenuItem/MenuItem";
 import { NavigationMenuProps } from "@/components/navigation/NavigationMenu/types";
 
-const NavigationMenu = ({ appItems }: NavigationMenuProps) => {
+const NavigationMenu = ({ menuItems }: NavigationMenuProps) => {
   return (
     <List
-      sx={{ width: "100%", color: (theme) => theme.palette.common.white }}
-      component="nav"
-      aria-labelledby="nested-list-subheader"
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 0.5,
+      }}
     >
-      {appItems.map((appItem) => (
-        <MenuItem key={appItem.appId} appItem={appItem} />
+      {menuItems.map((menuItem) => (
+        <MenuItem key={menuItem.path} menuItem={menuItem} />
       ))}
     </List>
   );

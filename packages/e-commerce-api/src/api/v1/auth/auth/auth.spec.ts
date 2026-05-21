@@ -53,6 +53,7 @@ describe('AuthService', () => {
           useValue: {
             generateAccessToken: jest.fn(),
             generateRefreshToken: jest.fn(),
+            extractRefreshTokenPayload: jest.fn(),
           },
         },
       ],
@@ -191,15 +192,61 @@ describe('AuthService', () => {
   // ─── postRefreshToken ────────────────────────────────────────────────────
 
   describe('postRefreshToken', () => {
-    it('should return mocked refresh response', async () => {
-      const result = await service.postRefreshToken({
-        refreshToken: 'test-refresh-token',
+    const body = {
+      refreshToken: 'test-refresh-token',
+    };
+
+    it('should generate new access token and refresh token', async () => {
+      jwtService.extractRefreshTokenPayload.mockResolvedValue(mockPayload);
+
+      jwtService.generateAccessToken.mockResolvedValue(accessToken);
+
+      jwtService.generateRefreshToken.mockResolvedValue(refreshToken);
+
+      const result = await service.postRefreshToken(body);
+
+      expect(jwtService.extractRefreshTokenPayload).toHaveBeenCalledTimes(1);
+
+      expect(jwtService.extractRefreshTokenPayload).toHaveBeenCalledWith(
+        'test-refresh-token',
+      );
+
+      expect(jwtService.generateAccessToken).toHaveBeenCalledTimes(1);
+
+      expect(jwtService.generateAccessToken).toHaveBeenCalledWith({
+        sub: mockPayload.sub,
+        email: mockPayload.email,
+        roles: mockPayload.roles,
+      });
+
+      expect(jwtService.generateRefreshToken).toHaveBeenCalledTimes(1);
+
+      expect(jwtService.generateRefreshToken).toHaveBeenCalledWith({
+        sub: mockPayload.sub,
+        email: mockPayload.email,
+        roles: mockPayload.roles,
       });
 
       expect(result).toEqual({
-        accessToken: 'testToken',
-        refreshToken: 'testRefreshToken',
+        accessToken,
+        refreshToken,
       });
+    });
+
+    it('should throw when refresh token is invalid', async () => {
+      jwtService.extractRefreshTokenPayload.mockRejectedValue(
+        new UnauthorizedException('Invalid refresh token'),
+      );
+
+      await expect(service.postRefreshToken(body)).rejects.toThrow(
+        UnauthorizedException,
+      );
+
+      expect(jwtService.extractRefreshTokenPayload).toHaveBeenCalledTimes(1);
+
+      expect(jwtService.generateAccessToken).not.toHaveBeenCalled();
+
+      expect(jwtService.generateRefreshToken).not.toHaveBeenCalled();
     });
   });
 

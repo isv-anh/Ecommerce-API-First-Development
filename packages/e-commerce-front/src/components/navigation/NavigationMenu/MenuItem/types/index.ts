@@ -1,6 +1,6 @@
-import { AppItem } from "../../types";
+import { MenuItem } from "@/utils/pathMap";
 
 export interface MenuItemProps {
-  appItem: AppItem;
+  menuItem: MenuItem;
   pl?: number;
 }

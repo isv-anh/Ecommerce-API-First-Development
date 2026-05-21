@@ -11,7 +11,7 @@ import AppNavigationList from "./AppNavigationList/AppNavigationList";
 import Divider from "@mui/material/Divider";
 import Toolbar from "@mui/material/Toolbar";
 
-const drawerWidth = 240;
+const drawerWidth = 260;
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
   open?: boolean;

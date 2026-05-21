@@ -1,11 +1,5 @@
-export interface AppItem {
-  appId: string;
-  appName: string;
-  appIcon?: string;
-  url?: string;
-  children: AppItem[];
-}
+import { MenuItem } from "@/utils/pathMap";
 
 export interface NavigationMenuProps {
-  appItems: AppItem[];
+  menuItems: MenuItem[];
 }

@@ -14,12 +14,13 @@ import { usePostLogin } from "@e-commerce/api-client/endpoints/auth/auth";
 import { postLoginBody } from "@e-commerce/api-client/zod/auth";
 import { customZodResolver } from "@/utils/customZodResolve";
 import { LoginFormProps } from "@/components/auth/LoginForm/types";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm({
   title = "Đăng nhập",
   mode,
 }: LoginFormProps) {
-  const { control, handleSubmit, setError } = useForm<LoginRequest>({
+  const { control, handleSubmit } = useForm<LoginRequest>({
     defaultValues: { username: "", password: "" },
     mode: "onSubmit",
     resolver: customZodResolver(postLoginBody),
@@ -27,17 +28,17 @@ export default function LoginForm({
 
   const mutation = usePostLogin();
 
+  const router = useRouter();
+
   const onSubmit: SubmitHandler<LoginRequest> = async (data) => {
-    mutation.mutate(
-      { data: { username: data.username, password: data.password } },
-      {
-        onError: (err: any) => {
-          const message =
-            err?.response?.data?.message ?? err?.message ?? "Lỗi đăng nhập";
-          setError("password", { message });
-        },
-      },
-    );
+    try {
+      await mutation.mutateAsync({
+        data: { username: data.username, password: data.password },
+      });
+      router.push("/");
+    } catch {
+      // Error state handled by mutation.isError
+    }
   };
 
   return (
@@ -46,7 +47,7 @@ export default function LoginForm({
       justifyContent="center"
       alignItems="center"
       width="100%"
-      minHeight="60vh"
+      minHeight="100vh"
       sx={{ px: 2 }}
     >
       <Paper sx={{ maxWidth: 480, width: "100%", p: 4 }} elevation={6}>

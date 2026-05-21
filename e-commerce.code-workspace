@@ -5,6 +5,13 @@
     }
   ],
   "settings": {
+    "editor.fontSize": 14,
+    "editor.codeActionsOnSave": {},
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "[typescriptreact]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+    },
     "workbench.iconTheme": "material-icon-theme",
     "java.configuration.updateBuildConfiguration": "interactive",
     "typescript.preferences.includePackageJsonAutoImports": "on",

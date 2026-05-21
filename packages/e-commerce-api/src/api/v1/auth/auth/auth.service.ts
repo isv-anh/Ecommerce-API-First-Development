@@ -62,12 +62,28 @@ export class AuthService {
   /**
    * POST /auth/refresh
    */
+  // TODO: revoke refresh token
   async postRefreshToken(
     body: PostRefreshTokenBody,
   ): Promise<PostRefreshToken200Response> {
+    const payload = await this.jwtService.extractRefreshTokenPayload(
+      body.refreshToken,
+    );
+
+    const accessToken = await this.jwtService.generateAccessToken({
+      email: payload.email,
+      roles: payload.roles,
+      sub: payload.sub,
+    });
+    const refreshToken = await this.jwtService.generateRefreshToken({
+      email: payload.email,
+      roles: payload.roles,
+      sub: payload.sub,
+    });
+
     return {
-      accessToken: 'testToken',
-      refreshToken: 'testRefreshToken',
+      accessToken,
+      refreshToken,
     };
   }
 
@@ -75,7 +91,6 @@ export class AuthService {
    * POST /auth/register
    */
   async postRegister(body: PostRegisterBody): Promise<PostRegister200Response> {
-    console.log('AuthService called');
     const user = await this.usersService.register(body);
 
     const payload: JwtPayload = {
