@@ -5,15 +5,11 @@ import { UnauthorizedException } from '@nestjs/common';
 import { JwtService } from './jwt.service';
 import { JwtService as NestjsJwtService } from '@nestjs/jwt';
 import type { JwtPayload } from '@/api/v1/auth/services/jwt-service/types';
-
-jest.mock('@nestjs/jwt', () => ({
-  JwtService: jest.fn().mockImplementation(() => ({
-    verifyAsync: jest.fn(),
-    signAsync: jest.fn(),
-  })),
-}));
+import { ConfigService } from '@nestjs/config';
 
 // ─── Fixtures ─────────────────────────────────────────────────────────────────
+
+const refreshSecret = 'mock-refresh-secret';
 
 const mockPayload: JwtPayload = {
   sub: '123e4567-e89b-12d3-a456-426614174000',
@@ -27,6 +23,8 @@ describe('JwtService', () => {
   let service: JwtService;
   let nestjsJwtService: jest.Mocked<NestjsJwtService>;
 
+  let configService: jest.Mocked<ConfigService>;
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -38,11 +36,21 @@ describe('JwtService', () => {
             signAsync: jest.fn(),
           },
         },
+        {
+          provide: ConfigService,
+          useValue: {
+            getOrThrow: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
     service = module.get<JwtService>(JwtService);
     nestjsJwtService = module.get(NestjsJwtService);
+
+    configService = module.get(ConfigService);
+
+    configService.getOrThrow.mockReturnValue(refreshSecret);
 
     jest.clearAllMocks();
   });
@@ -90,6 +98,7 @@ describe('JwtService', () => {
 
       expect(nestjsJwtService.verifyAsync).toHaveBeenCalledTimes(1);
       expect(nestjsJwtService.verifyAsync).toHaveBeenCalledWith(token, {
+        secret: refreshSecret,
         algorithms: ['HS256'],
       });
 
@@ -141,6 +150,7 @@ describe('JwtService', () => {
 
       expect(nestjsJwtService.signAsync).toHaveBeenCalledTimes(1);
       expect(nestjsJwtService.signAsync).toHaveBeenCalledWith(mockPayload, {
+        secret: refreshSecret,
         algorithm: 'HS256',
         expiresIn: '7d',
       });
