@@ -1,4 +1,4 @@
-import { CategoryResponse } from "@e-commerce/api-client/schemas/product";
+import type { CategoryResponse } from "@e-commerce/api-client/schemas/product";
 
 type TreeViewItem = {
   id: string;

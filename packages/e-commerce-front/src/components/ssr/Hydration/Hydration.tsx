@@ -1,5 +1,5 @@
-import { DehydratedState, HydrationBoundary } from "@tanstack/react-query";
-import { ReactNode } from "react";
+import { type DehydratedState, HydrationBoundary } from "@tanstack/react-query";
+import type { ReactNode } from "react";
 
 export default function Hydration({
   state,

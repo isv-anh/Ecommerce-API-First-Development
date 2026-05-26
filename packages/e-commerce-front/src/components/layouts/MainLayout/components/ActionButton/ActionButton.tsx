@@ -1,5 +1,5 @@
 import IconButton from "@mui/material/IconButton";
-import { ActionButtonProps } from "./types";
+import type { ActionButtonProps } from "./types";
 import Tooltip from "@mui/material/Tooltip";
 
 const ActionButton = ({

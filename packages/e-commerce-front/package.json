@@ -6,6 +6,7 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
+    "lint:fix": "eslint . --fix",
     "lint": "eslint .",
     "test": "vitest",
     "generate:api-client": "pnpm run -w api-client:build",

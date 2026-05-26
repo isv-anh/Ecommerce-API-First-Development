@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react";
 import { useForm, Controller } from "react-hook-form";
 import BaseTextField from "./BaseTextField";
 import { Box } from "@mui/material";

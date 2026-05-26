@@ -1,5 +1,5 @@
 import Stack from "@mui/material/Stack";
-import { NotificationListProps } from "./types";
+import type { NotificationListProps } from "./types";
 import NotificationItem from "./NotificationItem/NotificationItem";
 import { NotificationStatus } from "../NotificationContent/types";
 import Button from "@mui/material/Button";

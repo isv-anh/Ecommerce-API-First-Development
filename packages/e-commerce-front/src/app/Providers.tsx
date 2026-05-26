@@ -1,6 +1,7 @@
 "use client";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { ReactNode, useState } from "react";
+import type { ReactNode} from "react";
+import { useState } from "react";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";

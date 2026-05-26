@@ -1,4 +1,4 @@
-import { TabsProps as MuiTabsProps } from "@mui/material/Tabs";
+import type { TabsProps as MuiTabsProps } from "@mui/material/Tabs";
 
 export interface TabItem {
   label: string;

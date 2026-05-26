@@ -1,5 +1,5 @@
 import Popover from "@mui/material/Popover";
-import { NotificationContentProps, NotificationStatus } from "./types";
+import type { NotificationContentProps, NotificationStatus } from "./types";
 
 import { useState } from "react";
 import { tabItems } from "./constants/tabItem";

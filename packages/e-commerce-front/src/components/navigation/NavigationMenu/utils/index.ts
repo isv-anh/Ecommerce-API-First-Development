@@ -1,5 +1,5 @@
-import { App } from "@/generated/schemas/system";
-import { AppItem } from "../types";
+import type { App } from "@/generated/schemas/system";
+import type { AppItem } from "../types";
 
 export const mapToAppItem = (apps: App[]): AppItem[] => {
   const appMap = new Map<number | null, AppItem[]>();

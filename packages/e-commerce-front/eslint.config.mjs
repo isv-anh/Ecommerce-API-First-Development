@@ -7,6 +7,9 @@ const eslintConfig = defineConfig([
   ...nextVitals,
   prettier,
   {
+    languageOptions: {
+      parser: tseslint.parser,
+    },
     plugins: {
       "@typescript-eslint": tseslint.plugin,
     },
@@ -21,6 +24,18 @@ const eslintConfig = defineConfig([
         },
       ],
       "@typescript-eslint/no-unused-vars": "error",
+
+      /**
+       * Enforce:
+       * import type { Foo } from "./types";
+       */
+      "@typescript-eslint/consistent-type-imports": [
+        "error",
+        {
+          prefer: "type-imports",
+          fixStyle: "separate-type-imports",
+        },
+      ],
     },
   },
   // Override default ignores of eslint-config-next.

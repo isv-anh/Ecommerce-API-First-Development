@@ -3,7 +3,7 @@ import FeaturedCategories from "@/features/main/home/components/FeaturedCategori
 import Newsletter from "@/features/main/home/components/Newsletter/Newsletter";
 import SpotlightCarousel from "@/features/main/home/components/SpotlightCarousel/SpotlightCarousel";
 import Stack from "@mui/material/Stack";
-import SupenseWrapper from "@/components/data-display/SupenseWrapper/SupenseWrapper";
+import SuspenseWrapper from "@/components/feedback/SuspenseWrapper/SuspenseWrapper";
 import dynamic from "next/dynamic";
 import Skeleton from "@mui/material/Skeleton";
 
@@ -20,9 +20,9 @@ const Home = () => {
     <Stack>
       <SpotlightCarousel timeout={3000} />
       <FeaturedCategories />
-      <SupenseWrapper height={500}>
+      <SuspenseWrapper height={500}>
         <ProductGrid />
-      </SupenseWrapper>
+      </SuspenseWrapper>
       <Newsletter />
     </Stack>
   );

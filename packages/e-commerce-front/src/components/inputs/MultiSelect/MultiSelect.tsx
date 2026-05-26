@@ -1,6 +1,7 @@
 import BaseMultiSelect from "@/components/inputs/MultiSelect/BaseMultiSelect/BaseMultiSelect";
-import { MultiSelectProps } from "@/components/inputs/MultiSelect/types";
-import { Controller, FieldValues } from "react-hook-form";
+import type { MultiSelectProps } from "@/components/inputs/MultiSelect/types";
+import type { FieldValues } from "react-hook-form";
+import { Controller } from "react-hook-form";
 
 function MultiSelect<TField extends FieldValues>({
   control,

@@ -2,7 +2,8 @@
 
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
-import { ReactNode, useEffect, useState } from "react";
+import type { ReactNode} from "react";
+import { useEffect, useState } from "react";
 
 const MockBrowser = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);

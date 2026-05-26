@@ -1,6 +1,6 @@
 import TextField from "@mui/material/TextField";
-import { BaseTextFieldProps } from "./types";
-import { FieldValues } from "react-hook-form";
+import type { BaseTextFieldProps } from "./types";
+import type { FieldValues } from "react-hook-form";
 
 function BaseTextField<TField extends FieldValues>({
   field,
@@ -9,7 +9,7 @@ function BaseTextField<TField extends FieldValues>({
 }: BaseTextFieldProps<TField>) {
   return (
     <TextField
-      value={field?.value}
+      value={field?.value ?? ""}
       error={!!fieldError}
       helperText={fieldError?.message}
       onChange={field?.onChange}

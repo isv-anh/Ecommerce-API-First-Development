@@ -2512,6 +2512,9 @@
           },
           "parentId": {
             "$ref": "#/components/schemas/UUID"
+          },
+          "parentName": {
+            "$ref": "#/components/schemas/NonEmptyString"
           }
         },
         "examples": [

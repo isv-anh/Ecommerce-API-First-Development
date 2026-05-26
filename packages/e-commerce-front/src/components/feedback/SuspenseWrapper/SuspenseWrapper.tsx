@@ -2,7 +2,7 @@
 import Button from "@mui/material/Button";
 import Skeleton from "@mui/material/Skeleton";
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
-import { ReactNode, Suspense } from "react";
+import { type ReactNode, Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
 type LoadingFallbackProps = {
@@ -11,10 +11,10 @@ type LoadingFallbackProps = {
 };
 
 const LoadingFallback = ({ width, height }: LoadingFallbackProps) => {
-  return <Skeleton width={width} height={height} />;
+  return <Skeleton variant="rectangular" width={width} height={height} />;
 };
 
-const SupenseWrapper = ({
+const SuspenseWrapper = ({
   children,
   width,
   height,
@@ -42,4 +42,4 @@ const SupenseWrapper = ({
   );
 };
 
-export default SupenseWrapper;
+export default SuspenseWrapper;

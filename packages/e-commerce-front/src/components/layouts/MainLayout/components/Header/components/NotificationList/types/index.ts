@@ -1,4 +1,4 @@
-import { NotificationStatus } from "../../NotificationContent/types";
+import type { NotificationStatus } from "../../NotificationContent/types";
 
 export interface NotificationItem {
   id: string;

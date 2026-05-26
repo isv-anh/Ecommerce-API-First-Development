@@ -1,22 +1,47 @@
+type SortDirection = 'asc' | 'desc';
+
+type SortMapValue = string | ((direction: SortDirection) => object);
+
+export type SortMap = Record<string, SortMapValue>;
+
 /**
  * Parse sort query string into Prisma-compatible orderBy array.
  *
  * @example
- * parseSort("name:asc,createdAt:desc")
- * // => [{ name: "asc" }, { createdAt: "desc" }]
- *
- * @param sort - Sort string in format "field:direction,field2:direction"
- * @returns Array of orderBy objects for Prisma
- *
+ * parseSort("categoryName:asc,parentName:desc", {
+ *   categoryName: "name",
+ *   parentName: (direction) => ({
+ *     categories: {
+ *       name: direction,
+ *     },
+ *   }),
+ * })
  */
-export const parseSort = (sort?: string) => {
+export const parseSort = (sort?: string, sortMap: SortMap = {}) => {
   if (!sort) return [];
 
-  return sort.split(',').map((item) => {
-    const [field, direction] = item.split(':');
+  return sort
+    .split(',')
+    .filter(Boolean)
+    .flatMap((item) => {
+      const [field, rawDirection] = item.split(':');
 
-    return {
-      [field]: direction === 'desc' ? 'desc' : 'asc',
-    };
-  });
+      const mappedField = sortMap[field];
+
+      if (!mappedField) {
+        return [];
+      }
+
+      const direction: SortDirection = rawDirection === 'desc' ? 'desc' : 'asc';
+
+      if (typeof mappedField === 'string') {
+        return [
+          {
+            [mappedField]: direction,
+          },
+        ];
+      }
+
+      return [mappedField(direction)];
+    });
 };

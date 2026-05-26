@@ -1,5 +1,5 @@
 import { PrismaService } from '@/common/services/prisma.service';
-import { parseSort } from '@/utils/parse-sort';
+import { parseSort, SortMap } from '@/utils/parse-sort';
 import {
   GetCategories200Response,
   GetCategoriesQueryParams,
@@ -41,17 +41,42 @@ export class CategoriesRepository {
       }),
     };
 
+    const sortMap: SortMap = {
+      categoryName: 'name',
+      categoryId: 'id',
+      slug: 'slug',
+      parentName: (direction: 'asc' | 'desc') => ({
+        categories: {
+          name: direction,
+        },
+      }),
+      parentId: (direction: 'asc' | 'desc') => ({
+        categories: {
+          id: direction,
+        },
+      }),
+    };
+
     const categories = (
       await this.prisma.categories.findMany({
         where: whereClause,
-        orderBy: parseSort(query.orderBy) || [{ id: 'asc' }],
+        orderBy: parseSort(query.orderBy, sortMap) || [{ id: 'asc' }],
         take: query.pageSize,
         skip: query.pageSize * (query.page - 1),
+        include: {
+          categories: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
       })
     ).map((category) => ({
       categoryId: category.id,
       categoryName: category.name,
-      parentId: category.parent_id || undefined,
+      parentId: category.categories?.id || undefined,
+      parentName: category.categories?.name || undefined,
       slug: category.slug,
     }));
 
@@ -71,6 +96,14 @@ export class CategoriesRepository {
   ): Promise<GetCategoryByCategoryId200Response> {
     const category = await this.prisma.categories.findUnique({
       where: { id: categoryId },
+      include: {
+        categories: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
     });
     if (!category) {
       throw new NotFoundException('Category not found');
@@ -78,7 +111,8 @@ export class CategoriesRepository {
     return {
       categoryId: category.id,
       categoryName: category.name,
-      parentId: category.parent_id || undefined,
+      parentId: category.categories?.id || undefined,
+      parentName: category.categories?.name || undefined,
       slug: category.slug,
     };
   }

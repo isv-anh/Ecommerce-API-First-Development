@@ -14,7 +14,7 @@ describe('parseSort', () => {
   });
 
   it('should parse single sort field desc', () => {
-    expect(parseSort('createdAt:desc')).toEqual([{ createdAt: 'desc' }]);
+    expect(parseSort('createdAt:desc')).toEqual([{ created_at: 'desc' }]);
   });
 
   it('should default to asc when direction is invalid', () => {
@@ -35,8 +35,7 @@ describe('parseSort', () => {
   it('should handle extra commas gracefully', () => {
     expect(parseSort('name:asc,,createdAt:desc')).toEqual([
       { name: 'asc' },
-      { '': 'asc' }, // current behavior (no validation)
-      { createdAt: 'desc' },
+      { created_at: 'desc' },
     ]);
   });
 });

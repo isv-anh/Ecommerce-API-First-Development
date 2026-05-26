@@ -1,5 +1,5 @@
-import { Controller, FieldValues } from "react-hook-form";
-import { TextFieldProps } from "./types";
+import { Controller, type FieldValues } from "react-hook-form";
+import type { TextFieldProps } from "./types";
 import BaseTextField from "./BaseTextField/BaseTextField";
 
 export default function TextField<TField extends FieldValues>({

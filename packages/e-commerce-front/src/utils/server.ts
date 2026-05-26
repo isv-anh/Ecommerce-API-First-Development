@@ -1,5 +1,5 @@
 import "server-only";
-import { NextResponse } from "next/server";
+import type { NextResponse } from "next/server";
 
 /**
  * Store access token in a secure HTTP-only cookie.
