@@ -1,6 +1,5 @@
-import type { SvgIconProps } from "@mui/material";
 import type { GridToolbarProps } from "@mui/x-data-grid";
-import type { ElementType } from "react";
+import type { ReactNode } from "react";
 
 declare module "@mui/x-data-grid" {
   interface ToolbarPropsOverrides {
@@ -12,8 +11,8 @@ declare module "@mui/x-data-grid" {
 export type ToolbarButton = {
   label: string;
   action: () => void;
-  startIcon?: ElementType<SvgIconProps>;
-  endIcon?: ElementType<SvgIconProps>;
+  startIcon?: ReactNode;
+  endIcon?: ReactNode;
 };
 
 export type ToolbarProps = GridToolbarProps & {

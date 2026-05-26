@@ -30,7 +30,6 @@ export class CategoriesController implements BaseCategoriesControllerInterface {
   async getCategories(
     query: GetCategoriesQueryParams,
   ): Promise<GetCategories200Response> {
-    console.log('CATEGORY');
     return await this.service.getCategories(query);
   }
 

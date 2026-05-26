@@ -1,8 +1,8 @@
-import BaseSingleSelect from "@/components/inputs/SigleSelect/BaseSingleSelect/BaseSingleSelect";
-import type { SingleSelectProps } from "@/components/inputs/SigleSelect/types";
+import BaseSingleSelect from "@/components/inputs/SingleSelect/BaseSingleSelect/BaseSingleSelect";
+import type { SingleSelectProps } from "@/components/inputs/SingleSelect/types";
 import { Controller, type FieldValues } from "react-hook-form";
 
-const SigleSelect = <TField extends FieldValues>({
+const SingleSelect = <TField extends FieldValues>({
   control,
   name,
   options,
@@ -25,4 +25,4 @@ const SigleSelect = <TField extends FieldValues>({
   );
 };
 
-export default SigleSelect;
+export default SingleSelect;

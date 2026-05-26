@@ -3,7 +3,7 @@ import CategoryGrid from "@/features/admin/category/components/CategoryGrid/Cate
 
 const CategoryListContent = () => {
   return (
-    <SuspenseWrapper height={400}>
+    <SuspenseWrapper height={350}>
       <CategoryGrid />
     </SuspenseWrapper>
   );

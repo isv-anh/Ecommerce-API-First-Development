@@ -2,7 +2,6 @@
 import { categorySearchContext } from "@/features/admin/category/utils";
 import SearchProvider from "@/providers/SearchProvider/SearchProvider";
 import { getCategoriesQueryParams } from "@e-commerce/api-validation/zod/product";
-import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
@@ -23,15 +22,11 @@ const CategoryListLayout = ({
       <Paper
         sx={{
           height: "calc(100vh - 105px)",
-          display: "flex",
-          flexDirection: "column",
         }}
       >
-        <Stack divider={<Divider />} sx={{ flex: 1, minHeight: 0 }}>
+        <Stack divider={<Divider />}>
           {search}
-          <Box p={2} width={"100%"}>
-            {content}
-          </Box>
+          <Stack p={2}>{content}</Stack>
         </Stack>
       </Paper>
     </SearchProvider>
