@@ -60,8 +60,7 @@ export class CategoriesRepository {
     const categories = (
       await this.prisma.categories.findMany({
         where: whereClause,
-        const parsedOrderBy = parseSort(query.orderBy, sortMap);
-        orderBy: parsedOrderBy.length > 0 ? parsedOrderBy : [{ id: 'asc' }],
+        orderBy: parseSort(query.orderBy, sortMap) || [{ id: 'asc' }],
         take: query.pageSize,
         skip: query.pageSize * (query.page - 1),
         include: {
