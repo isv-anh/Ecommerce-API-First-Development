@@ -4,7 +4,7 @@ export type SubmitDialogProps = {
   open: boolean;
   onClose: () => void;
   onSubmit: () => void;
-  onDetele?: () => void;
+  onDelete?: () => void;
   deleteMessage?: string;
   title: string;
   children: ReactNode;
