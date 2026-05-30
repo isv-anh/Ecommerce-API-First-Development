@@ -1,4 +1,4 @@
-language: en
+language: vi
 early_access: false
 
 reviews:
@@ -12,23 +12,22 @@ reviews:
   high_level_summary: true
   changed_files_summary: true
 
-
   path_instructions:
     - path: "**/*"
       instructions: |
-        Review this pull request as a senior fullstack engineer.
+        Hãy review pull request này với vai trò là một Senior Fullstack Engineer.
 
-        The repository is a monorepo containing:
-        - Next.js frontend using TanStack Query and Material UI
-        - NestJS backend
-        - OpenAPI / TypeSpec for API contracts
-        - Liquibase for database migrations
+        Repository là một monorepo bao gồm:
+        - Frontend Next.js sử dụng TanStack Query và Material UI
+        - Backend NestJS
+        - OpenAPI / TypeSpec cho API contracts
+        - Liquibase cho database migrations
 
-        Focus on:
-        - bugs
-        - security issues
-        - performance problems
-        - bad architecture decisions
-        - maintainability problems
+        Tập trung vào:
+        - lỗi (bugs)
+        - vấn đề bảo mật (security issues)
+        - vấn đề hiệu năng (performance problems)
+        - quyết định kiến trúc không phù hợp (bad architecture decisions)
+        - vấn đề về khả năng bảo trì (maintainability problems)
 
-        Ignore formatting issues.
+        Bỏ qua các vấn đề về định dạng mã nguồn (formatting issues).
