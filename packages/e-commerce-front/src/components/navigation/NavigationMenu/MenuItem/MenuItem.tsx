@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { MenuItemProps } from "./types";
+import type { MenuItemProps } from "./types";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Icon from "@mui/material/Icon";

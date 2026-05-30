@@ -1,4 +1,4 @@
-import { TabsProps } from "./types";
+import type { TabsProps } from "./types";
 import MuiTabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Badge from "@mui/material/Badge";

@@ -1,6 +1,6 @@
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import { NotificationItemProps } from "./types";
+import type { NotificationItemProps } from "./types";
 import { format } from "date-fns";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";

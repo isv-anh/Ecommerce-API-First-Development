@@ -43,6 +43,7 @@ model CategoryResponse {
     categoryName: NonEmptyString;
     slug: NonEmptyString;
     parentId?: UUID;
+    parentName?: NonEmptyString;
 }
 
 @example(#{

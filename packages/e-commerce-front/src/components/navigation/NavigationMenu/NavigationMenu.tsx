@@ -1,7 +1,7 @@
 import List from "@mui/material/List";
 
 import MenuItem from "@/components/navigation/NavigationMenu/MenuItem/MenuItem";
-import { NavigationMenuProps } from "@/components/navigation/NavigationMenu/types";
+import type { NavigationMenuProps } from "@/components/navigation/NavigationMenu/types";
 
 const NavigationMenu = ({ menuItems }: NavigationMenuProps) => {
   return (

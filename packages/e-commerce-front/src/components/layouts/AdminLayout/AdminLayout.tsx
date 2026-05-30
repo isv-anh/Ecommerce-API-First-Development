@@ -1,7 +1,7 @@
 "use client";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import AppNavigation from "@/components/navigation/AppNavigation/AppNavigation";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";

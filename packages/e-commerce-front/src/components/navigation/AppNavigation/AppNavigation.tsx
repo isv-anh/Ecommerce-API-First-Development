@@ -1,7 +1,7 @@
 "use client";
 import { styled } from "@mui/material/styles";
 import React, { useEffect, useState } from "react";
-import { AppNavigationProps } from "./types";
+import type { AppNavigationProps } from "./types";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import ViewSidebarIcon from "@mui/icons-material/ViewSidebar";
@@ -17,6 +17,9 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
   open?: boolean;
 }>(({ theme }) => ({
   flexGrow: 1,
+  display: "flex",
+  flexDirection: "column",
+  minWidth: 0,
   // eslint-disable-next-line @typescript-eslint/no-magic-numbers
   padding: theme.spacing(3),
   transition: theme.transitions.create("margin", {
@@ -70,7 +73,7 @@ const AppNavigation = ({
           zIndex={(theme) => theme.zIndex.appBar}
           bgcolor={(theme) => theme.palette.primary.main}
           height={40}
-          borderRadius={2}
+          borderRadius={3}
         >
           <IconButton
             onClick={handleDrawerOpen}
@@ -89,11 +92,20 @@ const AppNavigation = ({
               width: drawerWidth,
               boxSizing: "border-box",
               backgroundColor: (theme) => theme.palette.primary.main,
-              borderRadius: 4,
+              borderRadius: 5,
               padding: 1,
               marginTop: "69px",
               marginLeft: "4px",
               height: `calc(100% - 72px)`,
+              // elevation
+              // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+              boxShadow: (theme) => theme.shadows[12],
+
+              // smooth effect
+              transition: (theme) =>
+                theme.transitions.create(["box-shadow", "transform"], {
+                  duration: theme.transitions.duration.standard,
+                }),
             },
           }}
           variant="persistent"

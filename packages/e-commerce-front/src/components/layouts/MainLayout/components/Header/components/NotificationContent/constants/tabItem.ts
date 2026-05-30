@@ -1,4 +1,4 @@
-import { TabItem } from "@/components/navigation/Tabs/types";
+import type { TabItem } from "@/components/navigation/Tabs/types";
 import { NotificationStatus } from "../types";
 
 export const tabItems: TabItem[] = [

@@ -1,8 +1,9 @@
-import {
+import type {
   Breadcrumb,
   BreadcrumbsContextType,
 } from "@/components/navigation/Breadcrumbs/components/BreadcrumbsProvider/types";
-import { createContext, ReactNode, useState } from "react";
+import type { ReactNode } from "react";
+import { createContext, useState } from "react";
 
 export const BreadcrumbsContext = createContext<
   BreadcrumbsContextType | undefined

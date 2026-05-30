@@ -1,10 +1,10 @@
-import { BaseMultiSelectProps } from "@/components/inputs/MultiSelect/BaseMultiSelect/types";
+import type { BaseMultiSelectProps } from "@/components/inputs/MultiSelect/BaseMultiSelect/types";
 import FormControl from "@mui/material/FormControl";
 import FormHelperText from "@mui/material/FormHelperText";
 import Checkbox from "@mui/material/Checkbox";
 import Autocomplete from "@mui/material/Autocomplete";
 import BaseTextField from "@/components/inputs/TextField/BaseTextField/BaseTextField";
-import { FieldValues } from "react-hook-form";
+import type { FieldValues } from "react-hook-form";
 import Chip from "@mui/material/Chip";
 
 function BaseMultiSelect<TField extends FieldValues>({

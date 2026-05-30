@@ -12,7 +12,9 @@
   ],
   "settings": {
     "editor.fontSize": 14,
-    "editor.codeActionsOnSave": {},
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "always",
+    },
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "[typescriptreact]": {

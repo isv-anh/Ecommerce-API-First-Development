@@ -84,16 +84,14 @@ import { Box, Button } from "@mui/material";
 
 - 3. Always prefer reusing types and Zod schemas from `@e-commerce/api-client` to keep frontend and backend validation aligned.
 
-- 4. Use the `customZodResolver` utility from `utils/customZodResolver.ts` to integrate Zod with React Hook Form.
-
-- 5. Avoid writing inline validation logic inside components; validation should be defined through Zod schemas.
+- 4. Avoid writing inline validation logic inside components; validation should be defined through Zod schemas.
 
 **Example:**
 
 ```ts
 import { z } from "zod";
 import { useForm } from "react-hook-form";
-import { customZodResolver } from "@/utils/customZodResolver";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 // Define schema (normally should come from @e-commerce/api-client)
 export const postLoginBody = z.object({
@@ -110,7 +108,7 @@ const { control, handleSubmit, setError } = useForm<LoginRequest>({
     password: "",
   },
   mode: "onSubmit",
-  resolver: customZodResolver(postLoginBody),
+  resolver: zodResolver(postLoginBody),
 });
 ```
 
@@ -148,7 +146,7 @@ const { control, handleSubmit, setError } = useForm<LoginRequest>({
 
 - Internal Packages
   - `@e-commerce/api-client`: Generated API hooks and schemas
-  - `utils/customZodResolver.ts`: Custom resolver for integrating Zod with React Hook Form
+  - `@e-commerce/api-validation`: Generate Zod Validation
 
 - Additional Skills
   - [Theme Guidelines](./theme/THEME.md): Guidelines for theme usage and token management.

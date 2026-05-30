@@ -6,8 +6,7 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { customZodResolver } from "@/utils/customZodResolve";
-
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const schema = z.object({
   email: z.string().email("Email không hợp lệ"),
@@ -17,7 +16,7 @@ type FormValues = z.infer<typeof schema>;
 
 const Newsletter = () => {
   const { register, handleSubmit } = useForm<FormValues>({
-    resolver: customZodResolver(schema),
+    resolver: zodResolver(schema),
   });
 
   const onSubmit = (values: FormValues) => {
@@ -27,7 +26,10 @@ const Newsletter = () => {
   };
 
   return (
-    <Box component="section" sx={{ width: "100%", px: { xs: 2, md: 6 }, py: 4 }}>
+    <Box
+      component="section"
+      sx={{ width: "100%", px: { xs: 2, md: 6 }, py: 4 }}
+    >
       <Typography variant="header" sx={{ mb: 1 }}>
         Đăng ký nhận tin
       </Typography>

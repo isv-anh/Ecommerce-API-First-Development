@@ -1,5 +1,5 @@
-import { AutocompleteProps } from "@mui/material/Autocomplete";
-import {
+import type { AutocompleteProps } from "@mui/material/Autocomplete";
+import type {
   ControllerRenderProps,
   FieldError,
   FieldValues,

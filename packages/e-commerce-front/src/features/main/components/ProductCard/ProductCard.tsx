@@ -1,6 +1,6 @@
 "use client";
 import Card from "@mui/material/Card";
-import { ProductCardProps } from "./types";
+import type { ProductCardProps } from "./types";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import CardContent from "@mui/material/CardContent";

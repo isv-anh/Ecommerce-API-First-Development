@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 import { palette } from "@/theme/palette";
 import { typography } from "@/theme/typography";
-import { alpha, createTheme, Shadows } from "@mui/material/styles";
+import { alpha, createTheme, type Shadows } from "@mui/material/styles";
 
 const createPrimaryShadow = (mainColor: string): Shadows => {
   return [
@@ -53,13 +53,7 @@ const theme = createTheme({
           scrollbarGutter: "stable overlay", // modern browser
         },
 
-        "*::-webkit-scrollbar": {
-          width: "4px",
-          height: "4px",
-        },
-
         "*::-webkit-scrollbar-thumb": {
-          backgroundColor: "#C77DFF",
           borderRadius: "8px",
         },
       },
@@ -111,6 +105,18 @@ const theme = createTheme({
       },
       defaultProps: {
         variant: "outlined",
+        size: "small",
+      },
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          borderRadius: "16px",
+        },
+      },
+    },
+    MuiFormControl: {
+      defaultProps: {
         size: "small",
       },
     },
