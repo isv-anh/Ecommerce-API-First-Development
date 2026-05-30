@@ -57,10 +57,12 @@ export class CategoriesRepository {
       }),
     };
 
+    const sort = parseSort(query.orderBy, sortMap);
+
     const categories = (
       await this.prisma.categories.findMany({
         where: whereClause,
-        orderBy: parseSort(query.orderBy, sortMap) || [{ id: 'asc' }],
+        orderBy: sort.length > 0 ? sort : [{ id: 'asc' }],
         take: query.pageSize,
         skip: query.pageSize * (query.page - 1),
         include: {

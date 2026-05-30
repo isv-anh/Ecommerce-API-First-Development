@@ -68,7 +68,7 @@ const UpdateCategoryForm = ({
 
   return (
     <SubmitDialog
-      onDetele={onDelete}
+      onDelete={onDelete}
       title="Chỉnh sửa danh mục"
       open={open}
       onClose={onClose}

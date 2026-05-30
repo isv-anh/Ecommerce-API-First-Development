@@ -68,7 +68,7 @@ const UpdateBrandForm = ({
 
   return (
     <SubmitDialog
-      onDetele={onDelete}
+      onDelete={onDelete}
       title="Chỉnh sửa thương hiệu"
       open={open}
       onClose={onClose}

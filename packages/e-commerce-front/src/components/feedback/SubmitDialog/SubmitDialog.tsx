@@ -17,7 +17,7 @@ const SubmitDialog = ({
   open,
   onClose,
   onSubmit,
-  onDetele,
+  onDelete,
   deleteMessage = "Bạn có chắc chắn muốn xóa không? Hành động này không thể hoàn tác.",
   title,
   children,
@@ -30,7 +30,7 @@ const SubmitDialog = ({
   const handleConfirmClose = () => setConfirmOpen(false);
   const handleConfirm = async () => {
     setConfirmOpen(false);
-    onDetele?.();
+    onDelete?.();
   };
 
   return (
@@ -65,7 +65,7 @@ const SubmitDialog = ({
         <DialogContent>{children}</DialogContent>
         <Divider />
         <DialogActions sx={{ px: 3, py: 2, justifyContent: "space-between" }}>
-          {onDetele ? (
+          {onDelete ? (
             <Button
               variant="outlined"
               color="error"

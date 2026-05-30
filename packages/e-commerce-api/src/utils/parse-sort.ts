@@ -26,11 +26,7 @@ export const parseSort = (sort?: string, sortMap: SortMap = {}) => {
     .flatMap((item) => {
       const [field, rawDirection] = item.split(':');
 
-      const mappedField = sortMap[field];
-
-      if (!mappedField) {
-        return [];
-      }
+      const mappedField = sortMap[field] ?? field;
 
       const direction: SortDirection = rawDirection === 'desc' ? 'desc' : 'asc';
 
