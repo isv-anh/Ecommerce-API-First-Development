@@ -13,8 +13,7 @@
     "generate:open-api": "pnpm --filter openapi-typespec generate",
     "api-client:build": "pnpm --filter @e-commerce/api-client build",
     "api-validation:build": "pnpm --filter @e-commerce/api-validation build",
-    "generate:all": "pnpm run generate:open-api && pnpm run api-client:build && pnpm run api-validation:build",
-    "migrate": "docker compose run --rm liquibase"
+    "generate:all": "pnpm run generate:open-api && pnpm run api-client:build && pnpm run api-validation:build"
   },
   "pnpm": {
     "overrides": {

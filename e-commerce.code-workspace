@@ -23,14 +23,12 @@
     "tasks": [
       {
         "label": "Setup Environtment",
-        "detail": "Setup the development environment for e-commerce project",
-        "command": "bash",
+        "detail": "Setup the development environment for HRM project",
+        "command": "chmod +x ./scripts/setup.sh && ./scripts/setup.sh",
         "type": "shell",
-        "args": [
-          "-c",
-          "./ansible/setup.sh && docker compose down -v --remove-orphans && pnpm run migrate",
-        ],
+        "args": [],
         "problemMatcher": [],
+        "dependsOn": ["Install Extensions"],
       },
       {
         "label": "Install Extensions",
