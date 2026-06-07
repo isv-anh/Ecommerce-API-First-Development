@@ -66,7 +66,7 @@ LABELS=$(gh issue view "$ISSUE_NUMBER" \
 
 git checkout -b "$BRANCH_NAME"
 
-git commit --allow-empty -m "Tạo PR"
+git commit --allow-empty -m "$BRANCH_NAME"
 
 git push -u origin "$BRANCH_NAME"
 
