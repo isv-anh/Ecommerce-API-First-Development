@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 OWNER="ndh-anh"
 REPO="e-commerce"
