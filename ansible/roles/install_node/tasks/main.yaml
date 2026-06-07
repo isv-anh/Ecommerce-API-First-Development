@@ -14,7 +14,7 @@
   block:
     - name: Thêm repository Node.js
 
-      shell: "curl -fsSL https://deb.nodesource.com/setup_24.x | bash -"
+      shell: "curl -fsSL https://deb.nodesource.com/setup_22.x | bash -"
 
       become: true
 
