@@ -11,12 +11,14 @@
     path: ./packages/e-commerce-api/.env
     regexp: "^DB_USERNAME="
     line: "DB_USERNAME={{ pg_user }}"
+  no_log: true
 
 - name: Thêm DB_PASSWORD vào e-commerce-api
   lineinfile:
     path: ./packages/e-commerce-api/.env
     regexp: "^DB_PASSWORD="
     line: "DB_PASSWORD={{ pg_password }}"
+  no_log: true
 
 - name: Thêm DB_HOST vào e-commerce-api
   lineinfile:
@@ -44,6 +46,7 @@
   shell: openssl rand -hex 64
   register: jwt_access_secret
   when: jwt_access_exists.stdout == "0"
+  no_log: true
 
 - name: Thêm JWT_ACCESS_SECRET vào e-commerce-api
   lineinfile:
@@ -51,6 +54,7 @@
     regexp: "^JWT_ACCESS_SECRET="
     line: "JWT_ACCESS_SECRET={{ jwt_access_secret.stdout }}"
   when: jwt_access_exists.stdout == "0"
+  no_log: true
 
 - name: Kiểm tra JWT_REFRESH_SECRET đã tồn tại chưa
   shell: grep -c "^JWT_REFRESH_SECRET=.\+" ./packages/e-commerce-api/.env || true
@@ -60,6 +64,7 @@
   shell: openssl rand -hex 64
   register: jwt_refresh_secret
   when: jwt_refresh_exists.stdout == "0"
+  no_log: true
 
 - name: Thêm JWT_REFRESH_SECRET vào e-commerce-api
   lineinfile:
@@ -67,3 +72,4 @@
     regexp: "^JWT_REFRESH_SECRET="
     line: "JWT_REFRESH_SECRET={{ jwt_refresh_secret.stdout }}"
   when: jwt_refresh_exists.stdout == "0"
+  no_log: true
