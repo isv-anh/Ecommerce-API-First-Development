@@ -43,7 +43,7 @@
 - name: Cài đặt PNPM
 
   npm:
-    name: pnpm
+    name: pnpm@10.13.1
 
     global: yes
 
