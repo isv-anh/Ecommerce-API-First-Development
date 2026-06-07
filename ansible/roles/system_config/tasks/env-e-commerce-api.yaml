@@ -1,0 +1,69 @@
+---
+- name: Sao chép env.example thành .env
+  copy:
+    src: ./packages/e-commerce-api/.env.example
+    dest: ./packages/e-commerce-api/.env
+    remote_src: true
+    force: false
+
+- name: Thêm DB_USERNAME vào e-commerce-api
+  lineinfile:
+    path: ./packages/e-commerce-api/.env
+    regexp: "^DB_USERNAME="
+    line: "DB_USERNAME={{ pg_user }}"
+
+- name: Thêm DB_PASSWORD vào e-commerce-api
+  lineinfile:
+    path: ./packages/e-commerce-api/.env
+    regexp: "^DB_PASSWORD="
+    line: "DB_PASSWORD={{ pg_password }}"
+
+- name: Thêm DB_HOST vào e-commerce-api
+  lineinfile:
+    path: ./packages/e-commerce-api/.env
+    regexp: "^DB_HOST="
+    line: "DB_HOST={{ db_host }}"
+
+- name: Thêm DB_PORT vào e-commerce-api
+  lineinfile:
+    path: ./packages/e-commerce-api/.env
+    regexp: "^DB_PORT="
+    line: "DB_PORT={{ db_port }}"
+
+- name: Thêm DB_NAME vào e-commerce-api
+  lineinfile:
+    path: ./packages/e-commerce-api/.env
+    regexp: "^DB_NAME="
+    line: "DB_NAME={{ db_name }}"
+
+- name: Kiểm tra JWT_ACCESS_SECRET đã tồn tại chưa
+  shell: grep -c "^JWT_ACCESS_SECRET=.\+" ./packages/e-commerce-api/.env || true
+  register: jwt_access_exists
+
+- name: Tạo JWT_ACCESS_SECRET ngẫu nhiên
+  shell: openssl rand -hex 64
+  register: jwt_access_secret
+  when: jwt_access_exists.stdout == "0"
+
+- name: Thêm JWT_ACCESS_SECRET vào e-commerce-api
+  lineinfile:
+    path: ./packages/e-commerce-api/.env
+    regexp: "^JWT_ACCESS_SECRET="
+    line: "JWT_ACCESS_SECRET={{ jwt_access_secret.stdout }}"
+  when: jwt_access_exists.stdout == "0"
+
+- name: Kiểm tra JWT_REFRESH_SECRET đã tồn tại chưa
+  shell: grep -c "^JWT_REFRESH_SECRET=.\+" ./packages/e-commerce-api/.env || true
+  register: jwt_refresh_exists
+
+- name: Tạo JWT_REFRESH_SECRET ngẫu nhiên
+  shell: openssl rand -hex 64
+  register: jwt_refresh_secret
+  when: jwt_refresh_exists.stdout == "0"
+
+- name: Thêm JWT_REFRESH_SECRET vào e-commerce-api
+  lineinfile:
+    path: ./packages/e-commerce-api/.env
+    regexp: "^JWT_REFRESH_SECRET="
+    line: "JWT_REFRESH_SECRET={{ jwt_refresh_secret.stdout }}"
+  when: jwt_refresh_exists.stdout == "0"
