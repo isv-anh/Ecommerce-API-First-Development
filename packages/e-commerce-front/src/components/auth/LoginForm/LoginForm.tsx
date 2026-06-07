@@ -10,7 +10,7 @@ import { useForm } from "react-hook-form";
 import type { SubmitHandler } from "react-hook-form";
 import TextField from "@/components/inputs/TextField/TextField";
 import type { LoginRequest } from "@e-commerce/api-client/schemas/auth";
-import { usePostLogin } from "@e-commerce/api-client/endpoints/auth/auth";
+import { usePostLogin } from "@e-commerce/api-client/endpoints/auth";
 import type { LoginFormProps } from "@/components/auth/LoginForm/types";
 import { useRouter } from "next/navigation";
 import { postLoginBody } from "@e-commerce/api-validation/zod/auth";
@@ -33,7 +33,7 @@ export default function LoginForm({
   const onSubmit: SubmitHandler<LoginRequest> = async (data) => {
     try {
       await mutation.mutateAsync({
-        data: { username: data.username, password: data.password },
+        data,
       });
       router.push("/");
     } catch {

@@ -475,3 +475,11 @@ model user_roles {
 
   @@id([uid, role_id], map: "pk_user_roles")
 }
+
+model file_stores {
+  id         String   @id @db.Uuid
+  filename   String   @unique(map: "uq_filename") @db.VarChar(255)
+  key        String   @unique(map: "uq_key") @db.VarChar(255)
+  upload_uid String   @db.Uuid
+  upload_at  DateTime @default(now()) @db.Timestamptz(6)
+}

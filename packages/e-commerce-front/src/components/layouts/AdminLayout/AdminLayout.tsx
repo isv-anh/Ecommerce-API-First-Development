@@ -8,6 +8,8 @@ import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
+import { Stack } from "@mui/material";
+import Fabs from "@/components/inputs/Fabs/Fabs";
 
 const AdminLayout = ({ children }: { children: ReactNode }) => {
   const { breakpoints } = useTheme();
@@ -31,7 +33,13 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
           <Button color="inherit">Login</Button>
         </Toolbar>
       </AppBar>
-      <AppNavigation open={!isTablet}>{children}</AppNavigation>
+      <AppNavigation open={!isTablet}>
+        <Stack spacing={2}>
+          <Typography>Test</Typography>
+          {children}
+          <Fabs />
+        </Stack>
+      </AppNavigation>
     </Box>
   );
 };

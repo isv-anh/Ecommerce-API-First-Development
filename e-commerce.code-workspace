@@ -6,7 +6,9 @@
   ],
   "settings": {
     "editor.fontSize": 14,
-    "editor.codeActionsOnSave": {},
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "always",
+    },
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "[typescriptreact]": {
@@ -16,6 +18,9 @@
     "java.configuration.updateBuildConfiguration": "interactive",
     "typescript.preferences.includePackageJsonAutoImports": "on",
     "typescript.preferences.importModuleSpecifier": "non-relative",
+    "[typespec]": {
+      "editor.defaultFormatter": "typespec.typespec-vscode",
+    },
   },
 
   "tasks": {

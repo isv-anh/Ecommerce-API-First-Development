@@ -8,7 +8,7 @@ import {
   getGetCategoryByCategoryIdQueryKey,
   useDeleteCategory,
   usePatchCategory,
-} from "@e-commerce/api-client/endpoints/product/product";
+} from "@e-commerce/api-client/endpoints/product";
 import type { CategoryResponse } from "@e-commerce/api-client/schemas/product";
 import type { PatchCategoryBody } from "@e-commerce/api-validation/types/product";
 import { patchCategoryBody } from "@e-commerce/api-validation/zod/product";

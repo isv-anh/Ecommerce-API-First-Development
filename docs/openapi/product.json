@@ -2583,6 +2583,17 @@
           }
         ]
       },
+      "Image": {
+        "type": "object",
+        "required": [
+          "url"
+        ],
+        "properties": {
+          "url": {
+            "type": "string"
+          }
+        }
+      },
       "NonEmptyString": {
         "type": "string",
         "minLength": 1
@@ -2644,16 +2655,78 @@
         "type": "object",
         "properties": {
           "productName": {
-            "$ref": "#/components/schemas/NonEmptyString"
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/NonEmptyString"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "description": {
-            "$ref": "#/components/schemas/NonEmptyString"
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/NonEmptyString"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "categoryId": {
-            "$ref": "#/components/schemas/UUID"
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UUID"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "brandId": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UUID"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "slug": {
-            "$ref": "#/components/schemas/NonEmptyString"
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Slug"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "thumbnailUrl": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "images": {
+            "anyOf": [
+              {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Image"
+                }
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "maxItems": 10
           }
         },
         "examples": [
@@ -2851,8 +2924,42 @@
           "categoryId": {
             "$ref": "#/components/schemas/UUID"
           },
+          "brandId": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UUID"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "slug": {
-            "$ref": "#/components/schemas/NonEmptyString"
+            "$ref": "#/components/schemas/Slug"
+          },
+          "thumbnailUrl": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "images": {
+            "anyOf": [
+              {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Image"
+                }
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "maxItems": 10
           }
         },
         "examples": [
@@ -2860,7 +2967,15 @@
             "productName": "Samsung Galaxy S22 Ultra",
             "description": "The latest Samsung smartphone with advanced features.",
             "categoryId": "123e4567-e89b-12d3-a456-426614174000",
-            "slug": "samsung-galaxy-s22-ultra"
+            "slug": "samsung-galaxy-s22-ultra",
+            "images": [
+              {
+                "url": "https://i.pinimg.com/736x/82/e7/d5/82e7d52336cff4e9d9fa9dfc7d307790.jpg"
+              },
+              {
+                "url": "https://example.com/images/products/samsung-galaxy-s22-ultra-2.jpg"
+              }
+            ]
           }
         ]
       },
@@ -3263,9 +3378,19 @@
       "ProductsResponse": {
         "type": "object",
         "required": [
+          "totalCount",
+          "totalPages",
           "products"
         ],
         "properties": {
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
           "products": {
             "type": "array",
             "items": {
@@ -3298,9 +3423,16 @@
                 "price": 1199,
                 "slug": "samsung-galaxy-s22-ultra"
               }
-            ]
+            ],
+            "totalCount": 2,
+            "totalPages": 1
           }
         ]
+      },
+      "Slug": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
       },
       "UUID": {
         "type": "string",

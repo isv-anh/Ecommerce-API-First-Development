@@ -1,0 +1,40 @@
+databaseChangeLog:
+  # ─── FILE_STORAGES ──────────────────────────────────────────
+  - changeSet:
+      id: create-table-file_stores
+      author: hoanganh
+      changes:
+        - createTable:
+            tableName: file_stores
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: filename
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: uq_filename
+              - column:
+                  name: key
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: uq_key
+              - column:
+                  name: upload_uid
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: upload_at
+                  type: timestamptz
+                  defaultValueComputed: now()
+                  constraints:
+                    nullable: false

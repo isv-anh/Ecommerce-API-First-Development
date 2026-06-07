@@ -23,3 +23,6 @@ scalar Password extends NonEmptyString;
 
 @pattern("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
 scalar UUID extends NonEmptyString;
+
+@pattern("^[a-z0-9]+(?:-[a-z0-9]+)*$")
+scalar Slug extends NonEmptyString;

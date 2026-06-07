@@ -20,7 +20,7 @@ fs.readdirSync(inputDir).forEach((file) => {
       },
       output: {
         mode: "split",
-        target: `./src/generated/endpoints/${name}/${name}.ts`,
+        target: `./src/generated/endpoints/${name}.ts`,
         schemas: `./src/generated/schemas/${name}`,
         client: "react-query",
         httpClient: "axios",

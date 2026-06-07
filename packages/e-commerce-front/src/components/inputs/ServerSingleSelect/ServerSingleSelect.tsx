@@ -37,6 +37,7 @@ const ServerSingleSelect = <TField extends FieldValues, TData = unknown>({
         getNextPageParam(lastPage, allPages),
       initialPageParam: 1,
     });
+
   const options = useMemo(
     () => data?.pages.flatMap((page) => select(page).data) ?? [],
     [data, select],

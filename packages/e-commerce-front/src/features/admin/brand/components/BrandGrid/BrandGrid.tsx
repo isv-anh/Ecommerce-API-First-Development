@@ -4,7 +4,7 @@ import DataGrid from "@/components/data-display/DataGrid/DataGrid";
 import CreateBrandForm from "@/features/admin/brand/components/CreateBrandForm/CreateBrandForm";
 import UpdateBrandForm from "@/features/admin/brand/components/UpdateBrandForm/UpdateBrandForm";
 import { brandSearchContext } from "@/features/admin/brand/utils";
-import { useGetBrandsSuspense } from "@e-commerce/api-client/endpoints/product/product";
+import { useGetBrandsSuspense } from "@e-commerce/api-client/endpoints/product";
 import type { BrandResponse } from "@e-commerce/api-client/schemas/product";
 import AddIcon from "@mui/icons-material/Add";
 import Stack from "@mui/material/Stack";

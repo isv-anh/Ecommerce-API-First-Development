@@ -4,17 +4,34 @@ import "@typespec/http";
 
 using TypeSpec.Http;
 
+model Image {
+    url: string;
+}
+
 @example(#{
     productName: "Samsung Galaxy S22 Ultra",
     description: "The latest Samsung smartphone with advanced features.",
     categoryId: "123e4567-e89b-12d3-a456-426614174000",
     slug: "samsung-galaxy-s22-ultra",
+    images: #[
+        #{
+            url: "https://i.pinimg.com/736x/82/e7/d5/82e7d52336cff4e9d9fa9dfc7d307790.jpg",
+        },
+        #{
+            url: "https://example.com/images/products/samsung-galaxy-s22-ultra-2.jpg",
+        }
+    ],
 })
 model PostProductRequestBody {
     productName: NonEmptyString;
     description: NonEmptyString;
     categoryId: UUID;
-    slug: NonEmptyString;
+    brandId?: UUID | null;
+    slug: Slug;
+    thumbnailUrl?: string | null;
+
+    @maxItems(10)
+    images?: Image[] | null;
 }
 
 @example(#{ productId: "123e4567-e89b-12d3-a456-426614174000" })
@@ -28,10 +45,15 @@ model PostProductResponseBody {
     slug: "samsung-galaxy-s22-ultra",
 })
 model PatchProductRequestBody {
-    productName?: NonEmptyString;
-    description?: NonEmptyString;
-    categoryId?: UUID;
-    slug?: NonEmptyString;
+    productName?: NonEmptyString | null;
+    description?: NonEmptyString | null;
+    categoryId?: UUID | null;
+    brandId?: UUID | null;
+    slug?: Slug | null;
+    thumbnailUrl?: string | null;
+
+    @maxItems(10)
+    images?: Image[] | null;
 }
 
 @example(#{
@@ -82,8 +104,11 @@ model ProductResponse {
             slug: "samsung-galaxy-s22-ultra",
         }
     ],
+    totalCount: 2,
+    totalPages: 1,
 })
 model ProductsResponse {
+    ...PageResponse;
     products: ProductResponse[];
 }
 

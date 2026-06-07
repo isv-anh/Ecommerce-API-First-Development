@@ -66,7 +66,7 @@ const AppNavigation = ({
       <Box display={"flex"} height={"100%"}>
         <Box
           display={open ? "none" : "block"}
-          position={"absolute"}
+          position={"fixed"}
           mt={2}
           ml={1}
           mb={2}

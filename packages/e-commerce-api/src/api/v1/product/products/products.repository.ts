@@ -9,12 +9,15 @@ import {
 import {
   ConflictException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
 
 @Injectable()
 export class ProductsRepository {
+  private logger = new Logger(ProductsRepository.name);
+
   constructor(private readonly prisma: PrismaService) {}
 
   async deleteProduct(productId: string): Promise<void> {
@@ -65,12 +68,16 @@ export class ProductsRepository {
       slug: product.slug || '',
     }));
 
-    // const totalCount = await this.prisma.products.count({
-    //   where: whereClause,
-    // });
-    // const totalPages = Math.ceil(totalCount / query.pageSize);
+    const totalCount = await this.prisma.products.count({
+      where: whereClause,
+    });
+
+    const totalPages = Math.ceil(totalCount / query.pageSize);
+
     return {
+      totalCount,
       products,
+      totalPages,
     };
   }
 
@@ -107,15 +114,16 @@ export class ProductsRepository {
     await this.prisma.products.update({
       where: { id: productId },
       data: {
-        name: data.productName,
-        description: data.description,
-        category_id: data.categoryId,
-        slug: data.slug,
+        name: data.productName === null ? undefined : data.productName,
+        description: data.description === null ? undefined : data.description,
+        category_id: data.categoryId === null ? undefined : data.categoryId,
+        slug: data.slug === null ? undefined : data.slug,
       },
     });
   }
 
   async createProduct(data: PostProductBody): Promise<string> {
+    this.logger.log('Start save product');
     const productId = crypto.randomUUID();
     const duplicateCount = await this.prisma.products.count({
       where: { slug: data.slug },
@@ -123,17 +131,35 @@ export class ProductsRepository {
     if (duplicateCount > 0) {
       throw new ConflictException('Product already exists');
     }
-    await this.prisma.products.create({
-      data: {
-        id: productId,
-        name: data.productName,
-        description: data.description,
-        category_id: data.categoryId,
-        slug: data.slug,
-        shop_id: '00000000-0000-0000-0000-000000000000', // Mock shop ID since API request doesn't provide it
-        is_published: true,
-      },
+
+    await this.prisma.$transaction(async (tx) => {
+      await tx.products.create({
+        data: {
+          id: productId,
+          name: data.productName,
+          description: data.description,
+          category_id: data.categoryId,
+          slug: data.slug,
+          shop_id: 'e1000000-0000-0000-0000-000000000001', // Mock shop ID since API request doesn't provide it
+          is_published: false,
+        },
+      });
+
+      this.logger.log('Save product success');
+
+      if (data?.images && data.images.length > 0) {
+        await tx.product_images.createMany({
+          data: data.images.map((image) => ({
+            id: crypto.randomUUID(),
+            product_id: productId,
+            url: image.url,
+          })),
+        });
+      }
     });
+
+    this.logger.log('End save product');
+
     return productId;
   }
 }

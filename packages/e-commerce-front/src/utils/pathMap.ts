@@ -23,7 +23,7 @@ export const routes = {
     product: {
       list: "/admin/product",
 
-      create: "/admin/product/create",
+      create: "/admin/product/new",
 
       detail: (id: string | number) => `/admin/product/${id}`,
     },
