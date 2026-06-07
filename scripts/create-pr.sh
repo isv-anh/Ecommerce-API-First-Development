@@ -3,17 +3,31 @@
 OWNER="ndh-anh"
 REPO="e-commerce"
 
-# get user login
-USERNAME=$(gh api user --jq .login)
-
-if [ -z "$USERNAME" ]; then
-    echo "not logged in to GitHub CLI, please login first"
+# Kiểm tra đang ở branch develop
+CURRENT_BRANCH=$(git branch --show-current)
+if [ "$CURRENT_BRANCH" != "develop" ]; then
+    echo "❗ Bạn đang ở branch '$CURRENT_BRANCH', vui lòng chuyển sang branch 'develop' trước."
     exit 1
 fi
 
-echo "user: $USERNAME"
+# Kiểm tra có file thay đổi chưa commit không
+if [ -n "$(git status --porcelain)" ]; then
+    echo "❗ Có file thay đổi chưa commit, vui lòng commit hoặc stash trước."
+    git status --short
+    exit 1
+fi
 
-# get issues assigned to user
+# Lấy thông tin người dùng đang đăng nhập
+USERNAME=$(gh api user --jq .login)
+
+if [ -z "$USERNAME" ]; then
+    echo "❗ Chưa đăng nhập GitHub CLI, vui lòng đăng nhập trước."
+    exit 1
+fi
+
+echo "Người dùng: $USERNAME"
+
+# Lấy danh sách issue được giao cho người dùng
 ISSUES=$(gh issue list \
     -R "$OWNER/$REPO" \
     --assignee "$USERNAME" \
@@ -21,18 +35,18 @@ ISSUES=$(gh issue list \
     -q '.[] | "\(.number): \(.title)"')
 
 if [ -z "$ISSUES" ]; then
-    echo "❗ No issues assigned to you could be found in $OWNER/$REPO."
+    echo "❗ Không tìm thấy issue nào được giao cho bạn trong $OWNER/$REPO."
     exit 0
 fi
 
-# select issue with fzf
+# Chọn issue bằng fzf
 SELECTED=$(echo "$ISSUES" | fzf \
-    --prompt="📋 Select issue: " \
+    --prompt="📋 Chọn issue: " \
     --height=40% \
     --border)
 
 if [ -z "$SELECTED" ]; then
-    echo "👋 Exit."
+    echo "👋 Thoát."
     exit 0
 fi
 
@@ -52,7 +66,7 @@ LABELS=$(gh issue view "$ISSUE_NUMBER" \
 
 git checkout -b "$BRANCH_NAME"
 
-git commit --allow-empty -m "Create PR"
+git commit --allow-empty -m "Tạo PR"
 
 git push -u origin "$BRANCH_NAME"
 
