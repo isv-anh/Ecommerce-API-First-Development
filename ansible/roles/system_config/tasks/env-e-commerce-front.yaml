@@ -1,0 +1,7 @@
+---
+- name: Sao chép env.development.example thành .env.development
+  copy:
+    src: ./packages/e-commerce-front/.env.development.example
+    dest: ./packages/e-commerce-front/.env.development
+    remote_src: true
+    force: false

@@ -1,0 +1,6 @@
+---
+- hosts: local
+  roles:
+    - role: system_config
+    - role: install_docker
+    - role: install_node
