@@ -1,0 +1,58 @@
+---
+- name: Kiểm tra Node.js đã được cài đặt chưa
+
+  command: node --version
+
+  register: node_check
+
+  changed_when: false
+
+  failed_when: false
+
+- name: Cài đặt Node.js
+
+  block:
+    - name: Thêm repository Node.js
+
+      shell: "curl -fsSL https://deb.nodesource.com/setup_22.x | bash -"
+
+      become: true
+
+    - name: Cài đặt Node.js
+
+      apt:
+        name: nodejs
+
+        state: latest
+
+        update_cache: yes
+
+      become: true
+
+  rescue:
+    - name: Dừng playbook
+
+      fail:
+        msg: "Cài đặt Node.js thất bại"
+
+- name: Hiển thị phiên bản Node.js
+
+  debug:
+    var: node_check.stdout
+
+- name: Cài đặt PNPM
+
+  npm:
+    name: pnpm@10.13.1
+
+    global: yes
+
+  become: true
+
+- name: Cài đặt dependencies của dự án bằng pnpm ci
+
+  shell: pnpm run ci
+
+- name: Áp dụng thay đổi group bằng cách reset kết nối
+
+  meta: reset_connection

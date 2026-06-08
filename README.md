@@ -1,154 +1,188 @@
-# Setup
+# E-Commerce SaaS
 
-## 1. Windows PowerShell
+## Tổng quan
 
-#### install apps
+E-Commerce là hệ thống SaaS hỗ trợ người dùng xây dựng và vận hành nền tảng mua bán trực tuyến một cách thuận tiện, linh hoạt và dễ mở rộng.
 
-```powershell
-winget install --id Microsoft.Powershell --source winget
-winget install --id Microsoft.Powershell.Preview --source winget
-winget install Postman.Postman
-winget install -e --id Microsoft.VisualStudioCode
-# end
+Hệ thống được thiết kế theo hướng:
+
+* API-first
+* Type-safe
+* Tự động sinh code
+* Đồng bộ schema giữa frontend và backend
+* Tăng tốc phát triển bằng AI và automation
+
+---
+
+# Triết lý phát triển
+
+## Học tập với AI
+
+AI được sử dụng để:
+
+* Tìm hiểu kiến thức mới
+* Tăng tốc quá trình phát triển
+* Hỗ trợ phân tích và sinh code
+
+Tuy nhiên:
+
+* Luôn kiểm tra lại kết quả mà AI tạo ra
+* Không phụ thuộc hoàn toàn vào AI
+* Ưu tiên hiểu bản chất thay vì copy trực tiếp
+
+---
+
+## YAGNI
+
+Áp dụng nguyên tắc **YAGNI (You Aren't Gonna Need It)**:
+
+* Chỉ xây dựng những gì thực sự cần
+* Tránh over-engineering
+* Ưu tiên sự đơn giản và khả năng bảo trì
+* Tối ưu tốc độ phát triển sản phẩm
+
+---
+
+# Kiến trúc hệ thống
+
+Hệ thống được tổ chức theo mô hình **Monorepo** và quản lý bằng `pnpm workspace`.
+
+## Cấu trúc thư mục
+
+```txt
+packages
+├─ e-commerce-api/          # Backend API (NestJS)
+├─ e-commerce-front/        # Frontend (Next.js)
+├─ api-client/              # Orval generated React Query client
+├─ api-validation/          # Shared API types & Zod schema dùng cho frontend và backend
+├─ openapi-typespec/        # Định nghĩa OpenAPI bằng TypeSpec
+├─ openapi-generator/       # Generate base controller cho backend
+└─ e-commerce-db/           # Database migration với Liquibase
 ```
 
-#### install wsl
+---
 
-```powershell
-wsl --unregister [distribution name]
+# Workflow
+
+```txt
+                     openapi-typespec
+                              │
+                              ▼
+                         openapi.json
+                              │
+          ┌───────────────────┴───────────────────┐
+          │                                       │
+          ▼                                       ▼
+   openapi-generator                      orval generator
+          │                                       │
+          ▼                                       ▼
+   Base Controller                  ┌─────────────┴─────────────┐
+          │                         │                           │
+          ▼                         ▼                           ▼
+  e-commerce-api               api-client                api-validation
+                                     │                           │
+                                     ▼                           │
+                             React Query Hooks                   │
+                                     │                           │
+                                     └─────────────┬─────────────┘
+                                                   │
+                             ┌─────────────────────┴─────────────────────┐
+                             ▼                                           ▼
+                     e-commerce-front                           e-commerce-api
 ```
 
-```powershell
-wsl --install Ubuntu-24.04
-```
 
-```powershell
-Restart-Computer
-```
+---
 
-```powershell
-wsl --set-default Ubuntu-24.04
-wsl --update
-```
+# Vai trò của các package
 
-```powershell
-$wslConfigPath = "$env:USERPROFILE\.wslconfig"
+## openapi-typespec
 
-$wslConfigContent = @"
-[wsl2]
-dnsTunneling=true
-"@
+Định nghĩa API contract bằng TypeSpec và sinh ra `openapi.json`.
 
-$wslConfigContent | Out-File -FilePath $wslConfigPath -Encoding utf8
-```
+---
 
-```powershell
-wsl
-```
+## api-client
 
-Since a username and password are required, please set them as follows:
-| username | password |
-| ---------- | ---------- |
-| pengu | (any value) |
+Sinh tự động:
 
-```bash
-sudo tee /etc/wsl.conf > /dev/null <<EOF
-[boot]
-systemd=true
-EOF
-```
+* API client
+* React Query hooks
+* Request function
 
-```bash
-exit
-```
+Frontend chỉ cần gọi hooks thay vì tự viết fetch logic.
 
-```powershell
-wsl --shutdown
-wsl
-```
+---
 
-## 2. Linux Ubuntu
+## api-validation
 
-#### install tools
+Chứa:
 
-```bash
-cd
+* Shared API types
+* Zod schema
+* Request/response validation
 
-sudo apt update
-sudo apt upgrade -y
-sudo apt install git -y
-# github cli
-sudo apt install gh -y
-# vscode extensions auto install
-sudo apt install jq -y
-```
+Được sử dụng cho cả:
 
-#### install nodejs
+* Frontend
+* Backend
 
-```bash
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+Giúp đảm bảo:
 
-\. "$HOME/.nvm/nvm.sh"
+* Đồng bộ type
+* Validate dữ liệu thống nhất
+* Giảm duplicate schema
 
-nvm install 22
-```
+---
 
-#### install mvn jdk
+## openapi-generator
 
-```bash
-sudo apt install maven -y
-sudo apt install openjdk-21-jre-headless -y
-sudo apt install openjdk-21-jdk -y
-```
+Sinh base controller cho backend từ OpenAPI schema nhằm:
 
-#### install docker
+* Giảm boilerplate code
+* Đồng bộ contract với backend implementation
 
-```bash
-sudo apt install docker.io
+---
 
-sudo apt install docker-buildx
+## e-commerce-db
 
-sudo groupadd docker
+Quản lý database migration bằng Liquibase.
 
-sudo usermod -aG docker $USER
+---
 
-DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
-mkdir -p $DOCKER_CONFIG/cli-plugins
-curl -SL https://github.com/docker/compose/releases/download/v2.37.3/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
-```
+# Công nghệ sử dụng
 
-#### github login
+## Backend
 
-```bash
-BROWSER=/mnt/c/Windows/explorer.exe gh auth login
-```
+* NestJS
+* OpenAPI
+* TypeSpec
+* Liquibase
 
-#### download source code
+## Frontend
 
-```bash
-cd
-mkdir hrm
-cd hrm
-```
+* Next.js
+* React Query
+* Zod
 
-```bash
-git clone https://github.com/ndha1511/hrm-dev.git .
+## Tooling
 
-```
+* pnpm workspace
+* Orval
+* OpenAPI Generator
 
-## 3. Setup environment
+---
 
-#### open workspace
+# Mục tiêu kiến trúc
 
-```bash
-cd
-code "/hrm/hrm.code-workspace"
-```
+* Đồng bộ type giữa frontend và backend
+* Tự động sinh API client
+* Chia sẻ validation schema
+* Giảm code lặp
+* Dễ mở rộng
+* Dễ bảo trì
+* Tăng tốc phát triển tính năng
+* Hạn chế sai lệch API contract
 
-#### setup environtment
 
-![alt text](./docs/images/setup.png)
-
-#### install extensions
-
-![alt text](./docs/images/install-extensions.png)
+---
