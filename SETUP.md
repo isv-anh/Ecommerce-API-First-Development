@@ -129,7 +129,7 @@ Bạn sẽ được yêu cầu nhập tên người dùng và mật khẩu. Vui 
 
 | Tên người dùng | Mật khẩu |
 | -------------- | -------- |
-| isv            | (Tùy ý)  |
+| pengu          | (Tùy ý)  |
 
 ### 5. Thiết Lập WSL
 
@@ -206,7 +206,7 @@ gh auth login --web -s admin:public_key,project,repo,read:org --git-protocol ssh
 ```
 
 - `? Upload your SSH public key to your GitHub account?`
-  - Chỉ cần nhấn Enter: `/home/isv/.ssh/github.pub` sẽ được sử dụng.
+  - Chỉ cần nhấn Enter: `/home/pengu/.ssh/github.pub` sẽ được sử dụng.
 - `? Title for your SSH key`
   - Chỉ cần nhấn Enter: `GitHub CLI` sẽ được sử dụng.
 - `Press Enter to open github.com in your browser...`
@@ -223,7 +223,7 @@ cd e-commerce
 ```
 
 ```bash
-git clone git@github.com:ISV-VIETNAM/e-commerce.git .
+git clone git@github.com:ndh-anh/e-commerce.git .
 ```
 
 - `Are you sure you want to continue connecting (yes/no/[fingerprint])?`
