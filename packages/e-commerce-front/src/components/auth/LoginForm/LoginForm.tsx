@@ -10,11 +10,13 @@ import { useForm } from "react-hook-form";
 import type { SubmitHandler } from "react-hook-form";
 import TextField from "@/components/inputs/TextField/TextField";
 import type { LoginRequest } from "@e-commerce/api-client/schemas/auth";
-import { usePostLogin } from "@e-commerce/api-client/endpoints/auth/auth";
 import type { LoginFormProps } from "@/components/auth/LoginForm/types";
 import { useRouter } from "next/navigation";
 import { postLoginBody } from "@e-commerce/api-validation/zod/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { login } from "@/utils/login";
+import tokenStore from "@e-commerce/api-client/storages/token-storage";
+import { useMutation } from "@tanstack/react-query";
 
 export default function LoginForm({
   title = "Đăng nhập",
@@ -26,15 +28,16 @@ export default function LoginForm({
     resolver: zodResolver(postLoginBody),
   });
 
-  const mutation = usePostLogin();
+  const mutation = useMutation({
+    mutationFn: login,
+  });
 
   const router = useRouter();
 
   const onSubmit: SubmitHandler<LoginRequest> = async (data) => {
     try {
-      await mutation.mutateAsync({
-        data: { username: data.username, password: data.password },
-      });
+      const accessToken = await mutation.mutateAsync(data);
+      tokenStore.setTokens(accessToken);
       router.push("/");
     } catch {
       // Error state handled by mutation.isError

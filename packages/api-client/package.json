@@ -7,37 +7,17 @@
       "import": "./dist/esm/generated/schemas/*/index.js",
       "types": "./dist/tsc/generated/schemas/*/index.d.ts"
     },
-    "./endpoints/auth/*": {
-      "import": "./dist/esm/generated/endpoints/auth/*.js",
-      "types": "./dist/tsc/generated/endpoints/auth/*.d.ts"
-    },
-    "./endpoints/product/*": {
-      "import": "./dist/esm/generated/endpoints/product/*.js",
-      "types": "./dist/tsc/generated/endpoints/product/*.d.ts"
-    },
-    "./endpoints/cart/*": {
-      "import": "./dist/esm/generated/endpoints/cart/*.js",
-      "types": "./dist/tsc/generated/endpoints/cart/*.d.ts"
-    },
-    "./endpoints/order/*": {
-      "import": "./dist/esm/generated/endpoints/order/*.js",
-      "types": "./dist/tsc/generated/endpoints/order/*.d.ts"
-    },
-    "./endpoints/customer/*": {
-      "import": "./dist/esm/generated/endpoints/customer/*.js",
-      "types": "./dist/tsc/generated/endpoints/customer/*.d.ts"
-    },
-    "./endpoints/shop/*": {
-      "import": "./dist/esm/generated/endpoints/shop/*.js",
-      "types": "./dist/tsc/generated/endpoints/shop/*.d.ts"
-    },
-    "./endpoints/voucher/*": {
-      "import": "./dist/esm/generated/endpoints/voucher/*.js",
-      "types": "./dist/tsc/generated/endpoints/voucher/*.d.ts"
+    "./endpoints/*": {
+      "import": "./dist/esm/generated/endpoints/*.js",
+      "types": "./dist/tsc/generated/endpoints/*.d.ts"
     },
     "./mutator/*": {
       "import": "./dist/esm/mutator/*.js",
       "types": "./dist/tsc/mutator/*.d.ts"
+    },
+    "./storages/*": {
+      "import": "./dist/esm/storages/*.js",
+      "types": "./dist/tsc/storages/*.d.ts"
     }
   },
   "files": [
