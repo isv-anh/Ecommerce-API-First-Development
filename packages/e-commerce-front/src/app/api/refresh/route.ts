@@ -1,4 +1,4 @@
-import { setAccessToken, setRefreshToken } from "@/utils/server";
+import { setRefreshToken } from "@/utils/server";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
@@ -63,11 +63,14 @@ export async function POST() {
 
     const data = await response.json();
 
-    const res = new NextResponse(null, {
-      status: 204,
-    });
-
-    setAccessToken(data.accessToken, res);
+    const res = NextResponse.json(
+      {
+        accessToken: data.accessToken,
+      },
+      {
+        status: 200,
+      },
+    );
 
     setRefreshToken(data.refreshToken, res);
 

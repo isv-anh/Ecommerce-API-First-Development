@@ -1,11 +1,14 @@
+/// <reference types="node" />
 import Axios, {
   AxiosRequestConfig,
   AxiosError,
   InternalAxiosRequestConfig,
 } from "axios";
+import tokenStore from "../storages/token-storage";
 
 const getBaseUrl = () => {
-  return "http://localhost:3000/proxy";
+  const apiUrl = process.env.API_URL;
+  return apiUrl || "http://localhost:8080";
 };
 
 export const AXIOS_INSTANCE = Axios.create({
@@ -36,6 +39,20 @@ const processQueue = (error?: unknown) => {
   failedQueue = [];
 };
 
+AXIOS_INSTANCE.interceptors.request.use(
+  (config: InternalAxiosRequestConfig) => {
+    const token = tokenStore.getAccessToken();
+
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    return config;
+  },
+
+  (error) => Promise.reject(error),
+);
+
 AXIOS_INSTANCE.interceptors.response.use(
   (response) => response,
 
@@ -48,9 +65,13 @@ AXIOS_INSTANCE.interceptors.response.use(
 
     const isUnauthorized = error.response?.status === 401;
 
-    const isRefreshRequest = originalRequest.url?.includes("/auth/refresh");
+    const isRefreshRequest = originalRequest.url?.includes("/refresh");
 
     if (!isUnauthorized || isRefreshRequest || originalRequest._retry) {
+      return Promise.reject(error);
+    }
+
+    if (typeof window === "undefined") {
       return Promise.reject(error);
     }
 
@@ -70,9 +91,7 @@ AXIOS_INSTANCE.interceptors.response.use(
     isRefreshing = true;
 
     try {
-      const baseUrl = typeof window === "undefined" ? getBaseUrl() : "/proxy";
-
-      const response = await fetch(`${baseUrl}/api/v1/auth/refresh`, {
+      const response = await fetch(`/api/refresh`, {
         method: "POST",
         credentials: "include",
       });
@@ -86,6 +105,10 @@ AXIOS_INSTANCE.interceptors.response.use(
         };
       }
 
+      const data = await response.json();
+
+      tokenStore.setTokens(data.accessToken);
+
       processQueue();
 
       return AXIOS_INSTANCE(originalRequest);
@@ -93,7 +116,7 @@ AXIOS_INSTANCE.interceptors.response.use(
       processQueue(refreshError);
 
       if (typeof window !== "undefined") {
-        window.location.href = "/login";
+        window.location.href = "/auth/login";
       }
 
       return Promise.reject(refreshError);
@@ -108,13 +131,6 @@ export const customInstance = async <T>(
   options?: AxiosRequestConfig,
 ): Promise<T> => {
   const headers: Record<string, string> = {};
-
-  // SSR
-  if (typeof window === "undefined") {
-    const { cookies } = await import("next/headers");
-
-    headers.Cookie = (await cookies()).toString();
-  }
 
   return AXIOS_INSTANCE({
     ...config,
