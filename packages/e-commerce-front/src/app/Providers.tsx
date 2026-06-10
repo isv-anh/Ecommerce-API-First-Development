@@ -11,6 +11,7 @@ import BreadcrumbsProvider from "@/components/navigation/Breadcrumbs/components/
 import dynamic from "next/dynamic";
 import { SnackbarProvider } from "notistack";
 import FabsProvider from "@/components/inputs/Fabs/provider/FabsProvider";
+import { AuthBootstrap } from "@/app/AuthBootstrap";
 
 const ReactQueryDevtools = dynamic(
   async () =>
@@ -31,6 +32,7 @@ const Providers = ({ children }: { children: ReactNode }) => {
     <AppRouterCacheProvider>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider theme={theme}>
+          <AuthBootstrap>
           <SnackbarProvider maxSnack={3}>
             <FabsProvider>
               <CssBaseline />
@@ -46,6 +48,7 @@ const Providers = ({ children }: { children: ReactNode }) => {
               )}
             </FabsProvider>
           </SnackbarProvider>
+           </AuthBootstrap>
         </ThemeProvider>
       </QueryClientProvider>
     </AppRouterCacheProvider>
