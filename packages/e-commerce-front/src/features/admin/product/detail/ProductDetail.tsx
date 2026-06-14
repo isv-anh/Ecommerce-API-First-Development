@@ -168,7 +168,7 @@ const ProductDetail = ({ productId }: { productId: string }) => {
           </Box>
         </Stack>
         <Button type="submit" ref={submitRef} sx={{ display: "none" }}></Button>
-        <Backdrop open={patchProduct.isPending}>
+        <Backdrop open={patchProduct.isPending || deleteProduct.isPending}>
           <CircularProgress />
         </Backdrop>
       </Paper>
