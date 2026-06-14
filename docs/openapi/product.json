@@ -28,9 +28,287 @@
     },
     {
       "name": "warehouse-inventories"
+    },
+    {
+      "name": "attributes"
     }
   ],
   "paths": {
+    "/api/v1/attributes": {
+      "get": {
+        "operationId": "getAttributes",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/GetAttributesRequestParams"
+          },
+          {
+            "$ref": "#/components/parameters/PageQueryParams.page"
+          },
+          {
+            "$ref": "#/components/parameters/PageQueryParams.pageSize"
+          },
+          {
+            "$ref": "#/components/parameters/PageQueryParams.orderBy"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AttributesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "attributes"
+        ]
+      },
+      "post": {
+        "operationId": "postAttributes",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "The request has succeeded and a new resource has been created as a result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostAttributeResponseBody"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access is unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "attributes"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostAttributeRequestBody"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/attributes/{attributeId}": {
+      "get": {
+        "operationId": "getAttributeById",
+        "parameters": [
+          {
+            "name": "attributeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AttributeResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "attributes"
+        ]
+      },
+      "patch": {
+        "operationId": "patchAttribute",
+        "parameters": [
+          {
+            "name": "attributeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "There is no content to send for this request, but the headers may be useful. "
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access is unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "attributes"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchAttributeRequestBody"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteAttribute",
+        "parameters": [
+          {
+            "name": "attributeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "There is no content to send for this request, but the headers may be useful. "
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access is unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "attributes"
+        ]
+      }
+    },
     "/api/v1/brands": {
       "get": {
         "operationId": "getBrands",
@@ -2270,6 +2548,15 @@
   },
   "components": {
     "parameters": {
+      "GetAttributesRequestParams": {
+        "name": "attributeName",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string"
+        },
+        "explode": false
+      },
       "GetBrandRequestParams.brandName": {
         "name": "brandName",
         "in": "query",
@@ -2387,6 +2674,45 @@
       }
     },
     "schemas": {
+      "AttributeResponse": {
+        "type": "object",
+        "required": [
+          "attributeId",
+          "attributeName"
+        ],
+        "properties": {
+          "attributeId": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "attributeName": {
+            "type": "string"
+          }
+        }
+      },
+      "AttributesResponse": {
+        "type": "object",
+        "required": [
+          "totalCount",
+          "totalPages",
+          "attributes"
+        ],
+        "properties": {
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "attributes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AttributeResponse"
+            }
+          }
+        }
+      },
       "BrandResponse": {
         "type": "object",
         "required": [
@@ -2598,6 +2924,14 @@
         "type": "string",
         "minLength": 1
       },
+      "PatchAttributeRequestBody": {
+        "type": "object",
+        "properties": {
+          "attributeName": {
+            "$ref": "#/components/schemas/NonEmptyString"
+          }
+        }
+      },
       "PatchBrandRequestBody": {
         "type": "object",
         "properties": {
@@ -2785,6 +3119,28 @@
           },
           "address": {
             "type": "string"
+          }
+        }
+      },
+      "PostAttributeRequestBody": {
+        "type": "object",
+        "required": [
+          "attributeName"
+        ],
+        "properties": {
+          "attributeName": {
+            "$ref": "#/components/schemas/NonEmptyString"
+          }
+        }
+      },
+      "PostAttributeResponseBody": {
+        "type": "object",
+        "required": [
+          "attributeId"
+        ],
+        "properties": {
+          "attributeId": {
+            "$ref": "#/components/schemas/UUID"
           }
         }
       },
@@ -3023,10 +3379,6 @@
           "comparePrice": {
             "type": "number",
             "format": "decimal"
-          },
-          "stock": {
-            "type": "integer",
-            "format": "int32"
           }
         }
       },
@@ -3342,20 +3694,7 @@
           "updatedAt": {
             "type": "string"
           }
-        },
-        "examples": [
-          {
-            "productVariantId": "123e4567-e89b-12d3-a456-426614174100",
-            "productId": "123e4567-e89b-12d3-a456-426614174000",
-            "sku": "SKU-GALAXY-S22-BLACK-256",
-            "thumbnailUrl": "https://example.com/images/variants/galaxy-s22-black.jpg",
-            "price": 1199,
-            "comparePrice": 1299,
-            "stock": 50,
-            "createdAt": "2026-04-09T08:00:00.000Z",
-            "updatedAt": "2026-04-09T08:00:00.000Z"
-          }
-        ]
+        }
       },
       "ProductVariantsResponse": {
         "type": "object",

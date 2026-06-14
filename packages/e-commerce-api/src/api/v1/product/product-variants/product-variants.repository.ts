@@ -104,7 +104,7 @@ export class ProductVariantsRepository {
         thumbnail_url: data.thumbnailUrl,
         price: data.price,
         compare_price: data.comparePrice,
-        stock: data.stock || 0,
+        stock: 0,
       },
     });
     return productVariantId;

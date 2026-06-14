@@ -27,6 +27,10 @@ export const routes = {
 
       detail: (id: string | number) => `/admin/product/${id}`,
     },
+
+    attribute: {
+      list: "/admin/attribute",
+    },
   },
 } as const;
 
@@ -49,6 +53,13 @@ export const adminMenus: MenuItem[] = [
     path: routes.admin.brand.list,
     name: "Thương hiệu",
     icon: "workspace_premium_rounded",
+    isNavigate: true,
+  },
+
+  {
+    path: routes.admin.attribute.list,
+    name: "Thuộc tính",
+    icon: "tune_rounded",
     isNavigate: true,
   },
 

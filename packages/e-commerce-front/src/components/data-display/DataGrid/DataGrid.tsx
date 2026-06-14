@@ -5,9 +5,11 @@ import type { GridSortModel } from "@mui/x-data-grid";
 import { DataGrid as MuiDataGrid } from "@mui/x-data-grid";
 import { useCallback, useMemo } from "react";
 
+const defaultPageSize = 20;
+
 const DataGrid = ({
-  page,
-  pageSize,
+  page = 0,
+  pageSize = defaultPageSize,
   orderBy,
   paginationModelChange,
   orderByChange,
@@ -24,7 +26,7 @@ const DataGrid = ({
   const handlePaginationChange = useCallback(
     (model: { page: number; pageSize: number }) => {
       if (model.page === page - 1 && model.pageSize === pageSize) return;
-      paginationModelChange({ page: model.page, pageSize: model.pageSize });
+      paginationModelChange?.({ page: model.page, pageSize: model.pageSize });
     },
     [page, pageSize, paginationModelChange],
   );
@@ -32,7 +34,7 @@ const DataGrid = ({
   const handleSortModelChange = useCallback(
     (sortModel: GridSortModel) => {
       const sortString = sortModel.map((s) => `${s.field}:${s.sort}`).join(",");
-      orderByChange(sortString);
+      orderByChange?.(sortString);
     },
     [orderByChange],
   );

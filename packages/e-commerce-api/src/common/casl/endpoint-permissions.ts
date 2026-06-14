@@ -119,4 +119,9 @@ export const getPermissions: Record<Operation, PolicyRule[]> = {
   postWishlist: [],
   postWishlistItem: [],
   postPresignedUrl: [],
+  deleteAttribute: [],
+  getAttributeById: [],
+  getAttributes: [],
+  patchAttribute: [],
+  postAttributes: [],
 };
