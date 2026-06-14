@@ -1,5 +1,5 @@
 import { getCategoryTreeData } from "@/features/main/category/components/CategoryTree/utils";
-import { useGetCategoriesSuspense } from "@e-commerce/api-client/endpoints/product/product";
+import { useGetCategoriesSuspense } from "@e-commerce/api-client/endpoints/product";
 import Box from "@mui/material/Box";
 import { RichTreeView } from "@mui/x-tree-view/RichTreeView";
 import { useParams } from "next/navigation";

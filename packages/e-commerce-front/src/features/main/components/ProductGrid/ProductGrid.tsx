@@ -1,7 +1,7 @@
 "use client";
 import Grid from "@mui/material/Grid";
 import ProductCard from "@/features/main/components/ProductCard/ProductCard";
-import { useGetProductsSuspense } from "@e-commerce/api-client/endpoints/product/product";
+import { useGetProductsSuspense } from "@e-commerce/api-client/endpoints/product";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
