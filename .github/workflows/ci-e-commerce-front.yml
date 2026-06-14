@@ -58,6 +58,9 @@ jobs:
       - name: Generate API Client
         run: pnpm run generate:api-client
 
+      - name: Generate API Validation
+        run: pnppm run generate:api-validation
+
       - name: Prettier & Lint check
         run: pnpm run lint
 
