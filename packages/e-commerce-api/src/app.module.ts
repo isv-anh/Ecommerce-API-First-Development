@@ -28,6 +28,7 @@ import { JwtModule } from '@/api/v1/auth/services/jwt-service/jwt.module';
 import { AuthGuard } from '@/common/guards/auth.guard';
 import { CaslAbilityFactory } from '@/common/casl/casl-ability.factory';
 import { PoliciesGuard } from '@/common/guards/policies.guard';
+import { UploadsModule } from '@/api/v1/system/uploads/uploads.module';
 
 @Module({
   imports: [
@@ -57,6 +58,7 @@ import { PoliciesGuard } from '@/common/guards/policies.guard';
     OrderItemsModule,
     OrderPaymentsModule,
     OrderShopsModule,
+    UploadsModule,
   ],
   providers: [
     CaslAbilityFactory,

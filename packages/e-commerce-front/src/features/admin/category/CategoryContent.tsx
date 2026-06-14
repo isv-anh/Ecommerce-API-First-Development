@@ -6,7 +6,7 @@ import { getQueryClient } from "@/utils/query";
 import {
   getCategories,
   getGetCategoriesQueryKey,
-} from "@e-commerce/api-client/endpoints/product/product";
+} from "@e-commerce/api-client/endpoints/product";
 import { getCategoriesQueryParams } from "@e-commerce/api-validation/zod/product";
 import { dehydrate } from "@tanstack/react-query";
 

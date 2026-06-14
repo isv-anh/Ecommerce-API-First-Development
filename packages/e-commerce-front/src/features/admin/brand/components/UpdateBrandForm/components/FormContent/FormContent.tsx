@@ -1,5 +1,5 @@
 import TextField from "@/components/inputs/TextField/TextField";
-import { useGetBrandByBrandIdSuspense } from "@e-commerce/api-client/endpoints/product/product";
+import { useGetBrandByBrandIdSuspense } from "@e-commerce/api-client/endpoints/product";
 import type { PatchBrandBody } from "@e-commerce/api-validation/types/product";
 import Stack from "@mui/material/Stack";
 import { useEffect } from "react";

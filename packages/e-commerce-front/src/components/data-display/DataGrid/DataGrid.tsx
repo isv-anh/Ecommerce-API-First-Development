@@ -14,13 +14,16 @@ const DataGrid = ({
   rows,
   ...props
 }: DataGridProps) => {
-  const paginationModel = useMemo(() => ({ page, pageSize }), [page, pageSize]);
+  const paginationModel = useMemo(
+    () => ({ page: page - 1, pageSize }),
+    [page, pageSize],
+  );
 
   const sortModel = useMemo(() => parseSortModel(orderBy), [orderBy]);
 
   const handlePaginationChange = useCallback(
     (model: { page: number; pageSize: number }) => {
-      if (model.page === page && model.pageSize === pageSize) return;
+      if (model.page === page - 1 && model.pageSize === pageSize) return;
       paginationModelChange({ page: model.page, pageSize: model.pageSize });
     },
     [page, pageSize, paginationModelChange],

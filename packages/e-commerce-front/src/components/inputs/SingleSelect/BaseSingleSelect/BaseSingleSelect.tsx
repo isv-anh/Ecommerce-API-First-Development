@@ -127,7 +127,7 @@ const BaseSingleSelect = <TField extends FieldValues>({
           </MenuItem>
         )}
       </Select>
-      {hasError && <FormHelperText>{fieldError.message}</FormHelperText>}
+      {hasError && <FormHelperText error>{fieldError.message}</FormHelperText>}
     </FormControl>
   );
 };

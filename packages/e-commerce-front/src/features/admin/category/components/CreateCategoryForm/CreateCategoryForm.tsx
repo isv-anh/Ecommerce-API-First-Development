@@ -6,7 +6,7 @@ import TextField from "@/components/inputs/TextField/TextField";
 import {
   getGetCategoriesQueryKey,
   usePostCategory,
-} from "@e-commerce/api-client/endpoints/product/product";
+} from "@e-commerce/api-client/endpoints/product";
 import type { PostCategoryBody } from "@e-commerce/api-validation/types/product";
 import { postCategoryBody } from "@e-commerce/api-validation/zod/product";
 import { zodResolver } from "@hookform/resolvers/zod";

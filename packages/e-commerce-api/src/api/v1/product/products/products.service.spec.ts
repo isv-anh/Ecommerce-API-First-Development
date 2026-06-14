@@ -4,6 +4,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ProductsService } from './products.service';
 import { ProductsRepository } from './products.repository';
 import type {
+  GetProductByProductId200Response,
+  GetProducts200Response,
   GetProductsQueryParams,
   PatchProductBody,
   PostProductBody,
@@ -35,10 +37,6 @@ const mockProduct = {
   categoryName: 'Smartphones',
   thumbnailUrl:
     'https://i.pinimg.com/736x/82/e7/d5/82e7d52336cff4e9d9fa9dfc7d307790.jpg',
-  shopName: 'Samsung Store',
-  shopLogo: 'https://example.com/images/shops/samsungstore.jpg',
-  location: 'Seoul, South Korea',
-  price: 1199,
   slug: 'samsung-galaxy-s22-ultra',
 };
 
@@ -90,7 +88,9 @@ describe('ProductsService', () => {
     const query: GetProductsQueryParams = { page: 1, pageSize: 10 };
 
     it('should return products from repository', async () => {
-      repository.getProducts.mockResolvedValue(mockProductsResponse);
+      repository.getProducts.mockResolvedValue(
+        mockProductsResponse as GetProducts200Response,
+      );
 
       const result = await service.getProducts(query);
 
@@ -110,7 +110,9 @@ describe('ProductsService', () => {
 
   describe('getProductByProductId', () => {
     it('should return product from repository', async () => {
-      repository.getProductById.mockResolvedValue(mockProduct);
+      repository.getProductById.mockResolvedValue(
+        mockProduct as unknown as GetProductByProductId200Response,
+      );
 
       const result = await service.getProductByProductId({ productId });
 

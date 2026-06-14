@@ -419,3 +419,32 @@ databaseChangeLog:
                     nullable: false
                     unique: true
                     uniqueConstraintName: uq_brands_slug
+
+  # ─── ADD BRAND TO PRODUCTS ───────────────────────────────
+  - changeSet:
+      id: product-010-add-brand-id-to-products
+      author: hoanganh
+      changes:
+        - addColumn:
+            tableName: products
+            columns:
+              - column:
+                  name: brand_id
+                  type: uuid
+
+  - changeSet:
+      id: product-010-products-brand-fk
+      author: hoanganh
+      changes:
+        - createIndex:
+            tableName: products
+            indexName: idx_products_brand_id
+            columns:
+              - column:
+                  name: brand_id
+        - addForeignKeyConstraint:
+            baseTableName: products
+            baseColumnNames: brand_id
+            constraintName: fk_products_brand
+            referencedTableName: brands
+            referencedColumnNames: id

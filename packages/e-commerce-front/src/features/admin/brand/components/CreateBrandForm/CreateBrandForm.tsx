@@ -4,7 +4,7 @@ import TextField from "@/components/inputs/TextField/TextField";
 import {
   getGetBrandsQueryKey,
   usePostBrand,
-} from "@e-commerce/api-client/endpoints/product/product";
+} from "@e-commerce/api-client/endpoints/product";
 import type { PostBrandBody } from "@e-commerce/api-validation/types/product";
 import { postBrandBody } from "@e-commerce/api-validation/zod/product";
 import { zodResolver } from "@hookform/resolvers/zod";

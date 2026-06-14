@@ -12,7 +12,6 @@ function BaseMultiSelect<TField extends FieldValues>({
   fieldError,
   options,
   label,
-
   ...props
 }: BaseMultiSelectProps<TField>) {
   const selectedValues = Array.isArray(field?.value)

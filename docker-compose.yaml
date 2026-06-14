@@ -48,6 +48,7 @@ services:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${DB_NAME}
+      - TZ=Asia/Ho_Chi_Minh
     volumes:
       - pg_data:/var/lib/postgresql/data
     healthcheck:
@@ -106,8 +107,6 @@ networks:
     driver: bridge
 volumes:
   pg_data:
-
-  m2_data:
 
     # docker compose down containername -v -- down and remove volumes
     # docker compose up -d -- build -- build and run in detached mode

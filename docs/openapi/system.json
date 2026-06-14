@@ -1,0 +1,159 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "System API",
+    "version": "1.0"
+  },
+  "tags": [
+    {
+      "name": "uploads"
+    }
+  ],
+  "paths": {
+    "/api/v1/uploads/presigned-url": {
+      "post": {
+        "operationId": "postPresignedUrl",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostPresignedUrl200Response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access is unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "uploads"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostPresignedUrlBody"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ErrorResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "message"
+        ],
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "PostPresignedUrl": {
+        "type": "object",
+        "required": [
+          "fileName",
+          "contentType"
+        ],
+        "properties": {
+          "fileName": {
+            "type": "string"
+          },
+          "contentType": {
+            "type": "string"
+          }
+        }
+      },
+      "PostPresignedUrl200Response": {
+        "type": "object",
+        "required": [
+          "uploads"
+        ],
+        "properties": {
+          "uploads": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PostPresignedUrlResponse"
+            }
+          }
+        }
+      },
+      "PostPresignedUrlBody": {
+        "type": "object",
+        "required": [
+          "files"
+        ],
+        "properties": {
+          "files": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PostPresignedUrl"
+            },
+            "maxItems": 10
+          }
+        }
+      },
+      "PostPresignedUrlResponse": {
+        "type": "object",
+        "required": [
+          "uploadUrl",
+          "fileUrl",
+          "fields",
+          "key"
+        ],
+        "properties": {
+          "uploadUrl": {
+            "type": "string"
+          },
+          "fileUrl": {
+            "type": "string"
+          },
+          "fields": {},
+          "key": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

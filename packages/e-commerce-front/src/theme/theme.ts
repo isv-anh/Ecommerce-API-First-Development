@@ -201,6 +201,14 @@ const theme = createTheme({
         elevation: 6,
       },
     },
+    MuiFab: {
+      styleOverrides: {
+        root: {
+          textTransform: "none",
+          borderRadius: "12px",
+        },
+      },
+    },
   },
 });
 

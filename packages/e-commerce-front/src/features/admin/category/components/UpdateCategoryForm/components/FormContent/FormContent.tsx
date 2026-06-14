@@ -1,7 +1,7 @@
 import SuspenseWrapper from "@/components/feedback/SuspenseWrapper/SuspenseWrapper";
 import SelectCategory from "@/components/inputs/SelectCategory/SelectCategory";
 import TextField from "@/components/inputs/TextField/TextField";
-import { useGetCategoryByCategoryIdSuspense } from "@e-commerce/api-client/endpoints/product/product";
+import { useGetCategoryByCategoryIdSuspense } from "@e-commerce/api-client/endpoints/product";
 import type { PatchCategoryBody } from "@e-commerce/api-validation/types/product";
 import Stack from "@mui/material/Stack";
 import { useEffect } from "react";

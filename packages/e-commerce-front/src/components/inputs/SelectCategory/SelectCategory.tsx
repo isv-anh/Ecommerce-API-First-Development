@@ -3,7 +3,7 @@ import ServerSingleSelect from "@/components/inputs/ServerSingleSelect/ServerSin
 import {
   getCategories,
   getGetCategoriesQueryKey,
-} from "@e-commerce/api-client/endpoints/product/product";
+} from "@e-commerce/api-client/endpoints/product";
 import type { FieldValues } from "react-hook-form";
 
 const SelectCategory = <TField extends FieldValues>({

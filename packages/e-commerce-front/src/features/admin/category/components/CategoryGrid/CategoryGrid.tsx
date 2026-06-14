@@ -4,7 +4,7 @@ import DataGrid from "@/components/data-display/DataGrid/DataGrid";
 import CreateCategoryForm from "@/features/admin/category/components/CreateCategoryForm/CreateCategoryForm";
 import UpdateCategoryForm from "@/features/admin/category/components/UpdateCategoryForm/UpdateCategoryForm";
 import { categorySearchContext } from "@/features/admin/category/utils";
-import { useGetCategoriesSuspense } from "@e-commerce/api-client/endpoints/product/product";
+import { useGetCategoriesSuspense } from "@e-commerce/api-client/endpoints/product";
 import type { CategoryResponse } from "@e-commerce/api-client/schemas/product";
 import AddIcon from "@mui/icons-material/Add";
 import Stack from "@mui/material/Stack";
@@ -66,7 +66,7 @@ const CategoryGrid = () => {
   return (
     <Stack
       sx={{
-        height: "calc(100vh - 350px)",
+        height: "calc(100vh - 400px)",
         minHeight: 0,
       }}
     >

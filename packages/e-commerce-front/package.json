@@ -10,6 +10,7 @@
     "lint": "eslint .",
     "test": "vitest",
     "generate:api-client": "pnpm run -w api-client:build",
+    "generate:api-validation": "pnpm run -w api-validation:build",
     "coverage": "vitest run --coverage",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
@@ -33,6 +34,8 @@
     "axios": "catalog:",
     "date-fns": "catalog:",
     "next": "^16.1.6",
+    "notistack": "^3.0.2",
+    "quill": "2.0.3",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-error-boundary": "^6.1.1",

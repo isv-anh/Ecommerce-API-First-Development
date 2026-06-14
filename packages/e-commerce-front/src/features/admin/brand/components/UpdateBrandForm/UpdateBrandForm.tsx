@@ -8,7 +8,7 @@ import {
   getGetBrandByBrandIdQueryKey,
   useDeleteBrand,
   usePatchBrand,
-} from "@e-commerce/api-client/endpoints/product/product";
+} from "@e-commerce/api-client/endpoints/product";
 import type { BrandResponse } from "@e-commerce/api-client/schemas/product";
 import type { PatchBrandBody } from "@e-commerce/api-validation/types/product";
 import { patchBrandBody } from "@e-commerce/api-validation/zod/product";

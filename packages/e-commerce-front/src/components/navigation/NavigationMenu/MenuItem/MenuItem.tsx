@@ -26,7 +26,13 @@ const MenuItem = ({ menuItem, pl = defaultPaddingLeft }: MenuItemProps) => {
   );
 
   const isActive = useMemo(() => {
-    return pathname === menuItem.path;
+    if (menuItem.path === "/admin") {
+      return pathname === "/admin";
+    }
+
+    return (
+      pathname === menuItem.path || pathname.startsWith(`${menuItem.path}/`)
+    );
   }, [pathname, menuItem.path]);
 
   const handleClick = () => {
