@@ -35,10 +35,7 @@ const mockProduct = {
   categoryName: 'Smartphones',
   thumbnailUrl:
     'https://i.pinimg.com/736x/82/e7/d5/82e7d52336cff4e9d9fa9dfc7d307790.jpg',
-  shopName: 'Samsung Store',
-  shopLogo: 'https://example.com/images/shops/samsungstore.jpg',
-  location: 'Seoul, South Korea',
-  price: 1199,
+
   slug: 'samsung-galaxy-s22-ultra',
 };
 

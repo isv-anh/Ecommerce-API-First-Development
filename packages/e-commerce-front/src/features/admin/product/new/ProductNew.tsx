@@ -95,7 +95,9 @@ const ProductNew = () => {
     <FormProvider {...methods}>
       <Paper
         component={"form"}
-        onSubmit={methods.handleSubmit(onSubmit)}
+        onSubmit={methods.handleSubmit(onSubmit, (error) => {
+          console.log(error);
+        })}
         noValidate
         sx={{
           p: 3,

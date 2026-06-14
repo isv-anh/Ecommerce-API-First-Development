@@ -12,13 +12,14 @@ import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import { useState } from "react";
 import Backdrop from "@mui/material/Backdrop";
+import { DELETE_MESSAGE } from "@/components/feedback/SubmitDialog/constants/message";
 
 const SubmitDialog = ({
   open,
   onClose,
   onSubmit,
   onDelete,
-  deleteMessage = "Bạn có chắc chắn muốn xóa không? Hành động này không thể hoàn tác.",
+  deleteMessage = DELETE_MESSAGE,
   title,
   children,
   width,
@@ -100,6 +101,9 @@ const SubmitDialog = ({
         title="Xác nhận xóa"
         message={deleteMessage}
         width={width}
+        confirmButtonColor="error"
+        confirmButtonVariant="contained"
+        confirmButtonTitle="Xóa"
       />
     </>
   );

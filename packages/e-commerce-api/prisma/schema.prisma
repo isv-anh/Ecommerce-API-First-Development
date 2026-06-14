@@ -273,8 +273,10 @@ model products {
   is_published     Boolean?           @default(true)
   created_at       DateTime?          @db.Timestamp(6)
   updated_at       DateTime?          @db.Timestamp(6)
+  brand_id         String?            @db.Uuid
   product_images   product_images[]
   product_variants product_variants[]
+  brands           brands?            @relation(fields: [brand_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_products_brand")
   categories       categories?        @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_products_category")
   shops            shops              @relation(fields: [shop_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_products_shop")
   reviews          reviews[]
@@ -283,6 +285,7 @@ model products {
   @@index([category_id], map: "idx_products_category_id")
   @@index([shop_id], map: "idx_products_shop_id")
   @@index([shop_id, is_published], map: "idx_products_shop_published")
+  @@index([brand_id], map: "idx_products_brand_id")
 }
 
 model reviews {
@@ -444,9 +447,10 @@ model wishlists {
 }
 
 model brands {
-  id   String @id @db.Uuid
-  name String @unique(map: "uq_brands_name") @db.VarChar(100)
-  slug String @unique(map: "uq_brands_slug") @db.VarChar(100)
+  id       String     @id @db.Uuid
+  name     String     @unique(map: "uq_brands_name") @db.VarChar(100)
+  slug     String     @unique(map: "uq_brands_slug") @db.VarChar(100)
+  products products[]
 }
 
 model group_roles {

@@ -88,7 +88,8 @@ export class ProductsRepository {
       where: { id: productId },
       include: {
         categories: true,
-        shops: true,
+        brands: true,
+        product_images: true,
       },
     });
     if (!product) {
@@ -97,12 +98,14 @@ export class ProductsRepository {
     return {
       productId: product.id,
       productName: product.name,
-      categoryName: product.categories?.name || 'Uncategorized',
+      categoryId: product.categories?.id || '',
       thumbnailUrl: product.thumbnail_url || '',
-      shopName: product.shops?.name || 'Unknown Shop',
-      shopLogo: product.shops?.logo_url || '',
-      location: 'Unknown',
-      price: 0,
+      brandId: product.brand_id || undefined,
+      description: product.description || '',
+      images:
+        product.product_images.map((img) => ({
+          url: img.url ?? '',
+        })) || [],
       slug: product.slug || '',
     };
   }
@@ -111,34 +114,87 @@ export class ProductsRepository {
     productId: string,
     data: PatchProductBody,
   ): Promise<void> {
-    await this.prisma.products.update({
-      where: { id: productId },
-      data: {
-        name: data.productName === null ? undefined : data.productName,
-        description: data.description === null ? undefined : data.description,
-        category_id: data.categoryId === null ? undefined : data.categoryId,
-        slug: data.slug === null ? undefined : data.slug,
-      },
+    await this.prisma.$transaction(async (tx) => {
+      // 1. Kiểm tra product tồn tại
+      const existing = await tx.products.findUnique({
+        where: { id: productId },
+        include: { product_images: true },
+      });
+
+      if (!existing) {
+        throw new NotFoundException('Product not found');
+      }
+
+      // 2. Update các field của product
+      await tx.products.update({
+        where: { id: productId },
+        data: {
+          ...(data.productName != null && { name: data.productName }),
+          ...(data.description != null && { description: data.description }),
+          ...(data.categoryId != null && { category_id: data.categoryId }),
+          ...(data.brandId != null && { brand_id: data.brandId }),
+          ...(data.slug != null && { slug: data.slug }),
+          ...(data.thumbnailUrl != null && {
+            thumbnail_url: data.thumbnailUrl,
+          }),
+        },
+      });
+
+      // 3. Xử lý images theo diff (chỉ xóa/thêm những gì thay đổi)
+      if (data.images != null) {
+        const newUrls = new Set(data.images.map((img) => img.url));
+        const oldImages = existing.product_images;
+        const oldUrls = new Set(oldImages.map((img) => img.url));
+
+        // Ảnh cần xóa: có trong DB nhưng không có trong danh sách mới
+        const toDelete = oldImages.filter((img) => !newUrls.has(img.url ?? ''));
+
+        // Ảnh cần thêm: có trong danh sách mới nhưng chưa có trong DB
+        const toInsert = data.images.filter((img) => !oldUrls.has(img.url));
+
+        if (toDelete.length > 0) {
+          await tx.product_images.deleteMany({
+            where: { id: { in: toDelete.map((img) => img.id) } },
+          });
+        }
+
+        if (toInsert.length > 0) {
+          await tx.product_images.createMany({
+            data: toInsert.map((img) => ({
+              id: crypto.randomUUID(),
+              product_id: productId,
+              url: img.url,
+            })),
+          });
+        }
+      }
     });
   }
 
   async createProduct(data: PostProductBody): Promise<string> {
     this.logger.log('Start save product');
+
     const productId = crypto.randomUUID();
-    const duplicateCount = await this.prisma.products.count({
-      where: { slug: data.slug },
-    });
-    if (duplicateCount > 0) {
-      throw new ConflictException('Product already exists');
-    }
 
     await this.prisma.$transaction(async (tx) => {
+      this.logger.log('Start transaction');
+
+      const duplicateCount = await tx.products.count({
+        where: { slug: data.slug },
+      });
+
+      if (duplicateCount > 0) {
+        throw new ConflictException('Product already exists');
+      }
+
       await tx.products.create({
         data: {
           id: productId,
+          brand_id: data.brandId,
           name: data.productName,
           description: data.description,
           category_id: data.categoryId,
+          thumbnail_url: data.thumbnailUrl,
           slug: data.slug,
           shop_id: 'e1000000-0000-0000-0000-000000000001', // Mock shop ID since API request doesn't provide it
           is_published: false,
@@ -155,6 +211,8 @@ export class ProductsRepository {
             url: image.url,
           })),
         });
+
+        this.logger.log('Save product images success');
       }
     });
 

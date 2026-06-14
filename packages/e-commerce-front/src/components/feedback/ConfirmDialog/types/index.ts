@@ -1,3 +1,5 @@
+import type { ButtonOwnProps } from "@mui/material/Button";
+
 export type ConfirmDialogProps = {
   open: boolean;
   onClose: () => void;
@@ -5,4 +7,7 @@ export type ConfirmDialogProps = {
   title: string;
   message: string;
   width?: number | string;
+  confirmButtonTitle?: string;
+  confirmButtonVariant?: ButtonOwnProps["variant"];
+  confirmButtonColor?: ButtonOwnProps["color"];
 };

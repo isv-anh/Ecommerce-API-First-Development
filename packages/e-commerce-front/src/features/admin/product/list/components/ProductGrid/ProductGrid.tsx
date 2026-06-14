@@ -29,7 +29,12 @@ const ProductGrid = () => {
       flex: 1,
       renderCell: (params) => {
         return params.row.thumbnailUrl ? (
-          <Image alt={params.row.productName} src={params.row.thumbnailUrl} />
+          <Image
+            alt={params.row.productName}
+            src={params.row.thumbnailUrl}
+            width={50}
+            height={50}
+          />
         ) : (
           ""
         );
@@ -63,7 +68,9 @@ const ProductGrid = () => {
         ...buttons,
         {
           label: "Chỉnh sửa",
-          action: () => {},
+          action: () => {
+            router.push(routes.admin.product.detail(rowSelection.productId));
+          },
         },
       ];
     }

@@ -17,7 +17,6 @@
       "require": "./dist/esm/operations/*.js"
     }
   },
- 
   "files": [
     "dist"
   ],
@@ -29,14 +28,10 @@
     "build": "pnpm generate && pnpm generate:types && pnpm generate:operations && node build.mjs"
   },
   "peerDependencies": {
-    "@tanstack/react-query": "catalog:",
-    "axios": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@faker-js/faker": "^10.4.0",
     "@types/node": "^20.19.37",
-    "axios": "catalog:",
     "esbuild": "^0.27.4",
     "fast-glob": "^3.3.3",
     "glob": "^13.0.6",

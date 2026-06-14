@@ -1547,7 +1547,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProductResponse"
+                  "$ref": "#/components/schemas/ProductByIdResponse"
                 }
               }
             }
@@ -2667,7 +2667,7 @@
           "description": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/NonEmptyString"
+                "type": "string"
               },
               {
                 "type": "null"
@@ -2728,14 +2728,7 @@
             ],
             "maxItems": 10
           }
-        },
-        "examples": [
-          {
-            "productName": "Samsung Galaxy S22 Ultra",
-            "categoryId": "123e4567-e89b-12d3-a456-426614174000",
-            "slug": "samsung-galaxy-s22-ultra"
-          }
-        ]
+        }
       },
       "PatchProductVariantImageRequestBody": {
         "type": "object",
@@ -2910,7 +2903,6 @@
         "type": "object",
         "required": [
           "productName",
-          "description",
           "categoryId",
           "slug"
         ],
@@ -2961,23 +2953,7 @@
             ],
             "maxItems": 10
           }
-        },
-        "examples": [
-          {
-            "productName": "Samsung Galaxy S22 Ultra",
-            "description": "The latest Samsung smartphone with advanced features.",
-            "categoryId": "123e4567-e89b-12d3-a456-426614174000",
-            "slug": "samsung-galaxy-s22-ultra",
-            "images": [
-              {
-                "url": "https://i.pinimg.com/736x/82/e7/d5/82e7d52336cff4e9d9fa9dfc7d307790.jpg"
-              },
-              {
-                "url": "https://example.com/images/products/samsung-galaxy-s22-ultra-2.jpg"
-              }
-            ]
-          }
-        ]
+        }
       },
       "PostProductResponseBody": {
         "type": "object",
@@ -2988,12 +2964,7 @@
           "productId": {
             "$ref": "#/components/schemas/UUID"
           }
-        },
-        "examples": [
-          {
-            "productId": "123e4567-e89b-12d3-a456-426614174000"
-          }
-        ]
+        }
       },
       "PostProductVariantImageRequestBody": {
         "type": "object",
@@ -3134,6 +3105,44 @@
           }
         }
       },
+      "ProductByIdResponse": {
+        "type": "object",
+        "required": [
+          "productId",
+          "productName",
+          "categoryId",
+          "slug"
+        ],
+        "properties": {
+          "productId": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "productName": {
+            "type": "string"
+          },
+          "categoryId": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "brandId": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "thumbnailUrl": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Image"
+            }
+          }
+        }
+      },
       "ProductImageResponse": {
         "type": "object",
         "required": [
@@ -3231,20 +3240,7 @@
           "slug": {
             "type": "string"
           }
-        },
-        "examples": [
-          {
-            "productId": "123e4567-e89b-12d3-a456-426614174001",
-            "productName": "Samsung Galaxy S22 Ultra",
-            "categoryName": "Smartphones",
-            "thumbnailUrl": "https://i.pinimg.com/736x/82/e7/d5/82e7d52336cff4e9d9fa9dfc7d307790.jpg",
-            "shopName": "Samsung Store",
-            "shopLogo": "https://example.com/images/shops/samsungstore.jpg",
-            "location": "Seoul, South Korea",
-            "price": 1199,
-            "slug": "samsung-galaxy-s22-ultra"
-          }
-        ]
+        }
       },
       "ProductVariantImageResponse": {
         "type": "object",
@@ -3397,37 +3393,7 @@
               "$ref": "#/components/schemas/ProductResponse"
             }
           }
-        },
-        "examples": [
-          {
-            "products": [
-              {
-                "productId": "123e4567-e89b-12d3-a456-426614174000",
-                "productName": "iPhone 14 Pro Max",
-                "categoryName": "Smartphones",
-                "thumbnailUrl": "https://i.pinimg.com/736x/82/e7/d5/82e7d52336cff4e9d9fa9dfc7d307790.jpg",
-                "shopName": "Apple Store",
-                "shopLogo": "https://example.com/images/shops/applestore.jpg",
-                "location": "Cupertino, CA",
-                "price": 1099,
-                "slug": "iphone-14-pro-max"
-              },
-              {
-                "productId": "123e4567-e89b-12d3-a456-426614174001",
-                "productName": "Samsung Galaxy S22 Ultra",
-                "categoryName": "Smartphones",
-                "thumbnailUrl": "https://i.pinimg.com/736x/82/e7/d5/82e7d52336cff4e9d9fa9dfc7d307790.jpg",
-                "shopName": "Samsung Store",
-                "shopLogo": "https://example.com/images/shops/samsungstore.jpg",
-                "location": "Seoul, South Korea",
-                "price": 1199,
-                "slug": "samsung-galaxy-s22-ultra"
-              }
-            ],
-            "totalCount": 2,
-            "totalPages": 1
-          }
-        ]
+        }
       },
       "Slug": {
         "type": "string",

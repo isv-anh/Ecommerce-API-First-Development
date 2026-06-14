@@ -14,6 +14,9 @@ const ConfirmDialog = ({
   title,
   width,
   message,
+  confirmButtonTitle = "Xác nhận",
+  confirmButtonColor,
+  confirmButtonVariant,
 }: ConfirmDialogProps) => {
   return (
     <Dialog
@@ -32,8 +35,12 @@ const ConfirmDialog = ({
         <Button variant="outlined" color="inherit" onClick={onClose}>
           Hủy
         </Button>
-        <Button variant="contained" color="error" onClick={onConfirm}>
-          Xóa
+        <Button
+          variant={confirmButtonVariant}
+          color={confirmButtonColor}
+          onClick={onConfirm}
+        >
+          {confirmButtonTitle}
         </Button>
       </DialogActions>
     </Dialog>
