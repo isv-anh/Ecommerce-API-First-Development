@@ -10,7 +10,12 @@ type LoadingFallbackProps = {
   height?: number;
 };
 
-const LoadingFallback = ({ width, height }: LoadingFallbackProps) => {
+const defaultHeight = 200;
+
+const LoadingFallback = ({
+  width,
+  height = defaultHeight,
+}: LoadingFallbackProps) => {
   return <Skeleton variant="rectangular" width={width} height={height} />;
 };
 

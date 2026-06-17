@@ -13,7 +13,8 @@
     "generate:api-validation": "pnpm run -w api-validation:build",
     "coverage": "vitest run --coverage",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "clean": "rm -rf .next node_modules/.cache"
   },
   "dependencies": {
     "@e-commerce/api-client": "workspace:*",

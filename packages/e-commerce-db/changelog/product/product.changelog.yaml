@@ -244,57 +244,6 @@ databaseChangeLog:
             referencedTableName: products
             referencedColumnNames: id
 
-  # ─── PRODUCT VARIANT IMAGES ──────────────────────────────
-  - changeSet:
-      id: product-005-create-product-variant-images
-      author: hoanganh
-      changes:
-        - createTable:
-            tableName: product_variant_images
-            columns:
-              - column:
-                  name: id
-                  type: uuid
-                  constraints:
-                    primaryKey: true
-                    nullable: false
-              - column:
-                  name: product_variant_id
-                  type: uuid
-                  constraints:
-                    nullable: false
-              - column:
-                  name: url
-                  type: varchar(500)
-              - column:
-                  name: is_thumbnail
-                  type: boolean
-                  defaultValueBoolean: false
-              - column:
-                  name: sort_order
-                  type: int
-                  defaultValueNumeric: 0
-              - column:
-                  name: created_at
-                  type: timestamp
-
-  - changeSet:
-      id: product-005-product-variant-images-indexes-fk
-      author: hoanganh
-      changes:
-        - createIndex:
-            tableName: product_variant_images
-            indexName: idx_product_variant_images_variant_id
-            columns:
-              - column:
-                  name: product_variant_id
-        - addForeignKeyConstraint:
-            baseTableName: product_variant_images
-            baseColumnNames: product_variant_id
-            constraintName: fk_product_variant_images_variant
-            referencedTableName: product_variants
-            referencedColumnNames: id
-
   # ─── WAREHOUSES ──────────────────────────────────────────
   - changeSet:
       id: product-006-create-warehouses
@@ -447,4 +396,127 @@ databaseChangeLog:
             baseColumnNames: brand_id
             constraintName: fk_products_brand
             referencedTableName: brands
+            referencedColumnNames: id
+
+  # ─── ATTRIBUTES ──────────────────────────────────────────
+  - changeSet:
+      id: product-011-create-attributes
+      author: hoanganh
+      changes:
+        - createTable:
+            tableName: attributes
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: uq_attributes_name
+
+  # ─── PRODUCT ATTRIBUTES ──────────────────────────────────
+  - changeSet:
+      id: product-012-create-product-attributes
+      author: hoanganh
+      changes:
+        - createTable:
+            tableName: product_attributes
+            columns:
+              - column:
+                  name: product_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: attribute_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: sort_order
+                  type: int
+                  defaultValueNumeric: 0
+        - addPrimaryKey:
+            tableName: product_attributes
+            columnNames: product_id, attribute_id
+            constraintName: pk_product_attributes
+
+  - changeSet:
+      id: product-012-product-attributes-indexes-fk
+      author: hoanganh
+      changes:
+        - createIndex:
+            tableName: product_attributes
+            indexName: idx_product_attributes_attribute_id
+            columns:
+              - column:
+                  name: attribute_id
+        - addForeignKeyConstraint:
+            baseTableName: product_attributes
+            baseColumnNames: product_id
+            constraintName: fk_product_attributes_product
+            referencedTableName: products
+            referencedColumnNames: id
+        - addForeignKeyConstraint:
+            baseTableName: product_attributes
+            baseColumnNames: attribute_id
+            constraintName: fk_product_attributes_attribute
+            referencedTableName: attributes
+            referencedColumnNames: id
+
+  # ─── VARIANT ATTRIBUTE VALUES ────────────────────────────
+  - changeSet:
+      id: product-013-create-variant-attribute-values
+      author: hoanganh
+      changes:
+        - createTable:
+            tableName: variant_attribute_values
+            columns:
+              - column:
+                  name: product_variant_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: attribute_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: value
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+        - addPrimaryKey:
+            tableName: variant_attribute_values
+            columnNames: product_variant_id, attribute_id
+            constraintName: pk_variant_attribute_values
+
+  - changeSet:
+      id: product-013-variant-attribute-values-indexes-fk
+      author: hoanganh
+      changes:
+        - createIndex:
+            tableName: variant_attribute_values
+            indexName: idx_variant_attribute_values_attribute_id
+            columns:
+              - column:
+                  name: attribute_id
+        - addForeignKeyConstraint:
+            baseTableName: variant_attribute_values
+            baseColumnNames: product_variant_id
+            constraintName: fk_variant_attribute_values_variant
+            referencedTableName: product_variants
+            referencedColumnNames: id
+        - addForeignKeyConstraint:
+            baseTableName: variant_attribute_values
+            baseColumnNames: attribute_id
+            constraintName: fk_variant_attribute_values_attribute
+            referencedTableName: attributes
             referencedColumnNames: id

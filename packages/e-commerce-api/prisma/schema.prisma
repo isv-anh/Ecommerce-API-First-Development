@@ -244,43 +244,47 @@ model product_variant_images {
 }
 
 model product_variants {
-  id                     String                   @id @db.Uuid
-  product_id             String                   @db.Uuid
-  sku                    String?                  @unique @db.VarChar(255)
-  thumbnail_url          String?                  @db.VarChar(500)
-  price                  Decimal?                 @db.Decimal(18, 2)
-  compare_price          Decimal?                 @db.Decimal(18, 2)
-  stock                  Int?                     @default(0)
-  created_at             DateTime?                @db.Timestamp(6)
-  updated_at             DateTime?                @db.Timestamp(6)
-  cart_items             cart_items[]
-  product_variant_images product_variant_images[]
-  products               products                 @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_product_variants_product")
-  warehouse_inventory    warehouse_inventory[]
+  id                       String                     @id @db.Uuid
+  product_id               String                     @db.Uuid
+  sku                      String?                    @unique @db.VarChar(255)
+  thumbnail_url            String?                    @db.VarChar(500)
+  price                    Decimal?                   @db.Decimal(18, 2)
+  compare_price            Decimal?                   @db.Decimal(18, 2)
+  stock                    Int?                       @default(0)
+  created_at               DateTime?                  @db.Timestamp(6)
+  updated_at               DateTime?                  @db.Timestamp(6)
+  cart_items               cart_items[]
+  product_variant_images   product_variant_images[]
+  products                 products                   @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_product_variants_product")
+  variant_attribute_values variant_attribute_values[]
+  variant_option_values    variant_option_values[]
+  warehouse_inventory      warehouse_inventory[]
 
   @@index([product_id], map: "idx_product_variants_product_id")
   @@index([sku], map: "idx_product_variants_sku")
 }
 
 model products {
-  id               String             @id @db.Uuid
-  shop_id          String             @db.Uuid
-  category_id      String?            @db.Uuid
-  name             String             @db.VarChar(500)
-  slug             String?            @db.VarChar(500)
-  thumbnail_url    String?            @db.VarChar(500)
-  description      String?
-  is_published     Boolean?           @default(true)
-  created_at       DateTime?          @db.Timestamp(6)
-  updated_at       DateTime?          @db.Timestamp(6)
-  brand_id         String?            @db.Uuid
-  product_images   product_images[]
-  product_variants product_variants[]
-  brands           brands?            @relation(fields: [brand_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_products_brand")
-  categories       categories?        @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_products_category")
-  shops            shops              @relation(fields: [shop_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_products_shop")
-  reviews          reviews[]
-  wishlist_items   wishlist_items[]
+  id                 String               @id @db.Uuid
+  shop_id            String               @db.Uuid
+  category_id        String?              @db.Uuid
+  name               String               @db.VarChar(500)
+  slug               String?              @db.VarChar(500)
+  thumbnail_url      String?              @db.VarChar(500)
+  description        String?
+  is_published       Boolean?             @default(true)
+  created_at         DateTime?            @db.Timestamp(6)
+  updated_at         DateTime?            @db.Timestamp(6)
+  brand_id           String?              @db.Uuid
+  product_attributes product_attributes[]
+  product_images     product_images[]
+  product_options    product_options[]
+  product_variants   product_variants[]
+  brands             brands?              @relation(fields: [brand_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_products_brand")
+  categories         categories?          @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_products_category")
+  shops              shops                @relation(fields: [shop_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_products_shop")
+  reviews            reviews[]
+  wishlist_items     wishlist_items[]
 
   @@index([category_id], map: "idx_products_category_id")
   @@index([shop_id], map: "idx_products_shop_id")
@@ -486,4 +490,55 @@ model file_stores {
   key        String   @unique(map: "uq_key") @db.VarChar(255)
   upload_uid String   @db.Uuid
   upload_at  DateTime @default(now()) @db.Timestamptz(6)
+}
+
+model attributes {
+  id                       String                     @id @db.Uuid
+  name                     String                     @unique(map: "uq_attributes_name") @db.VarChar(100)
+  product_attributes       product_attributes[]
+  variant_attribute_values variant_attribute_values[]
+}
+
+model product_attributes {
+  product_id   String     @db.Uuid
+  attribute_id String     @db.Uuid
+  sort_order   Int?       @default(0)
+  attributes   attributes @relation(fields: [attribute_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_product_attributes_attribute")
+  products     products   @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_product_attributes_product")
+
+  @@id([product_id, attribute_id], map: "pk_product_attributes")
+  @@index([attribute_id], map: "idx_product_attributes_attribute_id")
+}
+
+model product_options {
+  id                    String                  @id @db.Uuid
+  product_id            String                  @db.Uuid
+  name                  String                  @db.VarChar(100)
+  sort_order            Int?                    @default(0)
+  products              products                @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_product_options_product")
+  variant_option_values variant_option_values[]
+
+  @@index([product_id], map: "idx_product_options_product_id")
+}
+
+model variant_attribute_values {
+  product_variant_id String           @db.Uuid
+  attribute_id       String           @db.Uuid
+  value              String           @db.VarChar(255)
+  attributes         attributes       @relation(fields: [attribute_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_variant_attribute_values_attribute")
+  product_variants   product_variants @relation(fields: [product_variant_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_variant_attribute_values_variant")
+
+  @@id([product_variant_id, attribute_id], map: "pk_variant_attribute_values")
+  @@index([attribute_id], map: "idx_variant_attribute_values_attribute_id")
+}
+
+model variant_option_values {
+  product_variant_id String           @db.Uuid
+  product_option_id  String           @db.Uuid
+  value              String           @db.VarChar(255)
+  product_options    product_options  @relation(fields: [product_option_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_variant_option_values_option")
+  product_variants   product_variants @relation(fields: [product_variant_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_variant_option_values_variant")
+
+  @@id([product_variant_id, product_option_id], map: "pk_variant_option_values")
+  @@index([product_option_id], map: "idx_variant_option_values_option_id")
 }

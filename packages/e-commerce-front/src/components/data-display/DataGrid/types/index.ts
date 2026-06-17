@@ -4,9 +4,9 @@ import type {
 } from "@mui/x-data-grid";
 
 export type DataGridProps = MuiDataGridProps & {
-  page: number;
-  pageSize: number;
+  page?: number;
+  pageSize?: number;
   orderBy?: string;
-  paginationModelChange: (model: GridPaginationModel) => void;
-  orderByChange: (orderBy: string) => void;
+  paginationModelChange?: (model: GridPaginationModel) => void;
+  orderByChange?: (orderBy: string) => void;
 };

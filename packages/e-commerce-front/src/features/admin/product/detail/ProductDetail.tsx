@@ -26,6 +26,10 @@ import { FormProvider, useForm } from "react-hook-form";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ConfirmDialog from "@/components/feedback/ConfirmDialog/ConfirmDialog";
 import { DELETE_MESSAGE } from "@/components/feedback/SubmitDialog/constants/message";
+import SuspenseWrapper from "@/components/feedback/SuspenseWrapper/SuspenseWrapper";
+import ProductVariantGrid from "@/features/admin/product/components/ProductVariant/ProductVariantGrid/ProductVariantGrid";
+import SectionLayout from "@/components/layouts/SectionLayout/SectionLayout";
+import ProductAttributeGrid from "@/features/admin/product/components/ProductAttribute/ProductAttributeGrid/ProductAttributeGrid";
 
 const ProductDetail = ({ productId }: { productId: string }) => {
   const methods = useForm<PatchProductBody>({
@@ -156,6 +160,17 @@ const ProductDetail = ({ productId }: { productId: string }) => {
       >
         <Stack spacing={2}>
           <ProductForm />
+          <SectionLayout title="Thuộc tính sản phẩm">
+            <SuspenseWrapper height={200}>
+              <ProductAttributeGrid productId={productId} />
+            </SuspenseWrapper>
+          </SectionLayout>
+          <SectionLayout title="Phân loại sản phẩm">
+            <SuspenseWrapper height={200}>
+              <ProductVariantGrid productId={productId} />
+            </SuspenseWrapper>
+          </SectionLayout>
+
           <Box>
             <Button
               variant="contained"

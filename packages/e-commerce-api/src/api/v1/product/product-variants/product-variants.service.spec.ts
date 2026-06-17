@@ -172,6 +172,7 @@ describe('ProductVariantsService', () => {
       productId,
       sku: 'SKU-GALAXY-S22-BLACK-256',
       price: 1199,
+      variantAttributes: [],
     };
 
     it('should return productVariantId after creation', async () => {

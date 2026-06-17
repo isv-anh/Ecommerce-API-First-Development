@@ -5,6 +5,7 @@ import SelectBrand from "@/components/inputs/SelectBrand/SelectBrand";
 import SelectCategory from "@/components/inputs/SelectCategory/SelectCategory";
 
 import TextField from "@/components/inputs/TextField/TextField";
+import SectionLayout from "@/components/layouts/SectionLayout/SectionLayout";
 import type { ProductFormType } from "@/features/admin/product/components/ProductForm/types";
 import useUpload from "@/hooks/useUpload";
 import Box from "@mui/material/Box";
@@ -35,120 +36,130 @@ const ProductForm = () => {
   const { handleUpload } = useUpload();
   return (
     <Grid container spacing={2}>
-      <Grid size={{ xs: 12, md: 3 }}>
-        <TextField
-          required
-          label="Tên sản phẩm"
-          control={control}
-          name="productName"
-          fullWidth
-        />
-      </Grid>
-      <Grid size={{ xs: 12, md: 3 }}>
-        <TextField
-          required
-          label="Slug"
-          control={control}
-          name="slug"
-          fullWidth
-        />
-      </Grid>
-
-      <Grid size={{ xs: 0, md: 6 }}></Grid>
-
-      <Grid size={{ xs: 12, md: 3 }}>
-        <SuspenseWrapper height={40}>
-          <SelectCategory
-            control={control}
-            name="categoryId"
-            label="Danh mục"
-          />
-        </SuspenseWrapper>
-      </Grid>
-
-      <Grid size={{ xs: 12, md: 3 }}>
-        <SuspenseWrapper height={40}>
-          <SelectBrand control={control} name="brandId" label="Thương hiệu" />
-        </SuspenseWrapper>
-      </Grid>
-
-      <Grid size={12}>
-        <Box display="flex" alignItems="center" gap={2}>
-          <Typography>Ảnh đại diện:</Typography>
-
-          {thumbnailWatch ? (
-            <UploadImageViewer
-              url={thumbnailWatch}
-              onDelete={() => setValue("thumbnailUrl", null)}
-            />
-          ) : (
-            <Controller
+      <SectionLayout title="Thông tin sản phẩm">
+        <Grid container spacing={2}>
+          <Grid size={{ xs: 12, md: 3 }}>
+            <TextField
+              required
+              label="Tên sản phẩm"
               control={control}
-              name="thumbnailUrl"
-              render={({ field, fieldState }) => (
-                <ImagePicker
-                  field={field}
-                  fieldError={fieldState.error}
-                  setError={setError}
-                />
-              )}
+              name="productName"
+              fullWidth
             />
-          )}
-        </Box>
-      </Grid>
+          </Grid>
+          <Grid size={{ xs: 12, md: 3 }}>
+            <TextField
+              required
+              label="Slug"
+              control={control}
+              name="slug"
+              fullWidth
+            />
+          </Grid>
 
-      <Grid size={12}>
-        <Box>
-          <Typography mb={2}>Hình ảnh sản phẩm:</Typography>
+          <Grid size={{ xs: 0, md: 6 }}></Grid>
 
-          <Box display="flex" flexWrap="wrap" gap={2}>
-            {fields.map((field, index) => (
-              <Box key={field.id} width={100} height={100} flexShrink={0}>
-                <UploadImageViewer
-                  url={field.url}
-                  onDelete={() => {
-                    remove(index);
-                  }}
-                />
-              </Box>
-            ))}
-
-            <Box width={100} height={100} flexShrink={0}>
-              <Controller
+          <Grid size={{ xs: 12, md: 3 }}>
+            <SuspenseWrapper height={40}>
+              <SelectCategory
                 control={control}
-                name="images"
-                render={({ field, fieldState }) => {
-                  return (
+                name="categoryId"
+                label="Danh mục"
+              />
+            </SuspenseWrapper>
+          </Grid>
+
+          <Grid size={{ xs: 12, md: 3 }}>
+            <SuspenseWrapper height={40}>
+              <SelectBrand
+                control={control}
+                name="brandId"
+                label="Thương hiệu"
+              />
+            </SuspenseWrapper>
+          </Grid>
+
+          <Grid size={12}>
+            <Box display="flex" alignItems="center" gap={2}>
+              <Typography>Ảnh đại diện:</Typography>
+
+              {thumbnailWatch ? (
+                <UploadImageViewer
+                  url={thumbnailWatch}
+                  onDelete={() => setValue("thumbnailUrl", null)}
+                />
+              ) : (
+                <Controller
+                  control={control}
+                  name="thumbnailUrl"
+                  render={({ field, fieldState }) => (
                     <ImagePicker
-                      multiple
                       field={field}
                       fieldError={fieldState.error}
-                      setImages={(urls) => {
-                        urls.forEach((url) => {
-                          append({ url });
-                        });
+                      setError={setError}
+                    />
+                  )}
+                />
+              )}
+            </Box>
+          </Grid>
+
+          <Grid size={12}>
+            <Box>
+              <Typography mb={2}>Hình ảnh sản phẩm:</Typography>
+
+              <Box display="flex" flexWrap="wrap" gap={2}>
+                {fields.map((field, index) => (
+                  <Box key={field.id} width={100} height={100} flexShrink={0}>
+                    <UploadImageViewer
+                      url={field.url}
+                      onDelete={() => {
+                        remove(index);
                       }}
                     />
-                  );
-                }}
-              />
+                  </Box>
+                ))}
+
+                <Box width={100} height={100} flexShrink={0}>
+                  <Controller
+                    control={control}
+                    name="images"
+                    render={({ field, fieldState }) => {
+                      return (
+                        <ImagePicker
+                          multiple
+                          field={field}
+                          fieldError={fieldState.error}
+                          setImages={(urls) => {
+                            urls.forEach((url) => {
+                              append({ url });
+                            });
+                          }}
+                        />
+                      );
+                    }}
+                  />
+                </Box>
+              </Box>
             </Box>
-          </Box>
-        </Box>
-      </Grid>
+          </Grid>
+        </Grid>
+      </SectionLayout>
+
       <Grid size={12}>
-        <Typography mb={2}>Mô tả sản phẩm:</Typography>
-        <Controller
-          control={control}
-          name="description"
-          render={({ field }) => (
-            <RichTextEditor
-              value={field.value}
-              onChange={field.onChange}
-              onImageUpload={handleUpload}
-            />
-          )}
-        />
+        <SectionLayout title="Mô tả sản phẩm">
+          <Controller
+            control={control}
+            name="description"
+            render={({ field }) => (
+              <RichTextEditor
+                value={field.value}
+                onChange={field.onChange}
+                onImageUpload={handleUpload}
+              />
+            )}
+          />
+        </SectionLayout>
       </Grid>
     </Grid>
   );

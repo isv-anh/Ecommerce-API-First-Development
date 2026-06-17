@@ -25,13 +25,31 @@ export class ProductVariantsRepository {
   async getProductVariants(
     query: GetProductVariantsQueryParams,
   ): Promise<GetProductVariants200Response> {
-    const whereClause = {
-      product_id: query.productId,
-    };
-
     const variants = (
       await this.prisma.product_variants.findMany({
-        where: whereClause,
+        where: {
+          product_id: query.productId,
+        },
+        select: {
+          compare_price: true,
+          id: true,
+          product_id: true,
+          sku: true,
+          price: true,
+          stock: true,
+          thumbnail_url: true,
+          variant_attribute_values: {
+            select: {
+              value: true,
+              attributes: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+            },
+          },
+        },
       })
     ).map((variant) => ({
       productVariantId: variant.id,
@@ -41,8 +59,13 @@ export class ProductVariantsRepository {
       price: Number(variant.price),
       comparePrice: variant.compare_price ? Number(variant.compare_price) : 0,
       stock: variant.stock || 0,
-      createdAt: variant.created_at?.toISOString() || '',
-      updatedAt: variant.updated_at?.toISOString() || '',
+      variantAttributes: variant.variant_attribute_values.map((v) => {
+        return {
+          attributeId: v.attributes.id,
+          attributeName: v.attributes.name,
+          attributeValue: v.value,
+        };
+      }),
     }));
 
     return {
@@ -55,6 +78,26 @@ export class ProductVariantsRepository {
   ): Promise<GetProductVariantById200Response> {
     const variant = await this.prisma.product_variants.findUnique({
       where: { id: productVariantId },
+      select: {
+        compare_price: true,
+        id: true,
+        product_id: true,
+        sku: true,
+        price: true,
+        stock: true,
+        thumbnail_url: true,
+        variant_attribute_values: {
+          select: {
+            value: true,
+            attributes: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+      },
     });
     if (!variant) {
       throw new NotFoundException('Product Variant not found');
@@ -67,8 +110,13 @@ export class ProductVariantsRepository {
       price: Number(variant.price),
       comparePrice: variant.compare_price ? Number(variant.compare_price) : 0,
       stock: variant.stock || 0,
-      createdAt: variant.created_at?.toISOString() || '',
-      updatedAt: variant.updated_at?.toISOString() || '',
+      variantAttributes: variant.variant_attribute_values.map((v) => {
+        return {
+          attributeId: v.attributes.id,
+          attributeName: v.attributes.name,
+          attributeValue: v.value,
+        };
+      }),
     };
   }
 
@@ -76,15 +124,32 @@ export class ProductVariantsRepository {
     productVariantId: string,
     data: PatchProductVariantBody,
   ): Promise<void> {
-    await this.prisma.product_variants.update({
-      where: { id: productVariantId },
-      data: {
-        sku: data.sku,
-        thumbnail_url: data.thumbnailUrl,
-        price: data.price,
-        compare_price: data.comparePrice,
-        stock: data.stock,
-      },
+    await this.prisma.$transaction(async (tx) => {
+      await tx.product_variants.update({
+        where: { id: productVariantId },
+        data: {
+          sku: data.sku,
+          thumbnail_url: data.thumbnailUrl,
+          price: data.price,
+          compare_price: data.comparePrice,
+        },
+      });
+
+      if (data.variantAttributes) {
+        await tx.variant_attribute_values.deleteMany({
+          where: { product_variant_id: productVariantId },
+        });
+
+        if (data.variantAttributes.length > 0) {
+          await tx.variant_attribute_values.createMany({
+            data: data.variantAttributes.map((attr) => ({
+              product_variant_id: productVariantId,
+              attribute_id: attr.attributeId,
+              value: attr.attributeValue,
+            })),
+          });
+        }
+      }
     });
   }
 
@@ -96,17 +161,31 @@ export class ProductVariantsRepository {
     if (duplicateCount > 0) {
       throw new ConflictException('SKU already exists');
     }
-    await this.prisma.product_variants.create({
-      data: {
-        id: productVariantId,
-        product_id: data.productId,
-        sku: data.sku,
-        thumbnail_url: data.thumbnailUrl,
-        price: data.price,
-        compare_price: data.comparePrice,
-        stock: data.stock || 0,
-      },
+
+    await this.prisma.$transaction(async (tx) => {
+      await tx.product_variants.create({
+        data: {
+          id: productVariantId,
+          product_id: data.productId,
+          sku: data.sku,
+          thumbnail_url: data.thumbnailUrl,
+          price: data.price,
+          compare_price: data.comparePrice,
+          stock: 0,
+        },
+      });
+
+      if (data.variantAttributes.length > 0) {
+        await tx.variant_attribute_values.createMany({
+          data: data.variantAttributes.map((attr) => ({
+            product_variant_id: productVariantId,
+            attribute_id: attr.attributeId,
+            value: attr.attributeValue,
+          })),
+        });
+      }
     });
+
     return productVariantId;
   }
 }

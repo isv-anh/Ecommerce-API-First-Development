@@ -3,17 +3,6 @@ import "@typespec/http";
 
 using TypeSpec.Http;
 
-@example(#{
-    productVariantId: "123e4567-e89b-12d3-a456-426614174100",
-    productId: "123e4567-e89b-12d3-a456-426614174000",
-    sku: "SKU-GALAXY-S22-BLACK-256",
-    thumbnailUrl: "https://example.com/images/variants/galaxy-s22-black.jpg",
-    price: 1199,
-    comparePrice: 1299,
-    stock: 50,
-    createdAt: "2026-04-09T08:00:00.000Z",
-    updatedAt: "2026-04-09T08:00:00.000Z",
-})
 model ProductVariantResponse {
     productVariantId: UUID;
     productId: UUID;
@@ -22,17 +11,30 @@ model ProductVariantResponse {
     price: decimal;
     comparePrice: decimal;
     stock: int32;
-    createdAt: string;
-    updatedAt: string;
+
+    @minItems(1)
+    variantAttributes: VariantAttribute[];
+}
+
+model VariantAttribute {
+    attributeId: UUID;
+    attributeName: string;
+    attributeValue: NonEmptyString;
 }
 
 model PostProductVariantRequestBody {
     productId: UUID;
     sku: NonEmptyString;
-    thumbnailUrl?: string;
+    thumbnailUrl?: string | null;
+
+    @minValue(0)
     price: decimal;
-    comparePrice?: decimal;
-    stock?: int32;
+
+    @minValue(0)
+    comparePrice?: decimal | null;
+
+    @minItems(1)
+    variantAttributes: VariantAttribute[];
 }
 
 model PostProductVariantResponseBody {
@@ -40,11 +42,11 @@ model PostProductVariantResponseBody {
 }
 
 model PatchProductVariantRequestBody {
-    sku?: NonEmptyString;
-    thumbnailUrl?: string;
-    price?: decimal;
-    comparePrice?: decimal;
-    stock?: int32;
+    sku?: NonEmptyString | null;
+    thumbnailUrl?: string | null;
+    price?: decimal | null;
+    comparePrice?: decimal | null;
+    variantAttributes?: VariantAttribute[];
 }
 
 model ProductVariantsResponse {
