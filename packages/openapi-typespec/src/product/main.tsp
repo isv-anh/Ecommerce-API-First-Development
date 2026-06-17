@@ -12,6 +12,7 @@ import "./warehouses/routes.tsp";
 import "./warehouses-inventories/routes.tsp";
 import "../common/enums/versions.tsp";
 import "./attributes/routes.tsp";
+import "./product-attributes/routes.tsp";
 
 using Versioning;
 using TypeSpec.Http;

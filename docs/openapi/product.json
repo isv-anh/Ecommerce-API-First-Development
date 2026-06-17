@@ -31,6 +31,9 @@
     },
     {
       "name": "attributes"
+    },
+    {
+      "name": "product-attributes"
     }
   ],
   "paths": {
@@ -865,6 +868,302 @@
         },
         "tags": [
           "categories"
+        ]
+      }
+    },
+    "/api/v1/product-attributes": {
+      "get": {
+        "operationId": "getProductAttributes",
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            },
+            "explode": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductAttributesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "product-attributes"
+        ]
+      },
+      "post": {
+        "operationId": "postProductAttribute",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "The request has succeeded and a new resource has been created as a result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostProductAttributeResponseBody"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access is unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "product-attributes"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostProductAttributeRequestBody"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/product-attributes/{productId}/{attributeId}": {
+      "get": {
+        "operationId": "getProductAttributeById",
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            }
+          },
+          {
+            "name": "attributeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductAttributeResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "product-attributes"
+        ]
+      },
+      "patch": {
+        "operationId": "patchProductAttribute",
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            }
+          },
+          {
+            "name": "attributeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "There is no content to send for this request, but the headers may be useful. "
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access is unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "product-attributes"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchProductAttributeRequestBody"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteProductAttribute",
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            }
+          },
+          {
+            "name": "attributeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "There is no content to send for this request, but the headers may be useful. "
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access is unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "product-attributes"
         ]
       }
     },
@@ -2970,6 +3269,17 @@
           }
         ]
       },
+      "PatchProductAttributeRequestBody": {
+        "type": "object",
+        "required": [
+          "attributeId"
+        ],
+        "properties": {
+          "attributeId": {
+            "$ref": "#/components/schemas/UUID"
+          }
+        }
+      },
       "PatchProductImageRequestBody": {
         "type": "object",
         "properties": {
@@ -3083,22 +3393,52 @@
         "type": "object",
         "properties": {
           "sku": {
-            "$ref": "#/components/schemas/NonEmptyString"
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/NonEmptyString"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "thumbnailUrl": {
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "price": {
-            "type": "number",
-            "format": "decimal"
+            "anyOf": [
+              {
+                "type": "number",
+                "format": "decimal"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "comparePrice": {
-            "type": "number",
-            "format": "decimal"
+            "anyOf": [
+              {
+                "type": "number",
+                "format": "decimal"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
-          "stock": {
-            "type": "integer",
-            "format": "int32"
+          "variantAttributes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VariantAttribute"
+            }
           }
         }
       },
@@ -3221,6 +3561,36 @@
             "categoryId": "123e4567-e89b-12d3-a456-426614174000"
           }
         ]
+      },
+      "PostProductAttributeRequestBody": {
+        "type": "object",
+        "required": [
+          "productId",
+          "attributeId"
+        ],
+        "properties": {
+          "productId": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "attributeId": {
+            "$ref": "#/components/schemas/UUID"
+          }
+        }
+      },
+      "PostProductAttributeResponseBody": {
+        "type": "object",
+        "required": [
+          "productId",
+          "attributeId"
+        ],
+        "properties": {
+          "productId": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "attributeId": {
+            "$ref": "#/components/schemas/UUID"
+          }
+        }
       },
       "PostProductImageRequestBody": {
         "type": "object",
@@ -3360,7 +3730,8 @@
         "required": [
           "productId",
           "sku",
-          "price"
+          "price",
+          "variantAttributes"
         ],
         "properties": {
           "productId": {
@@ -3370,15 +3741,38 @@
             "$ref": "#/components/schemas/NonEmptyString"
           },
           "thumbnailUrl": {
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "price": {
             "type": "number",
-            "format": "decimal"
+            "format": "decimal",
+            "minimum": 0
           },
           "comparePrice": {
-            "type": "number",
-            "format": "decimal"
+            "anyOf": [
+              {
+                "type": "number",
+                "format": "decimal"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "minimum": 0
+          },
+          "variantAttributes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VariantAttribute"
+            },
+            "minItems": 1
           }
         }
       },
@@ -3454,6 +3848,39 @@
         "properties": {
           "warehouseId": {
             "$ref": "#/components/schemas/UUID"
+          }
+        }
+      },
+      "ProductAttributeResponse": {
+        "type": "object",
+        "required": [
+          "productId",
+          "attributeId",
+          "attributeName"
+        ],
+        "properties": {
+          "productId": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "attributeId": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "attributeName": {
+            "$ref": "#/components/schemas/NonEmptyString"
+          }
+        }
+      },
+      "ProductAttributesResponse": {
+        "type": "object",
+        "required": [
+          "productAttributes"
+        ],
+        "properties": {
+          "productAttributes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductAttributeResponse"
+            }
           }
         }
       },
@@ -3660,8 +4087,7 @@
           "price",
           "comparePrice",
           "stock",
-          "createdAt",
-          "updatedAt"
+          "variantAttributes"
         ],
         "properties": {
           "productVariantId": {
@@ -3688,11 +4114,12 @@
             "type": "integer",
             "format": "int32"
           },
-          "createdAt": {
-            "type": "string"
-          },
-          "updatedAt": {
-            "type": "string"
+          "variantAttributes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VariantAttribute"
+            },
+            "minItems": 1
           }
         }
       },
@@ -3743,6 +4170,25 @@
         "type": "string",
         "minLength": 1,
         "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+      },
+      "VariantAttribute": {
+        "type": "object",
+        "required": [
+          "attributeId",
+          "attributeName",
+          "attributeValue"
+        ],
+        "properties": {
+          "attributeId": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "attributeName": {
+            "type": "string"
+          },
+          "attributeValue": {
+            "$ref": "#/components/schemas/NonEmptyString"
+          }
+        }
       },
       "Warehouse": {
         "type": "object",

@@ -30,6 +30,7 @@ import { CaslAbilityFactory } from '@/common/casl/casl-ability.factory';
 import { PoliciesGuard } from '@/common/guards/policies.guard';
 import { UploadsModule } from '@/api/v1/system/uploads/uploads.module';
 import { AttributesModule } from '@/api/v1/product/attributes/attributes.module';
+import { ProductAttributesModule } from '@/api/v1/product/product-attributes/product-attributes.module';
 
 @Module({
   imports: [
@@ -61,6 +62,7 @@ import { AttributesModule } from '@/api/v1/product/attributes/attributes.module'
     OrderShopsModule,
     UploadsModule,
     AttributesModule,
+    ProductAttributesModule,
   ],
   providers: [
     CaslAbilityFactory,

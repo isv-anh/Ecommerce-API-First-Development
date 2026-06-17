@@ -124,4 +124,9 @@ export const getPermissions: Record<Operation, PolicyRule[]> = {
   getAttributes: [],
   patchAttribute: [],
   postAttributes: [],
+  deleteProductAttribute: [],
+  getProductAttributeById: [],
+  getProductAttributes: [],
+  patchProductAttribute: [],
+  postProductAttribute: [],
 };

@@ -1,21 +1,20 @@
 import SubmitDialog from "@/components/feedback/SubmitDialog/SubmitDialog";
 import type { SubmitDialogProps } from "@/components/feedback/SubmitDialog/types";
 import SuspenseWrapper from "@/components/feedback/SuspenseWrapper/SuspenseWrapper";
-import TextField from "@/components/inputs/TextField/TextField";
+import UpdateAttributeFormSuspense from "@/features/admin/attribute/components/UpdateAttributeForm/components/UpdateAttributeFormSuspense/UpdateAttributeFormSuspense";
 
 import {
   usePatchAttribute,
   useDeleteAttribute,
   getGetAttributesQueryKey,
   getGetAttributeByIdQueryKey,
-  useGetAttributeByIdSuspense,
 } from "@e-commerce/api-client/endpoints/product";
 import type { AttributeResponse } from "@e-commerce/api-client/schemas/product";
 import type { PatchAttributeBody } from "@e-commerce/api-validation/types/product";
 import { patchAttributeBody } from "@e-commerce/api-validation/zod/product";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
-import { useEffect } from "react";
+
 import { FormProvider, useForm } from "react-hook-form";
 
 const UpdateAttributeForm = ({
@@ -30,7 +29,7 @@ const UpdateAttributeForm = ({
 }) => {
   const patchAttribute = usePatchAttribute();
   const deleteAttribute = useDeleteAttribute();
-  const { data } = useGetAttributeByIdSuspense(id);
+
   const queryClient = useQueryClient();
   const methods = useForm<PatchAttributeBody>({
     defaultValues: {},
@@ -69,12 +68,6 @@ const UpdateAttributeForm = ({
     }
   };
 
-  const { reset } = methods;
-
-  useEffect(() => {
-    reset(data);
-  }, [data, reset]);
-
   return (
     <SubmitDialog
       onDelete={onDelete}
@@ -87,11 +80,7 @@ const UpdateAttributeForm = ({
     >
       <FormProvider {...methods}>
         <SuspenseWrapper height={200}>
-          <TextField
-            control={methods.control}
-            name="attributeName"
-            label="Tên thuộc tính"
-          />
+          <UpdateAttributeFormSuspense id={id} />
         </SuspenseWrapper>
       </FormProvider>
     </SubmitDialog>
