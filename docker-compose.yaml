@@ -1,43 +1,4 @@
 services:
-  # e-commerce-api:
-  #   container_name: e-commerce-api
-  #   build:
-  #     context: docker/e-commerce-api/dev
-  #     dockerfile: dev.dockerfile
-  #     args:
-  #       - UID=${UID}
-  #       - GID=${GID}
-  #   ports:
-  #     - "8080:8080"
-  #   volumes:
-  #     - ./packages/e-commerce-api:/app/packages/e-commerce-api
-  #     - m2_data:/app/.m2
-  #   environment:
-  #     - DB_USERNAME=${DB_USERNAME}
-  #     - DB_PASSWORD=${DB_PASSWORD}
-  #     - DB_HOST=postgres-db
-  #     - DB_PORT=${DB_PORT}
-  #     - DB_NAME=${DB_NAME}
-  #   depends_on:
-  #     - postgres-db
-  #   networks:
-  #     - e-commerce-network
-
-  # e-commerce-front:
-  #   container_name: e-commerce-front
-  #   build:
-  #     context: docker/e-commerce-front/dev
-  #     dockerfile: dev.dockerfile
-  #     args:
-  #       - UID=${UID}
-  #       - GID=${GID}
-  #   ports:
-  #     - "3000:3000"
-  #   volumes:
-  #     - ./packages/e-commerce-front:/app/packages/e-commerce-front
-  #   networks:
-  #     - e-commerce-network
-
   postgres-db:
     container_name: postgres-db
     image: postgres:16
@@ -111,5 +72,4 @@ volumes:
     # docker compose down containername -v -- down and remove volumes
     # docker compose up -d -- build -- build and run in detached mode
     # docker compose logs -f -- follow logs
-    # docker compose exec hrm-api bash -- enter the hrm-api container
     # docker compose exec postgres-db bash -- enter the postgres-db container

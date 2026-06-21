@@ -44,7 +44,7 @@
       },
       {
         "label": "Create PR to Github",
-        "detail": "Create a pull request to the HRM repository on GitHub",
+        "detail": "Create a pull request to the E-Commerce repository on GitHub",
         "command": "chmod +x ../../scripts/create-pr.sh && ../../scripts/create-pr.sh",
         "type": "shell",
         "args": [],
