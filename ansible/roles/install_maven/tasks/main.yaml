@@ -1,0 +1,50 @@
+- name: Định nghĩa phiên bản Maven cần cài
+  set_fact:
+    maven_version: "3.9.16"
+    maven_major: "3"
+
+- name: Kiểm tra Maven đã được cài đặt chưa
+  command: mvn --version
+  register: maven_check
+  changed_when: false
+  failed_when: false
+
+- name: Cài đặt Maven theo phiên bản chỉ định
+  block:
+    - name: Tải Maven {{ maven_version }} binary
+      get_url:
+        url: "https://dlcdn.apache.org/maven/maven-{{ maven_major }}/{{ maven_version }}/binaries/apache-maven-{{ maven_version }}-bin.tar.gz"
+        dest: "/tmp/apache-maven-{{ maven_version }}-bin.tar.gz"
+        mode: "0644"
+
+    - name: Giải nén Maven vào /opt
+      unarchive:
+        src: "/tmp/apache-maven-{{ maven_version }}-bin.tar.gz"
+        dest: /opt
+        remote_src: yes
+        creates: "/opt/apache-maven-{{ maven_version }}"
+      become: true
+
+    - name: Tạo symlink mvn vào /usr/local/bin
+      file:
+        src: "/opt/apache-maven-{{ maven_version }}/bin/mvn"
+        dest: /usr/local/bin/mvn
+        state: link
+        force: yes
+      become: true
+
+  rescue:
+    - name: Dừng playbook
+      fail:
+        msg: "Cài đặt Maven {{ maven_version }} thất bại"
+
+  when: "maven_version not in (maven_check.stdout | default(''))"
+
+- name: Hiển thị phiên bản Maven
+  command: mvn --version
+  register: maven_check_after
+  changed_when: false
+
+- name: In phiên bản Maven
+  debug:
+    var: maven_check_after.stdout
