@@ -22,13 +22,37 @@ export class WarehouseInventoriesRepository {
     productVariantId: string,
   ): Promise<void> {
     try {
-      await this.prisma.warehouse_inventory.delete({
-        where: {
-          warehouse_id_product_variant_id: {
-            warehouse_id: warehouseId,
-            product_variant_id: productVariantId,
+      await this.prisma.$transaction(async (tx) => {
+        const inventory = await tx.warehouse_inventory.findUnique({
+          where: {
+            warehouse_id_product_variant_id: {
+              warehouse_id: warehouseId,
+              product_variant_id: productVariantId,
+            },
           },
-        },
+        });
+
+        if (!inventory) {
+          throw new NotFoundException('Warehouse Inventory not found');
+        }
+
+        await tx.warehouse_inventory.delete({
+          where: {
+            warehouse_id_product_variant_id: {
+              warehouse_id: warehouseId,
+              product_variant_id: productVariantId,
+            },
+          },
+        });
+
+        await tx.product_variants.update({
+          where: { id: productVariantId },
+          data: {
+            stock: {
+              decrement: inventory.stock || 0,
+            },
+          },
+        });
       });
     } catch (error) {
       if (
@@ -91,42 +115,81 @@ export class WarehouseInventoriesRepository {
     productVariantId: string,
     data: PatchWarehouseInventoryBody,
   ): Promise<void> {
-    await this.prisma.warehouse_inventory.update({
-      where: {
-        warehouse_id_product_variant_id: {
-          warehouse_id: warehouseId,
-          product_variant_id: productVariantId,
+    await this.prisma.$transaction(async (tx) => {
+      const inventory = await tx.warehouse_inventory.findUnique({
+        where: {
+          warehouse_id_product_variant_id: {
+            warehouse_id: warehouseId,
+            product_variant_id: productVariantId,
+          },
         },
-      },
-      data: {
-        stock: data.stock,
-      },
+      });
+
+      if (!inventory) {
+        throw new NotFoundException('Warehouse Inventory not found');
+      }
+
+      const nextStock = data.stock ?? inventory.stock ?? 0;
+      const stockDelta = nextStock - (inventory.stock || 0);
+
+      await tx.warehouse_inventory.update({
+        where: {
+          warehouse_id_product_variant_id: {
+            warehouse_id: warehouseId,
+            product_variant_id: productVariantId,
+          },
+        },
+        data: {
+          stock: data.stock,
+        },
+      });
+
+      await tx.product_variants.update({
+        where: { id: productVariantId },
+        data: {
+          stock: {
+            increment: stockDelta,
+          },
+        },
+      });
     });
   }
 
   async createWarehouseInventory(
     data: PostWarehouseInventoryBody,
   ): Promise<{ warehouseId: string; productVariantId: string }> {
-    const existing = await this.prisma.warehouse_inventory.findUnique({
-      where: {
-        warehouse_id_product_variant_id: {
+    await this.prisma.$transaction(async (tx) => {
+      const existing = await tx.warehouse_inventory.findUnique({
+        where: {
+          warehouse_id_product_variant_id: {
+            warehouse_id: data.warehouseId,
+            product_variant_id: data.productVariantId,
+          },
+        },
+      });
+
+      if (existing) {
+        throw new ConflictException('Warehouse Inventory already exists');
+      }
+
+      await tx.warehouse_inventory.create({
+        data: {
           warehouse_id: data.warehouseId,
           product_variant_id: data.productVariantId,
+          stock: data.stock,
         },
-      },
+      });
+
+      await tx.product_variants.update({
+        where: { id: data.productVariantId },
+        data: {
+          stock: {
+            increment: data.stock,
+          },
+        },
+      });
     });
 
-    if (existing) {
-      throw new ConflictException('Warehouse Inventory already exists');
-    }
-
-    await this.prisma.warehouse_inventory.create({
-      data: {
-        warehouse_id: data.warehouseId,
-        product_variant_id: data.productVariantId,
-        stock: data.stock,
-      },
-    });
     return {
       warehouseId: data.warehouseId,
       productVariantId: data.productVariantId,
