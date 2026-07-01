@@ -2,7 +2,6 @@
 INSERT INTO
     roles (role_id, role_name)
 VALUES (gen_random_uuid (), 'USER'),
-    (gen_random_uuid (), 'SELLER'),
     (gen_random_uuid (), 'ADMIN')
 ON CONFLICT (role_name) DO NOTHING;
 
@@ -37,12 +36,6 @@ VALUES
 (gen_random_uuid(), 'order:cancel', 'cancel', 'Order'),
 (gen_random_uuid(), 'order:approve', 'approve', 'Order'),
 (gen_random_uuid(), 'order:reject', 'reject', 'Order'),
-
--- SHOP
-(gen_random_uuid(), 'shop:create', 'create', 'Shop'),
-(gen_random_uuid(), 'shop:read', 'read', 'Shop'),
-(gen_random_uuid(), 'shop:update', 'update', 'Shop'),
-(gen_random_uuid(), 'shop:delete', 'delete', 'Shop'),
 
 -- VOUCHER
 (gen_random_uuid(), 'voucher:create', 'create', 'Voucher'),
@@ -114,62 +107,10 @@ JOIN permissions p
     'wishlist:read',
     'wishlist:delete',
 
-    -- SHOP
-    'shop:read',
-
     -- VOUCHER
     'voucher:read'
   )
 WHERE r.role_name = 'USER';
-
--- ───────────────── SELLER ──────────────
-
-INSERT INTO role_permissions (role_id, permission_id)
-SELECT r.role_id, p.pid
-FROM roles r
-JOIN permissions p
-  ON p.code IN (
-    -- PRODUCT
-    'product:create',
-    'product:read',
-    'product:update',
-    'product:delete',
-
-    -- BRAND
-    'brand:create',
-    'brand:read',
-    'brand:update',
-    'brand:delete',
-
-    -- SHOP
-    'shop:create',
-    'shop:read',
-    'shop:update',
-    'shop:delete',
-
-    -- VOUCHER
-    'voucher:create',
-    'voucher:read',
-    'voucher:update',
-    'voucher:delete',
-
-    -- ORDER
-    'order:read',
-    'order:approve',
-    'order:reject',
-
-    -- REVIEW
-    'review:read',
-    'review:approve',
-    'review:reject',
-
-    -- CART
-    'cart:read',
-
-    -- WISHLIST
-    'wishlist:read'
-  )
-WHERE r.role_name = 'SELLER';
 
 -- ───────────────── ADMIN ───────────────
 

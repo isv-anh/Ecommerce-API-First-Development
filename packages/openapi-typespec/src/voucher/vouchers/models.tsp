@@ -5,7 +5,6 @@ using TypeSpec.Http;
 
 @example(#{
     voucherId: "123e4567-e89b-12d3-a456-426614175300",
-    shopId: "123e4567-e89b-12d3-a456-426614175400",
     code: "SUMMER20",
     discountType: "percentage",
     discountValue: 20,
@@ -19,7 +18,6 @@ using TypeSpec.Http;
 })
 model VoucherResponse {
     voucherId: UUID;
-    shopId: UUID;
     code: NonEmptyString;
     discountType: string;
     discountValue: decimal;
@@ -33,7 +31,6 @@ model VoucherResponse {
 }
 
 model PostVoucherRequestBody {
-    shopId: UUID;
     code: NonEmptyString;
     discountType: string;
     discountValue: decimal;

@@ -12,9 +12,7 @@ namespace Voucher.FlashSales {
     @route("")
     @operationId("getFlashSales")
     @tag("flash-sales")
-    op getFlashSales(
-        @query shopId?: UUID,
-    ): GetFlashSalesResponse200 | BadRequestError | InternalServerError;
+    op getFlashSales(): GetFlashSalesResponse200 | BadRequestError | InternalServerError;
 
     @post
     @route("")

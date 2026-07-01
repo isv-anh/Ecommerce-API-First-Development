@@ -5,21 +5,18 @@ using TypeSpec.Http;
 
 @example(#{
     warehouseId: "123e4567-e89b-12d3-a456-426614174200",
-    shopId: "123e4567-e89b-12d3-a456-426614174300",
     name: "Main Warehouse",
     address: "123 Industrial Street, Hanoi, Vietnam",
     createdAt: "2026-04-09T08:00:00.000Z",
 })
 model Warehouse {
     warehouseId: UUID;
-    shopId: UUID;
     name: NonEmptyString;
     address: string;
     createdAt: string;
 }
 
 model PostWarehouseRequestBody {
-    shopId: UUID;
     name: NonEmptyString;
     address?: string;
 }

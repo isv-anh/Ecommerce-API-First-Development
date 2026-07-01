@@ -1,4 +1,4 @@
-export type LoginFormProps = LoginWithUser | LoginWithSeller | LoginWithAdmin;
+export type LoginFormProps = LoginWithUser | LoginWithAdmin;
 
 type BaseProps = {
   title?: string;
@@ -6,15 +6,8 @@ type BaseProps = {
 
 type LoginWithUser = BaseProps & {
   mode: "user";
-  sellerId?: never;
-};
-
-type LoginWithSeller = BaseProps & {
-  mode: "seller";
-  sellerId: string;
 };
 
 type LoginWithAdmin = BaseProps & {
   mode: "admin";
-  sellerId?: never;
 };

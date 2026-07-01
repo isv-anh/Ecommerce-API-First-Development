@@ -20,9 +20,7 @@ namespace Product.Warehouses {
     @route("")
     @operationId("getWarehouses")
     @tag("warehouses")
-    op getWarehouses(
-        @query shopId?: UUID,
-    ): GetWarehousesResponse200 | BadRequestError | InternalServerError;
+    op getWarehouses(): GetWarehousesResponse200 | BadRequestError | InternalServerError;
 
     @post
     @route("")

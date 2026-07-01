@@ -4,7 +4,6 @@ import "@typespec/versioning";
 
 import "./orders/routes.tsp";
 import "./order-items/routes.tsp";
-import "./order-shops/routes.tsp";
 import "./payments/routes.tsp";
 import "../common/enums/versions.tsp";
 

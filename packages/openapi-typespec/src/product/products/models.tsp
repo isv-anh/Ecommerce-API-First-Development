@@ -41,8 +41,6 @@ model ProductResponse {
     productName: string;
     categoryName: string;
     thumbnailUrl: string;
-    shopName: string;
-    shopLogo: string;
     location: string;
     price: integer;
     slug: string;
@@ -73,9 +71,6 @@ model GetProductRequestParams extends PageQueryParams {
 
     @query
     categoryId?: UUID;
-
-    @query
-    shopId?: UUID;
 }
 
 model GetProductsResponse200 {

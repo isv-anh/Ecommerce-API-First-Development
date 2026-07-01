@@ -1,152 +1,166 @@
-# E-Commerce SaaS
+# API-First Development Platform
 
-## Tổng quan
+> Một nền tảng phát triển theo hướng **API-first**, trong đó **API Contract** được xem là **Single Source of Truth**.
+>
+> Từ một định nghĩa API duy nhất bằng **TypeSpec**, hệ thống tự động sinh backend controller, frontend API client và validation schema, giúp giảm boilerplate, đảm bảo tính đồng nhất giữa frontend và backend, đồng thời cho phép hai phía phát triển độc lập.
 
-E-Commerce là hệ thống SaaS hỗ trợ người dùng xây dựng và vận hành nền tảng mua bán trực tuyến một cách thuận tiện, linh hoạt và dễ mở rộng.
-
-Hệ thống được thiết kế theo hướng:
-
-* API-first
-* Type-safe
-* Tự động sinh code
-* Đồng bộ schema giữa frontend và backend
-* Tăng tốc phát triển bằng AI và automation
+> **Lưu ý:** Ứng dụng **E-Commerce** trong repository này chỉ đóng vai trò **Reference Implementation** nhằm kiểm chứng kiến trúc và workflow trên một hệ thống thực tế.
 
 ---
 
-# Triết lý phát triển
+# Vấn đề
 
-## Học tập với AI
+Trong nhiều dự án thực tế, frontend và backend thường duy trì các định nghĩa API riêng biệt.
 
-AI được sử dụng để:
+Điều này dẫn đến nhiều vấn đề:
 
-* Tìm hiểu kiến thức mới
-* Tăng tốc quá trình phát triển
-* Hỗ trợ phân tích và sinh code
-
-Tuy nhiên:
-
-* Luôn kiểm tra lại kết quả mà AI tạo ra
-* Không phụ thuộc hoàn toàn vào AI
-* Ưu tiên hiểu bản chất thay vì copy trực tiếp
+* API contract dễ bị sai lệch theo thời gian.
+* DTO và validation bị trùng lặp ở nhiều nơi.
+* Frontend và backend phải phụ thuộc lẫn nhau trong quá trình phát triển.
+* Mỗi khi thêm API mới cần viết nhiều boilerplate code.
+* Chi phí bảo trì tăng theo quy mô hệ thống.
 
 ---
 
-## YAGNI
+# Giải pháp
 
-Áp dụng nguyên tắc **YAGNI (You Aren't Gonna Need It)**:
+Dự án áp dụng mô hình **Contract-Driven Development**.
 
-* Chỉ xây dựng những gì thực sự cần
-* Tránh over-engineering
-* Ưu tiên sự đơn giản và khả năng bảo trì
-* Tối ưu tốc độ phát triển sản phẩm
+API Contract được xem là nguồn dữ liệu duy nhất của toàn bộ hệ thống.
 
----
+Từ cùng một contract, hệ thống sẽ tự động sinh:
 
-# Kiến trúc hệ thống
+### Backend
 
-Hệ thống được tổ chức theo mô hình **Monorepo** và quản lý bằng `pnpm workspace`.
+* Base Controller
+* Route Definition
+* Request Validation
+* Response Type
+* RBAC Metadata
+* Public Endpoint Metadata
 
-## Cấu trúc thư mục
+Developer chỉ cần tập trung vào **Business Logic**.
 
-```txt
-packages
-├─ e-commerce-api/          # Backend API (NestJS)
-├─ e-commerce-front/        # Frontend (Next.js)
-├─ api-client/              # Orval generated React Query client
-├─ api-validation/          # Shared API types & Zod schema dùng cho frontend và backend
-├─ openapi-typespec/        # Định nghĩa OpenAPI bằng TypeSpec
-├─ openapi-generator/       # Generate base controller cho backend
-└─ e-commerce-db/           # Database migration với Liquibase
-```
+### Frontend
+
+* API Client
+* React Query Hooks
+* Request Functions
+* Shared TypeScript Types
+
+Frontend không cần viết thủ công các hàm gọi API.
+
+### Shared Package
+
+* TypeScript Types
+* Zod Schema
+* Request Models
+* Response Models
+
+Giúp đảm bảo dữ liệu được đồng bộ giữa frontend và backend.
 
 ---
 
 # Workflow
 
-```txt
-                     openapi-typespec
-                              │
-                              ▼
-                         openapi.json
-                              │
-          ┌───────────────────┴───────────────────┐
-          │                                       │
-          ▼                                       ▼
-   openapi-generator                      orval generator
-          │                                       │
-          ▼                                       ▼
-   Base Controller                  ┌─────────────┴─────────────┐
-          │                         │                           │
-          ▼                         ▼                           ▼
-  e-commerce-api               api-client                api-validation
-                                     │                           │
-                                     ▼                           │
-                             React Query Hooks                   │
-                                     │                           │
-                                     └─────────────┬─────────────┘
-                                                   │
-                             ┌─────────────────────┴─────────────────────┐
-                             ▼                                           ▼
-                     e-commerce-front                           e-commerce-api
+```text
+                    TypeSpec Contract
+                           │
+                           ▼
+                     OpenAPI Schema
+                           │
+        ┌──────────────────┴──────────────────┐
+        │                                     │
+        ▼                                     ▼
+ Backend Generator                    Orval Generator
+        │                                     │
+        ▼                                     ▼
+ Base Controller                  React Query Client
+                                  TypeScript Types
+                                  Zod Schema
+        │                                     │
+        └──────────────────┬──────────────────┘
+                           ▼
+              Backend & Frontend Development
 ```
 
+Developer chỉ cần định nghĩa API một lần bằng **TypeSpec**.
+
+Mọi thành phần còn lại được sinh tự động từ cùng một API Contract.
 
 ---
 
-# Vai trò của các package
+# Kiến trúc
 
-## openapi-typespec
+Repository được tổ chức theo mô hình **Monorepo** sử dụng **pnpm workspace**.
 
-Định nghĩa API contract bằng TypeSpec và sinh ra `openapi.json`.
+```text
+packages
+├── e-commerce-api          # Backend NestJS (Reference Application)
+├── e-commerce-front        # Frontend Next.js (Reference Application)
+├── api-client              # Generated React Query Client
+├── api-validation          # Shared TypeScript Types & Zod Schema
+├── openapi-typespec        # API Contract Definition
+├── openapi-generator       # NestJS Code Generator
+└── e-commerce-db           # Database Migration
+```
 
----
+Hai package:
 
-## api-client
+* `e-commerce-api`
+* `e-commerce-front`
 
-Sinh tự động:
-
-* API client
-* React Query hooks
-* Request function
-
-Frontend chỉ cần gọi hooks thay vì tự viết fetch logic.
-
----
-
-## api-validation
-
-Chứa:
-
-* Shared API types
-* Zod schema
-* Request/response validation
-
-Được sử dụng cho cả:
-
-* Frontend
-* Backend
-
-Giúp đảm bảo:
-
-* Đồng bộ type
-* Validate dữ liệu thống nhất
-* Giảm duplicate schema
+được sử dụng để kiểm chứng kiến trúc trên một bài toán thực tế.
 
 ---
 
-## openapi-generator
+# Developer Experience
 
-Sinh base controller cho backend từ OpenAPI schema nhằm:
+Ngoài việc sinh code, dự án còn tập trung vào việc giảm thời gian onboarding và tăng hiệu quả phát triển.
 
-* Giảm boilerplate code
-* Đồng bộ contract với backend implementation
+Bao gồm:
+
+* VSCode Tasks
+* Workspace Configuration
+* Environment Setup Scripts
+* GitHub Workflow Automation
+* Pull Request Helper Scripts
+* Database Migration Scripts
+* One-command Code Generation
+
+Một developer mới có thể clone project, chạy setup task và bắt đầu phát triển mà không cần thực hiện nhiều bước cấu hình thủ công.
 
 ---
 
-## e-commerce-db
+# Nguyên tắc thiết kế
 
-Quản lý database migration bằng Liquibase.
+## API-First
+
+API Contract là trung tâm của toàn bộ hệ thống.
+
+Mọi thành phần đều được sinh ra từ cùng một nguồn dữ liệu.
+
+---
+
+## Contract-Driven Development
+
+Frontend và backend cùng phát triển dựa trên một API Contract duy nhất.
+
+Điều này giúp giảm sai lệch và hạn chế việc phải đồng bộ thủ công giữa hai phía.
+
+---
+
+## Convention over Configuration
+
+Những phần mang tính lặp lại sẽ được generator xử lý.
+
+Developer chỉ tập trung vào Business Logic.
+
+---
+
+## Developer Experience
+
+Tự động hóa những công việc lặp lại nhằm giảm thời gian onboarding và tăng năng suất phát triển.
 
 ---
 
@@ -155,8 +169,8 @@ Quản lý database migration bằng Liquibase.
 ## Backend
 
 * NestJS
-* OpenAPI
-* TypeSpec
+* Prisma
+* PostgreSQL
 * Liquibase
 
 ## Frontend
@@ -165,24 +179,22 @@ Quản lý database migration bằng Liquibase.
 * React Query
 * Zod
 
+## API Contract
+
+* TypeSpec
+* OpenAPI
+
 ## Tooling
 
-* pnpm workspace
 * Orval
-* OpenAPI Generator
+* pnpm Workspace
+* Docker
+* GitHub CLI
 
 ---
 
-# Mục tiêu kiến trúc
+# Reference Implementation
 
-* Đồng bộ type giữa frontend và backend
-* Tự động sinh API client
-* Chia sẻ validation schema
-* Giảm code lặp
-* Dễ mở rộng
-* Dễ bảo trì
-* Tăng tốc phát triển tính năng
-* Hạn chế sai lệch API contract
+Repository sử dụng một hệ thống **E-Commerce SaaS** làm ứng dụng minh họa.
 
-
----
+Mục tiêu của dự án không phải xây dựng một website bán hàng hoàn chỉnh, mà là chứng minh rằng kiến trúc API-first, workflow code generation và mô hình Contract-Driven Development có thể áp dụng hiệu quả trên một hệ thống thực tế.

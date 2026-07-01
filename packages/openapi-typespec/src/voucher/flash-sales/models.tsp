@@ -5,21 +5,18 @@ using TypeSpec.Http;
 
 @example(#{
     flashSaleId: "123e4567-e89b-12d3-a456-426614175700",
-    shopId: "123e4567-e89b-12d3-a456-426614175400",
     name: "Flash Sale Điện Thoại",
     startTime: "2026-04-15T00:00:00.000Z",
     endTime: "2026-04-15T23:59:59.000Z",
 })
 model FlashSaleResponse {
     flashSaleId: UUID;
-    shopId: UUID;
     name: NonEmptyString;
     startTime: string;
     endTime: string;
 }
 
 model PostFlashSaleRequestBody {
-    shopId: UUID;
     name: NonEmptyString;
     startTime: string;
     endTime: string;

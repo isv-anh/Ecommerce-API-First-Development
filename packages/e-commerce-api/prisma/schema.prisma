@@ -48,25 +48,6 @@ model categories {
   products         products[]
 }
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model commission_settings {
-  id         String    @id @db.Uuid
-  scope      String?   @db.VarChar(50)
-  ref_id     String?   @db.Uuid
-  rate       Decimal?  @db.Decimal(5, 4)
-  fixed_fee  Decimal?  @db.Decimal(18, 2)
-  min_fee    Decimal?  @db.Decimal(18, 2)
-  max_fee    Decimal?  @db.Decimal(18, 2)
-  start_date DateTime? @db.Timestamp(6)
-  end_date   DateTime? @db.Timestamp(6)
-  is_active  Boolean?  @default(true)
-  created_at DateTime? @db.Timestamp(6)
-
-  @@index([is_active], map: "idx_commission_is_active")
-  @@index([ref_id], map: "idx_commission_ref_id")
-  @@index([scope], map: "idx_commission_scope")
-}
-
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model databasechangelog {
   id            String   @db.VarChar(255)
@@ -98,13 +79,10 @@ model databasechangeloglock {
 
 model flash_sales {
   id         String    @id @db.Uuid
-  shop_id    String    @db.Uuid
   name       String?   @db.VarChar(255)
   start_time DateTime? @db.Timestamp(6)
   end_time   DateTime? @db.Timestamp(6)
-  shops      shops     @relation(fields: [shop_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_flash_sales_shop")
 
-  @@index([shop_id], map: "idx_flash_sales_shop_id")
   @@index([start_time, end_time], map: "idx_flash_sales_time_range")
 }
 
@@ -121,23 +99,9 @@ model groups {
   user_groups  user_groups[]
 }
 
-model order_commissions {
-  id                String   @id @db.Uuid
-  order_id          String   @db.Uuid
-  shop_id           String   @db.Uuid
-  commission_rate   Decimal? @db.Decimal(5, 4)
-  commission_amount Decimal? @db.Decimal(18, 2)
-  orders            orders   @relation(fields: [order_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_commissions_order")
-  shops             shops    @relation(fields: [shop_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_commissions_shop")
-
-  @@index([order_id], map: "idx_order_commissions_order_id")
-  @@index([shop_id], map: "idx_order_commissions_shop_id")
-}
-
 model order_items {
   id                 String   @id @db.Uuid
   order_id           String   @db.Uuid
-  shop_id            String?  @db.Uuid
   product_id         String?  @db.Uuid
   product_variant_id String?  @db.Uuid
   product_name       String?  @db.VarChar(500)
@@ -148,22 +112,6 @@ model order_items {
   orders             orders   @relation(fields: [order_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_items_order")
 
   @@index([order_id], map: "idx_order_items_order_id")
-  @@index([shop_id], map: "idx_order_items_shop_id")
-}
-
-model order_shops {
-  id           String   @id @db.Uuid
-  order_id     String   @db.Uuid
-  shop_id      String   @db.Uuid
-  subtotal     Decimal? @db.Decimal(18, 2)
-  discount     Decimal? @default(0) @db.Decimal(18, 2)
-  final_amount Decimal? @db.Decimal(18, 2)
-  status       String?  @db.VarChar(50)
-  orders       orders   @relation(fields: [order_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_shops_order")
-  shops        shops    @relation(fields: [shop_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_shops_shop")
-
-  @@index([order_id], map: "idx_order_shops_order_id")
-  @@index([shop_id], map: "idx_order_shops_shop_id")
 }
 
 model order_vouchers {
@@ -177,19 +125,17 @@ model order_vouchers {
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model orders {
-  id                String              @id @db.Uuid
-  user_id           String              @db.Uuid
-  status            String?             @db.VarChar(50)
-  total_amount      Decimal?            @db.Decimal(18, 2)
-  total_discount    Decimal?            @default(0) @db.Decimal(18, 2)
-  final_amount      Decimal?            @db.Decimal(18, 2)
-  created_at        DateTime?           @db.Timestamp(6)
-  order_commissions order_commissions[]
-  order_items       order_items[]
-  order_shops       order_shops[]
-  order_vouchers    order_vouchers[]
-  users             users               @relation(fields: [user_id], references: [uid], onDelete: NoAction, onUpdate: NoAction, map: "fk_orders_user")
-  payments          payments[]
+  id             String           @id @db.Uuid
+  user_id        String           @db.Uuid
+  status         String?          @db.VarChar(50)
+  total_amount   Decimal?         @db.Decimal(18, 2)
+  total_discount Decimal?         @default(0) @db.Decimal(18, 2)
+  final_amount   Decimal?         @db.Decimal(18, 2)
+  created_at     DateTime?        @db.Timestamp(6)
+  order_items    order_items[]
+  order_vouchers order_vouchers[]
+  users          users            @relation(fields: [user_id], references: [uid], onDelete: NoAction, onUpdate: NoAction, map: "fk_orders_user")
+  payments       payments[]
 
   @@index([created_at], map: "idx_orders_created_at")
   @@index([status], map: "idx_orders_status")
@@ -231,18 +177,6 @@ model product_images {
   @@index([product_id], map: "idx_product_images_product_id")
 }
 
-model product_variant_images {
-  id                 String           @id @db.Uuid
-  product_variant_id String           @db.Uuid
-  url                String?          @db.VarChar(500)
-  is_thumbnail       Boolean?         @default(false)
-  sort_order         Int?             @default(0)
-  created_at         DateTime?        @db.Timestamp(6)
-  product_variants   product_variants @relation(fields: [product_variant_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_product_variant_images_variant")
-
-  @@index([product_variant_id], map: "idx_product_variant_images_variant_id")
-}
-
 model product_variants {
   id                       String                     @id @db.Uuid
   product_id               String                     @db.Uuid
@@ -254,10 +188,8 @@ model product_variants {
   created_at               DateTime?                  @db.Timestamp(6)
   updated_at               DateTime?                  @db.Timestamp(6)
   cart_items               cart_items[]
-  product_variant_images   product_variant_images[]
   products                 products                   @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_product_variants_product")
   variant_attribute_values variant_attribute_values[]
-  variant_option_values    variant_option_values[]
   warehouse_inventory      warehouse_inventory[]
 
   @@index([product_id], map: "idx_product_variants_product_id")
@@ -266,7 +198,6 @@ model product_variants {
 
 model products {
   id                 String               @id @db.Uuid
-  shop_id            String               @db.Uuid
   category_id        String?              @db.Uuid
   name               String               @db.VarChar(500)
   slug               String?              @db.VarChar(500)
@@ -278,17 +209,13 @@ model products {
   brand_id           String?              @db.Uuid
   product_attributes product_attributes[]
   product_images     product_images[]
-  product_options    product_options[]
   product_variants   product_variants[]
   brands             brands?              @relation(fields: [brand_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_products_brand")
   categories         categories?          @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_products_category")
-  shops              shops                @relation(fields: [shop_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_products_shop")
   reviews            reviews[]
   wishlist_items     wishlist_items[]
 
   @@index([category_id], map: "idx_products_category_id")
-  @@index([shop_id], map: "idx_products_shop_id")
-  @@index([shop_id, is_published], map: "idx_products_shop_published")
   @@index([brand_id], map: "idx_products_brand_id")
 }
 
@@ -308,43 +235,6 @@ model roles {
   group_roles      group_roles[]
   role_permissions role_permissions[]
   user_roles       user_roles[]
-}
-
-model shop_daily_stats {
-  shop_id      String   @db.Uuid
-  date         DateTime @db.Date
-  revenue      Decimal? @default(0) @db.Decimal(18, 2)
-  orders_count Int?     @default(0)
-  shops        shops    @relation(fields: [shop_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_shop_daily_stats_shop")
-
-  @@id([shop_id, date], map: "pk_shop_daily_stats")
-}
-
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model shops {
-  id                String              @id @db.Uuid
-  owner_id          String              @db.Uuid
-  name              String              @unique @db.VarChar(255)
-  slug              String              @unique @db.VarChar(255)
-  description       String?
-  logo_url          String?             @db.VarChar(500)
-  status            String              @db.VarChar(50)
-  rating            Decimal?            @default(0) @db.Decimal(3, 2)
-  total_products    Int?                @default(0)
-  total_orders      Int?                @default(0)
-  created_at        DateTime            @db.Timestamp(6)
-  updated_at        DateTime            @db.Timestamp(6)
-  flash_sales       flash_sales[]
-  order_commissions order_commissions[]
-  order_shops       order_shops[]
-  products          products[]
-  shop_daily_stats  shop_daily_stats[]
-  users             users               @relation(fields: [owner_id], references: [uid], onDelete: NoAction, onUpdate: NoAction, map: "fk_shops_owner")
-  vouchers          vouchers[]
-  warehouses        warehouses[]
-
-  @@index([owner_id], map: "idx_shops_owner_id")
-  @@index([status], map: "idx_shops_status")
 }
 
 model user_groups {
@@ -372,7 +262,6 @@ model users {
   carts       carts?
   orders      orders[]
   reviews     reviews[]
-  shops       shops[]
   user_groups user_groups[]
   user_roles  user_roles[]
   wishlists   wishlists[]
@@ -394,7 +283,6 @@ model voucher_conditions {
 model vouchers {
   id                 String               @id @db.Uuid
   code               String               @unique @db.VarChar(100)
-  shop_id            String?              @db.Uuid
   discount_type      String?              @db.VarChar(50)
   discount_value     Decimal?             @db.Decimal(18, 2)
   max_discount       Decimal?             @db.Decimal(18, 2)
@@ -406,7 +294,6 @@ model vouchers {
   is_active          Boolean?             @default(true)
   order_vouchers     order_vouchers[]
   voucher_conditions voucher_conditions[]
-  shops              shops?               @relation(fields: [shop_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_vouchers_shop")
 
   @@index([code], map: "idx_vouchers_code")
   @@index([is_active], map: "idx_vouchers_is_active")
@@ -425,14 +312,12 @@ model warehouse_inventory {
 
 model warehouses {
   id                  String                @id @db.Uuid
-  shop_id             String                @db.Uuid
   name                String?               @db.VarChar(255)
   address             String?
   created_at          DateTime?             @db.Timestamp(6)
   warehouse_inventory warehouse_inventory[]
-  shops               shops                 @relation(fields: [shop_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_warehouses_shop")
 
-  @@index([shop_id], map: "idx_warehouses_shop_id")
+  @@index([name], map: "idx_warehouses_name")
 }
 
 model wishlist_items {
@@ -510,17 +395,6 @@ model product_attributes {
   @@index([attribute_id], map: "idx_product_attributes_attribute_id")
 }
 
-model product_options {
-  id                    String                  @id @db.Uuid
-  product_id            String                  @db.Uuid
-  name                  String                  @db.VarChar(100)
-  sort_order            Int?                    @default(0)
-  products              products                @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_product_options_product")
-  variant_option_values variant_option_values[]
-
-  @@index([product_id], map: "idx_product_options_product_id")
-}
-
 model variant_attribute_values {
   product_variant_id String           @db.Uuid
   attribute_id       String           @db.Uuid
@@ -530,15 +404,4 @@ model variant_attribute_values {
 
   @@id([product_variant_id, attribute_id], map: "pk_variant_attribute_values")
   @@index([attribute_id], map: "idx_variant_attribute_values_attribute_id")
-}
-
-model variant_option_values {
-  product_variant_id String           @db.Uuid
-  product_option_id  String           @db.Uuid
-  value              String           @db.VarChar(255)
-  product_options    product_options  @relation(fields: [product_option_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_variant_option_values_option")
-  product_variants   product_variants @relation(fields: [product_variant_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_variant_option_values_variant")
-
-  @@id([product_variant_id, product_option_id], map: "pk_variant_option_values")
-  @@index([product_option_id], map: "idx_variant_option_values_option_id")
 }

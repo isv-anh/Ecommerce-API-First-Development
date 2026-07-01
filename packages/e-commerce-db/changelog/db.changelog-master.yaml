@@ -3,9 +3,6 @@ databaseChangeLog:
       path: auth/
       relativeToChangelogFile: true
   - includeAll:
-      path: shop/
-      relativeToChangelogFile: true
-  - includeAll:
       path: product/
       relativeToChangelogFile: true
   - includeAll:
@@ -19,9 +16,6 @@ databaseChangeLog:
       relativeToChangelogFile: true
   - includeAll:
       path: voucher/
-      relativeToChangelogFile: true
-  - includeAll:
-      path: analytics/
       relativeToChangelogFile: true
   - includeAll:
       path: system/

@@ -12,9 +12,6 @@
       "name": "order-items"
     },
     {
-      "name": "order-shops"
-    },
-    {
       "name": "order-payments"
     }
   ],
@@ -846,310 +843,6 @@
           "order-payments"
         ]
       }
-    },
-    "/api/v1/orders/{orderId}/shops": {
-      "get": {
-        "operationId": "getOrderShops",
-        "parameters": [
-          {
-            "name": "orderId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/UUID"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/OrderShopsResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "The server could not understand the request due to invalid syntax.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "order-shops"
-        ]
-      },
-      "post": {
-        "operationId": "postOrderShop",
-        "parameters": [
-          {
-            "name": "orderId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/UUID"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "The request has succeeded and a new resource has been created as a result.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PostOrderShopResponseBody"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "The server could not understand the request due to invalid syntax.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Access is unauthorized.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "order-shops"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PostOrderShopRequestBody"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/orders/{orderId}/shops/{orderShopId}": {
-      "get": {
-        "operationId": "getOrderShopById",
-        "parameters": [
-          {
-            "name": "orderId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/UUID"
-            }
-          },
-          {
-            "name": "orderShopId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/UUID"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/OrderShopResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "The server could not understand the request due to invalid syntax.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "order-shops"
-        ]
-      },
-      "patch": {
-        "operationId": "patchOrderShop",
-        "parameters": [
-          {
-            "name": "orderId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/UUID"
-            }
-          },
-          {
-            "name": "orderShopId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/UUID"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "There is no content to send for this request, but the headers may be useful. "
-          },
-          "400": {
-            "description": "The server could not understand the request due to invalid syntax.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Access is unauthorized.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "order-shops"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PatchOrderShopRequestBody"
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "operationId": "deleteOrderShop",
-        "parameters": [
-          {
-            "name": "orderId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/UUID"
-            }
-          },
-          {
-            "name": "orderShopId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/UUID"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "There is no content to send for this request, but the headers may be useful. "
-          },
-          "400": {
-            "description": "The server could not understand the request due to invalid syntax.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Access is unauthorized.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "order-shops"
-        ]
-      }
     }
   },
   "components": {
@@ -1178,7 +871,6 @@
         "required": [
           "orderItemId",
           "orderId",
-          "shopId",
           "productId",
           "productVariantId",
           "productName",
@@ -1192,9 +884,6 @@
             "$ref": "#/components/schemas/UUID"
           },
           "orderId": {
-            "$ref": "#/components/schemas/UUID"
-          },
-          "shopId": {
             "$ref": "#/components/schemas/UUID"
           },
           "productId": {
@@ -1226,7 +915,6 @@
           {
             "orderItemId": "123e4567-e89b-12d3-a456-426614174C00",
             "orderId": "123e4567-e89b-12d3-a456-426614174B00",
-            "shopId": "123e4567-e89b-12d3-a456-426614174D00",
             "productId": "123e4567-e89b-12d3-a456-426614174000",
             "productVariantId": "123e4567-e89b-12d3-a456-426614174100",
             "productName": "iPhone 14 Pro Max",
@@ -1300,69 +988,6 @@
           }
         ]
       },
-      "OrderShopResponse": {
-        "type": "object",
-        "required": [
-          "orderShopId",
-          "orderId",
-          "shopId",
-          "subtotal",
-          "discount",
-          "finalAmount",
-          "status"
-        ],
-        "properties": {
-          "orderShopId": {
-            "$ref": "#/components/schemas/UUID"
-          },
-          "orderId": {
-            "$ref": "#/components/schemas/UUID"
-          },
-          "shopId": {
-            "$ref": "#/components/schemas/UUID"
-          },
-          "subtotal": {
-            "type": "number",
-            "format": "decimal"
-          },
-          "discount": {
-            "type": "number",
-            "format": "decimal"
-          },
-          "finalAmount": {
-            "type": "number",
-            "format": "decimal"
-          },
-          "status": {
-            "type": "string"
-          }
-        },
-        "examples": [
-          {
-            "orderShopId": "123e4567-e89b-12d3-a456-426614174E00",
-            "orderId": "123e4567-e89b-12d3-a456-426614174B00",
-            "shopId": "123e4567-e89b-12d3-a456-426614174D00",
-            "subtotal": 50000000,
-            "discount": 0,
-            "finalAmount": 50000000,
-            "status": "pending"
-          }
-        ]
-      },
-      "OrderShopsResponse": {
-        "type": "object",
-        "required": [
-          "orderShops"
-        ],
-        "properties": {
-          "orderShops": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/OrderShopResponse"
-            }
-          }
-        }
-      },
       "OrdersResponse": {
         "type": "object",
         "required": [
@@ -1383,26 +1008,6 @@
           "quantity": {
             "type": "integer",
             "format": "int32"
-          }
-        }
-      },
-      "PatchOrderShopRequestBody": {
-        "type": "object",
-        "properties": {
-          "subtotal": {
-            "type": "number",
-            "format": "decimal"
-          },
-          "discount": {
-            "type": "number",
-            "format": "decimal"
-          },
-          "finalAmount": {
-            "type": "number",
-            "format": "decimal"
-          },
-          "status": {
-            "type": "string"
           }
         }
       },
@@ -1480,7 +1085,6 @@
       "PostOrderItemRequestBody": {
         "type": "object",
         "required": [
-          "shopId",
           "productId",
           "productVariantId",
           "productName",
@@ -1488,9 +1092,6 @@
           "quantity"
         ],
         "properties": {
-          "shopId": {
-            "$ref": "#/components/schemas/UUID"
-          },
           "productId": {
             "$ref": "#/components/schemas/UUID"
           },
@@ -1542,43 +1143,6 @@
         ],
         "properties": {
           "orderId": {
-            "$ref": "#/components/schemas/UUID"
-          }
-        }
-      },
-      "PostOrderShopRequestBody": {
-        "type": "object",
-        "required": [
-          "shopId"
-        ],
-        "properties": {
-          "shopId": {
-            "$ref": "#/components/schemas/UUID"
-          },
-          "subtotal": {
-            "type": "number",
-            "format": "decimal"
-          },
-          "discount": {
-            "type": "number",
-            "format": "decimal"
-          },
-          "finalAmount": {
-            "type": "number",
-            "format": "decimal"
-          },
-          "status": {
-            "type": "string"
-          }
-        }
-      },
-      "PostOrderShopResponseBody": {
-        "type": "object",
-        "required": [
-          "orderShopId"
-        ],
-        "properties": {
-          "orderShopId": {
             "$ref": "#/components/schemas/UUID"
           }
         }

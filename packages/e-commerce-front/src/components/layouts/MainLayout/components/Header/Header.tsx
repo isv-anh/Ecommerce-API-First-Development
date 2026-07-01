@@ -12,24 +12,7 @@ const Header = () => {
       py={0.5}
       height={35}
     >
-      <Stack direction={"row"} spacing={1}>
-        <Button
-          component={NextLink}
-          href={"/me/shop"}
-          variant="text"
-          size="small"
-        >
-          Kênh người bán
-        </Button>
-        <Button
-          component={NextLink}
-          href={"/auth/seller/signup"}
-          variant="text"
-          size="small"
-        >
-          Đăng ký bán hàng
-        </Button>
-      </Stack>
+      <Stack direction={"row"} spacing={1} />
 
       <Stack direction={"row"} spacing={1}>
         <NotificationButton />

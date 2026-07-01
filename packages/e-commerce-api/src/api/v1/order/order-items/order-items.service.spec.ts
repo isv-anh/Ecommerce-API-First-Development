@@ -22,14 +22,12 @@ jest.mock('./order-items.repository');
 
 const orderId = '123e4567-e89b-12d3-a456-426614174A00';
 const orderItemId = '123e4567-e89b-12d3-a456-426614174B00';
-const shopId = '123e4567-e89b-12d3-a456-426614174C00';
 const productId = '123e4567-e89b-12d3-a456-426614174D00';
 const productVariantId = '123e4567-e89b-12d3-a456-426614174E00';
 
 const mockOrderItem = {
   orderItemId,
   orderId,
-  shopId,
   productId,
   productVariantId,
   productName: 'Test Product',
@@ -125,7 +123,6 @@ describe('OrderItemsService', () => {
       repository.createOrderItem.mockResolvedValue(orderItemId);
 
       const body = {
-        shopId,
         productId,
         productVariantId,
         productName: 'Test Product',
