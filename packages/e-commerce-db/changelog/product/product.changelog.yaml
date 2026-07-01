@@ -57,11 +57,6 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: shop_id
-                  type: uuid
-                  constraints:
-                    nullable: false
-              - column:
                   name: category_id
                   type: uuid
               - column:
@@ -95,30 +90,10 @@ databaseChangeLog:
       changes:
         - createIndex:
             tableName: products
-            indexName: idx_products_shop_id
-            columns:
-              - column:
-                  name: shop_id
-        - createIndex:
-            tableName: products
             indexName: idx_products_category_id
             columns:
               - column:
                   name: category_id
-        - createIndex:
-            tableName: products
-            indexName: idx_products_shop_published
-            columns:
-              - column:
-                  name: shop_id
-              - column:
-                  name: is_published
-        - addForeignKeyConstraint:
-            baseTableName: products
-            baseColumnNames: shop_id
-            constraintName: fk_products_shop
-            referencedTableName: shops
-            referencedColumnNames: id
         - addForeignKeyConstraint:
             baseTableName: products
             baseColumnNames: category_id
@@ -259,11 +234,6 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: shop_id
-                  type: uuid
-                  constraints:
-                    nullable: false
-              - column:
                   name: name
                   type: varchar(255)
               - column:
@@ -279,16 +249,10 @@ databaseChangeLog:
       changes:
         - createIndex:
             tableName: warehouses
-            indexName: idx_warehouses_shop_id
+            indexName: idx_warehouses_name
             columns:
               - column:
-                  name: shop_id
-        - addForeignKeyConstraint:
-            baseTableName: warehouses
-            baseColumnNames: shop_id
-            constraintName: fk_warehouses_shop
-            referencedTableName: shops
-            referencedColumnNames: id
+                  name: name
 
   # ─── WAREHOUSE INVENTORY ─────────────────────────────────
   - changeSet:

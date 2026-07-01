@@ -185,10 +185,6 @@ const ProductCard = ({ product }: ProductCardProps) => {
             {product.productName}
           </Typography>
 
-          <Typography variant="regularS" sx={{ color: "text.secondary" }}>
-            {product.shopName || ""}
-          </Typography>
-
           <Stack
             direction="row"
             spacing={1}

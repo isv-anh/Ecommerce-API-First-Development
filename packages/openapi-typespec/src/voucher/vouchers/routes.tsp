@@ -13,7 +13,6 @@ namespace Voucher.Vouchers {
     @operationId("getVouchers")
     @tag("vouchers")
     op getVouchers(
-        @query shopId?: UUID,
         @query isActive?: boolean,
     ): GetVouchersResponse200 | BadRequestError | InternalServerError;
 

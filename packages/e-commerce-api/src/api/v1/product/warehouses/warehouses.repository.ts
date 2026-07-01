@@ -1,7 +1,6 @@
 import { PrismaService } from '@/common/services/prisma.service';
 import {
   GetWarehouses200Response,
-  GetWarehousesQueryParams,
   GetWarehouseById200Response,
   PatchWarehouseBody,
   PostWarehouseBody,
@@ -29,24 +28,15 @@ export class WarehousesRepository {
     }
   }
 
-  async getWarehouses(
-    query: GetWarehousesQueryParams,
-  ): Promise<GetWarehouses200Response> {
-    const whereClause = {
-      shop_id: query.shopId,
-    };
-
-    const warehouses = (
-      await this.prisma.warehouses.findMany({
-        where: whereClause,
-      })
-    ).map((warehouse) => ({
-      warehouseId: warehouse.id,
-      shopId: warehouse.shop_id,
-      name: warehouse.name || '',
-      address: warehouse.address || '',
-      createdAt: warehouse.created_at?.toISOString() || '',
-    }));
+  async getWarehouses(): Promise<GetWarehouses200Response> {
+    const warehouses = (await this.prisma.warehouses.findMany()).map(
+      (warehouse) => ({
+        warehouseId: warehouse.id,
+        name: warehouse.name || '',
+        address: warehouse.address || '',
+        createdAt: warehouse.created_at?.toISOString() || '',
+      }),
+    );
 
     return {
       warehouses,
@@ -64,7 +54,6 @@ export class WarehousesRepository {
     }
     return {
       warehouseId: warehouse.id,
-      shopId: warehouse.shop_id,
       name: warehouse.name || '',
       address: warehouse.address || '',
       createdAt: warehouse.created_at?.toISOString() || '',
@@ -89,7 +78,6 @@ export class WarehousesRepository {
     await this.prisma.warehouses.create({
       data: {
         id: warehouseId,
-        shop_id: data.shopId,
         name: data.name,
         address: data.address,
       },

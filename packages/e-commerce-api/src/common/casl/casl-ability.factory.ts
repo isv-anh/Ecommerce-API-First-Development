@@ -11,7 +11,6 @@ export type Subjects =
   | 'Brand'
   | 'Cart'
   | 'Order'
-  | 'Shop'
   | 'Voucher'
   | 'Address'
   | 'Review'

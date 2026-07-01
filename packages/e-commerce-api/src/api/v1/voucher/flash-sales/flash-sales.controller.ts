@@ -4,7 +4,6 @@ import type {
   DeleteFlashSaleParams,
   GetFlashSaleByIdParams,
   GetFlashSaleById200Response,
-  GetFlashSalesQueryParams,
   GetFlashSales200Response,
   PatchFlashSaleParams,
   PatchFlashSaleBody,
@@ -41,10 +40,8 @@ export class FlashSalesController implements BaseFlashSalesControllerInterface {
    * @param query - query parameters
    * @returns list of flash sales
    */
-  async getFlashSales(
-    query: GetFlashSalesQueryParams,
-  ): Promise<GetFlashSales200Response> {
-    return await this.service.getFlashSales(query);
+  async getFlashSales(): Promise<GetFlashSales200Response> {
+    return await this.service.getFlashSales();
   }
 
   /**

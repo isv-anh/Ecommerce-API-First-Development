@@ -47,7 +47,6 @@ export class OrderItemsRepository {
     const orderItems = result.map((item) => ({
       orderItemId: item.id,
       orderId: item.order_id,
-      shopId: item.shop_id ?? '',
       productId: item.product_id ?? '',
       productVariantId: item.product_variant_id ?? '',
       productName: item.product_name ?? '',
@@ -79,7 +78,6 @@ export class OrderItemsRepository {
     return {
       orderItemId: item.id,
       orderId: item.order_id,
-      shopId: item.shop_id ?? '',
       productId: item.product_id ?? '',
       productVariantId: item.product_variant_id ?? '',
       productName: item.product_name ?? '',
@@ -137,7 +135,6 @@ export class OrderItemsRepository {
       data: {
         id: orderItemId,
         order_id: orderId,
-        shop_id: data.shopId,
         product_id: data.productId,
         product_variant_id: data.productVariantId,
         product_name: data.productName,

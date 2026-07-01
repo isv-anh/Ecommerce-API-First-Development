@@ -37,7 +37,6 @@ export class VouchersRepository {
     query: GetVouchersQueryParams,
   ): Promise<GetVouchers200Response> {
     const whereClause = {
-      shop_id: query.shopId,
       is_active: query.isActive,
     };
 
@@ -48,7 +47,6 @@ export class VouchersRepository {
     const vouchers = vouchersResult.map((v) => ({
       voucherId: v.id,
       code: v.code,
-      shopId: v.shop_id || '',
       discountType: (v.discount_type as 'fixed' | 'percentage') || 'fixed',
       discountValue: Number(v.discount_value),
       maxDiscount: v.max_discount ? Number(v.max_discount) : undefined,
@@ -75,7 +73,6 @@ export class VouchersRepository {
     return {
       voucherId: v.id,
       code: v.code,
-      shopId: v.shop_id || '',
       discountType: (v.discount_type as 'fixed' | 'percentage') || 'fixed',
       discountValue: Number(v.discount_value),
       maxDiscount: v.max_discount ? Number(v.max_discount) : undefined,
@@ -120,7 +117,6 @@ export class VouchersRepository {
       data: {
         id: voucherId,
         code: data.code,
-        shop_id: data.shopId,
         discount_type: data.discountType,
         discount_value: data.discountValue,
         max_discount: data.maxDiscount,

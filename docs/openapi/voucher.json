@@ -22,17 +22,7 @@
     "/api/v1/flash-sales": {
       "get": {
         "operationId": "getFlashSales",
-        "parameters": [
-          {
-            "name": "shopId",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "$ref": "#/components/schemas/UUID"
-            },
-            "explode": false
-          }
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "The request has succeeded.",
@@ -506,15 +496,6 @@
       "get": {
         "operationId": "getVouchers",
         "parameters": [
-          {
-            "name": "shopId",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "$ref": "#/components/schemas/UUID"
-            },
-            "explode": false
-          },
           {
             "name": "isActive",
             "in": "query",
@@ -1040,16 +1021,12 @@
         "type": "object",
         "required": [
           "flashSaleId",
-          "shopId",
           "name",
           "startTime",
           "endTime"
         ],
         "properties": {
           "flashSaleId": {
-            "$ref": "#/components/schemas/UUID"
-          },
-          "shopId": {
             "$ref": "#/components/schemas/UUID"
           },
           "name": {
@@ -1065,7 +1042,6 @@
         "examples": [
           {
             "flashSaleId": "123e4567-e89b-12d3-a456-426614175700",
-            "shopId": "123e4567-e89b-12d3-a456-426614175400",
             "name": "Flash Sale Điện Thoại",
             "startTime": "2026-04-15T00:00:00.000Z",
             "endTime": "2026-04-15T23:59:59.000Z"
@@ -1189,15 +1165,11 @@
       "PostFlashSaleRequestBody": {
         "type": "object",
         "required": [
-          "shopId",
           "name",
           "startTime",
           "endTime"
         ],
         "properties": {
-          "shopId": {
-            "$ref": "#/components/schemas/UUID"
-          },
           "name": {
             "$ref": "#/components/schemas/NonEmptyString"
           },
@@ -1284,7 +1256,6 @@
       "PostVoucherRequestBody": {
         "type": "object",
         "required": [
-          "shopId",
           "code",
           "discountType",
           "discountValue",
@@ -1292,9 +1263,6 @@
           "endDate"
         ],
         "properties": {
-          "shopId": {
-            "$ref": "#/components/schemas/UUID"
-          },
           "code": {
             "$ref": "#/components/schemas/NonEmptyString"
           },
@@ -1393,7 +1361,6 @@
         "type": "object",
         "required": [
           "voucherId",
-          "shopId",
           "code",
           "discountType",
           "discountValue",
@@ -1403,9 +1370,6 @@
         ],
         "properties": {
           "voucherId": {
-            "$ref": "#/components/schemas/UUID"
-          },
-          "shopId": {
             "$ref": "#/components/schemas/UUID"
           },
           "code": {
@@ -1447,7 +1411,6 @@
         "examples": [
           {
             "voucherId": "123e4567-e89b-12d3-a456-426614175300",
-            "shopId": "123e4567-e89b-12d3-a456-426614175400",
             "code": "SUMMER20",
             "discountType": "percentage",
             "discountValue": 20,

@@ -1,7 +1,6 @@
 import { PrismaService } from '@/common/services/prisma.service';
 import {
   GetFlashSales200Response,
-  GetFlashSalesQueryParams,
   GetFlashSaleById200Response,
   PatchFlashSaleBody,
   PostFlashSaleBody,
@@ -33,23 +32,11 @@ export class FlashSalesRepository {
     }
   }
 
-  /**
-   * Get a list of flash sales with optional filter by shopId
-   * @param query - query parameters including optional shopId
-   * @returns list of flash sales
-   */
-  async getFlashSales(
-    query: GetFlashSalesQueryParams,
-  ): Promise<GetFlashSales200Response> {
-    const result = await this.prisma.flash_sales.findMany({
-      where: {
-        shop_id: query.shopId,
-      },
-    });
+  async getFlashSales(): Promise<GetFlashSales200Response> {
+    const result = await this.prisma.flash_sales.findMany();
 
     const flashSales = result.map((fs) => ({
       flashSaleId: fs.id,
-      shopId: fs.shop_id,
       name: fs.name ?? '',
       startTime: fs.start_time?.toISOString() ?? '',
       endTime: fs.end_time?.toISOString() ?? '',
@@ -76,7 +63,6 @@ export class FlashSalesRepository {
 
     return {
       flashSaleId: fs.id,
-      shopId: fs.shop_id,
       name: fs.name ?? '',
       startTime: fs.start_time?.toISOString() ?? '',
       endTime: fs.end_time?.toISOString() ?? '',
@@ -112,7 +98,6 @@ export class FlashSalesRepository {
     await this.prisma.flash_sales.create({
       data: {
         id: flashSaleId,
-        shop_id: data.shopId,
         name: data.name,
         start_time: data.startTime ? new Date(data.startTime) : undefined,
         end_time: data.endTime ? new Date(data.endTime) : undefined,
