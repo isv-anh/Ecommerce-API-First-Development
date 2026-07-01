@@ -4,7 +4,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { WarehousesService } from './warehouses.service';
 import { WarehousesRepository } from './warehouses.repository';
 import type {
-  GetWarehousesQueryParams,
   PatchWarehouseBody,
   PostWarehouseBody,
 } from '@e-commerce/api-validation/types/product';
@@ -27,11 +26,9 @@ jest.mock('./warehouses.repository');
 // ─── Fixtures ─────────────────────────────────────────────────────────────────
 
 const warehouseId = '123e4567-e89b-12d3-a456-426614174200';
-const shopId = '123e4567-e89b-12d3-a456-426614174300';
 
 const mockWarehouse = {
   warehouseId,
-  shopId,
   name: 'Main Warehouse',
   address: '123 Industrial Street, Hanoi, Vietnam',
   createdAt: '2026-04-09T08:00:00.000Z',
@@ -82,22 +79,20 @@ describe('WarehousesService', () => {
   // ─── getWarehouses ───────────────────────────────────────────────────────
 
   describe('getWarehouses', () => {
-    const query: GetWarehousesQueryParams = {};
-
     it('should return warehouses from repository', async () => {
       repository.getWarehouses.mockResolvedValue(mockWarehousesResponse);
 
-      const result = await service.getWarehouses(query);
+      const result = await service.getWarehouses();
 
       expect(repository.getWarehouses).toHaveBeenCalledTimes(1);
-      expect(repository.getWarehouses).toHaveBeenCalledWith(query);
+      expect(repository.getWarehouses).toHaveBeenCalledWith();
       expect(result).toEqual(mockWarehousesResponse);
     });
 
     it('should throw if repository throws', async () => {
       repository.getWarehouses.mockRejectedValue(new Error('DB error'));
 
-      await expect(service.getWarehouses(query)).rejects.toThrow('DB error');
+      await expect(service.getWarehouses()).rejects.toThrow('DB error');
     });
   });
 
@@ -155,7 +150,6 @@ describe('WarehousesService', () => {
 
   describe('postWarehouse', () => {
     const body: PostWarehouseBody = {
-      shopId,
       name: 'Main Warehouse',
       address: '123 Industrial Street, Hanoi, Vietnam',
     };

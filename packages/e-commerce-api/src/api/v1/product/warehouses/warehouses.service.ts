@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import type {
   DeleteWarehouseParams,
-  GetWarehousesQueryParams,
   GetWarehouses200Response,
   GetWarehouseByIdParams,
   GetWarehouseById200Response,
@@ -27,10 +26,8 @@ export class WarehousesService implements BaseWarehousesControllerInterface {
   /**
    * GET /v1/warehouses
    */
-  async getWarehouses(
-    query: GetWarehousesQueryParams,
-  ): Promise<GetWarehouses200Response> {
-    return await this.warehousesRepository.getWarehouses(query);
+  async getWarehouses(): Promise<GetWarehouses200Response> {
+    return await this.warehousesRepository.getWarehouses();
   }
 
   /**

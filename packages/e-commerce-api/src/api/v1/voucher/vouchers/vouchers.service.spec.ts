@@ -26,12 +26,10 @@ jest.mock('./vouchers.repository');
 // ─── Fixtures ─────────────────────────────────────────────────────────────────
 
 const voucherId = '123e4567-e89b-12d3-a456-426614174B00';
-const shopId = '123e4567-e89b-12d3-a456-426614174300';
 
 const mockVoucher = {
   voucherId,
   code: 'SUMMER2026',
-  shopId,
   discountType: 'fixed' as const,
   discountValue: 50,
   maxDiscount: 50,
@@ -129,7 +127,6 @@ describe('VouchersService', () => {
   describe('postVoucher', () => {
     const body: PostVoucherBody = {
       code: 'SUMMER2026',
-      shopId,
       discountType: 'fixed',
       discountValue: 50,
       startDate: '2026-04-09T08:00:00.000Z',

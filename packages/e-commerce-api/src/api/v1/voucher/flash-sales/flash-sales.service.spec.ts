@@ -21,11 +21,9 @@ jest.mock('./flash-sales.repository');
 // ─── Fixtures ─────────────────────────────────────────────────────────────────
 
 const flashSaleId = '123e4567-e89b-12d3-a456-426614174A00';
-const shopId = '123e4567-e89b-12d3-a456-426614174B00';
 
 const mockFlashSale = {
   flashSaleId,
-  shopId,
   name: 'Summer Sale',
   startTime: '2026-06-01T00:00:00.000Z',
   endTime: '2026-06-07T23:59:59.000Z',
@@ -85,10 +83,10 @@ describe('FlashSalesService', () => {
     it('should return flash sales from repository', async () => {
       repository.getFlashSales.mockResolvedValue(mockFlashSalesResponse);
 
-      const result = await service.getFlashSales({ shopId });
+      const result = await service.getFlashSales();
 
       expect(repository.getFlashSales).toHaveBeenCalledTimes(1);
-      expect(repository.getFlashSales).toHaveBeenCalledWith({ shopId });
+      expect(repository.getFlashSales).toHaveBeenCalledWith();
       expect(result).toEqual(mockFlashSalesResponse);
     });
   });
@@ -117,7 +115,6 @@ describe('FlashSalesService', () => {
       repository.createFlashSale.mockResolvedValue(flashSaleId);
 
       const body = {
-        shopId,
         name: 'Summer Sale',
         startTime: '2026-06-01T00:00:00.000Z',
         endTime: '2026-06-07T23:59:59.000Z',

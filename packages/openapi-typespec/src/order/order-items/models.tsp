@@ -6,7 +6,6 @@ using TypeSpec.Http;
 @example(#{
     orderItemId: "123e4567-e89b-12d3-a456-426614174C00",
     orderId: "123e4567-e89b-12d3-a456-426614174B00",
-    shopId: "123e4567-e89b-12d3-a456-426614174D00",
     productId: "123e4567-e89b-12d3-a456-426614174000",
     productVariantId: "123e4567-e89b-12d3-a456-426614174100",
     productName: "iPhone 14 Pro Max",
@@ -18,7 +17,6 @@ using TypeSpec.Http;
 model OrderItemResponse {
     orderItemId: UUID;
     orderId: UUID;
-    shopId: UUID;
     productId: UUID;
     productVariantId: UUID;
     productName: NonEmptyString;
@@ -29,7 +27,6 @@ model OrderItemResponse {
 }
 
 model PostOrderItemRequestBody {
-    shopId: UUID;
     productId: UUID;
     productVariantId: UUID;
     productName: NonEmptyString;

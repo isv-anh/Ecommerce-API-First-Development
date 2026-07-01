@@ -1997,9 +1997,6 @@
             "$ref": "#/components/parameters/GetProductRequestParams.categoryId"
           },
           {
-            "$ref": "#/components/parameters/GetProductRequestParams.shopId"
-          },
-          {
             "$ref": "#/components/parameters/PageQueryParams.page"
           },
           {
@@ -2575,17 +2572,7 @@
     "/api/v1/warehouses": {
       "get": {
         "operationId": "getWarehouses",
-        "parameters": [
-          {
-            "name": "shopId",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "$ref": "#/components/schemas/UUID"
-            },
-            "explode": false
-          }
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "The request has succeeded.",
@@ -2925,15 +2912,6 @@
         "required": false,
         "schema": {
           "$ref": "#/components/schemas/NonEmptyString"
-        },
-        "explode": false
-      },
-      "GetProductRequestParams.shopId": {
-        "name": "shopId",
-        "in": "query",
-        "required": false,
-        "schema": {
-          "$ref": "#/components/schemas/UUID"
         },
         "explode": false
       },
@@ -3825,13 +3803,9 @@
       "PostWarehouseRequestBody": {
         "type": "object",
         "required": [
-          "shopId",
           "name"
         ],
         "properties": {
-          "shopId": {
-            "$ref": "#/components/schemas/UUID"
-          },
           "name": {
             "$ref": "#/components/schemas/NonEmptyString"
           },
@@ -3985,8 +3959,6 @@
           "productName",
           "categoryName",
           "thumbnailUrl",
-          "shopName",
-          "shopLogo",
           "location",
           "price",
           "slug"
@@ -4002,12 +3974,6 @@
             "type": "string"
           },
           "thumbnailUrl": {
-            "type": "string"
-          },
-          "shopName": {
-            "type": "string"
-          },
-          "shopLogo": {
             "type": "string"
           },
           "location": {
@@ -4194,16 +4160,12 @@
         "type": "object",
         "required": [
           "warehouseId",
-          "shopId",
           "name",
           "address",
           "createdAt"
         ],
         "properties": {
           "warehouseId": {
-            "$ref": "#/components/schemas/UUID"
-          },
-          "shopId": {
             "$ref": "#/components/schemas/UUID"
           },
           "name": {
@@ -4219,7 +4181,6 @@
         "examples": [
           {
             "warehouseId": "123e4567-e89b-12d3-a456-426614174200",
-            "shopId": "123e4567-e89b-12d3-a456-426614174300",
             "name": "Main Warehouse",
             "address": "123 Industrial Street, Hanoi, Vietnam",
             "createdAt": "2026-04-09T08:00:00.000Z"

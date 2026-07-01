@@ -43,14 +43,12 @@ export class ProductsRepository {
       name: query.productName,
       id: query.productId,
       category_id: query.categoryId,
-      shop_id: query.shopId,
     };
 
     const productsResult = await this.prisma.products.findMany({
       where: whereClause,
       include: {
         categories: true,
-        shops: true,
       },
       take: query.pageSize,
       skip: query.pageSize * (query.page - 1),
@@ -61,8 +59,6 @@ export class ProductsRepository {
       productName: product.name,
       categoryName: product.categories?.name || 'Uncategorized',
       thumbnailUrl: product.thumbnail_url || '',
-      shopName: product.shops?.name || 'Unknown Shop',
-      shopLogo: product.shops?.logo_url || '',
       location: 'Unknown', // Missing in schema
       price: 0, // Should come from variants, defaulting to 0 for now based on typespec
       slug: product.slug || '',
@@ -196,7 +192,6 @@ export class ProductsRepository {
           category_id: data.categoryId,
           thumbnail_url: data.thumbnailUrl,
           slug: data.slug,
-          shop_id: 'e1000000-0000-0000-0000-000000000001', // Mock shop ID since API request doesn't provide it
           is_published: false,
         },
       });
