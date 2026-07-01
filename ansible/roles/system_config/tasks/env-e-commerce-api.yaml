@@ -38,6 +38,13 @@
     regexp: "^DB_NAME="
     line: "DB_NAME={{ db_name }}"
 
+- name: Thêm ADMIN_PASSWORD vào e-commerce-api
+  lineinfile:
+    path: ./packages/e-commerce-api/.env
+    regexp: "^ADMIN_PASSWORD="
+    line: "ADMIN_PASSWORD={{ admin_password }}"
+  no_log: true
+
 - name: Kiểm tra JWT_ACCESS_SECRET đã tồn tại chưa
   shell: grep -c "^JWT_ACCESS_SECRET=.\+" ./packages/e-commerce-api/.env || true
   register: jwt_access_exists

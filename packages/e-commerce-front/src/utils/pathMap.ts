@@ -28,6 +28,14 @@ export const routes = {
       detail: (id: string | number) => `/admin/product/${id}`,
     },
 
+    warehouse: {
+      list: "/admin/warehouse",
+    },
+
+    warehouseInventory: {
+      list: "/admin/warehouse-inventory",
+    },
+
     attribute: {
       list: "/admin/attribute",
     },
@@ -67,6 +75,20 @@ export const adminMenus: MenuItem[] = [
     path: routes.admin.product.list,
     name: "Sản phẩm",
     icon: "inventory_2_rounded",
+    isNavigate: true,
+  },
+
+  {
+    path: routes.admin.warehouse.list,
+    name: "Kho hàng",
+    icon: "warehouse_rounded",
+    isNavigate: true,
+  },
+
+  {
+    path: routes.admin.warehouseInventory.list,
+    name: "Tồn kho",
+    icon: "inventory_rounded",
     isNavigate: true,
   },
 ];

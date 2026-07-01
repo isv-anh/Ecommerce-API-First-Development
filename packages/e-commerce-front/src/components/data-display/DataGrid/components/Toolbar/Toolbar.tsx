@@ -5,10 +5,7 @@ import type {
 import { Box } from "@mui/material";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
-import {
-  ColumnsPanelTrigger,
-  ToolbarButton as MuiToolbarButton,
-} from "@mui/x-data-grid";
+import { ColumnsPanelTrigger } from "@mui/x-data-grid";
 import { Toolbar as MuiToolbar } from "@mui/x-data-grid";
 import { useCallback } from "react";
 
@@ -36,11 +33,11 @@ const Toolbar = ({ leftButtons, rightButtons, ...props }: ToolbarProps) => {
   return (
     <MuiToolbar {...props}>
       <ColumnsPanelTrigger
-        render={
-          <MuiToolbarButton
-            render={<Button variant="contained">Ẩn/hiện cột</Button>}
-          />
-        }
+        render={(triggerProps) => (
+          <Button {...triggerProps} variant="contained">
+            Ẩn/hiện cột
+          </Button>
+        )}
       />
       <Box ml={1}></Box>
       {leftButtons && renderButton(leftButtons)}

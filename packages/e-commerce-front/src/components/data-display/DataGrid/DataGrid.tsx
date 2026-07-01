@@ -14,6 +14,9 @@ const DataGrid = ({
   paginationModelChange,
   orderByChange,
   rows,
+  columnVisibilityModel,
+  onColumnVisibilityModelChange,
+  initialState,
   ...props
 }: DataGridProps) => {
   const paginationModel = useMemo(
@@ -22,6 +25,23 @@ const DataGrid = ({
   );
 
   const sortModel = useMemo(() => parseSortModel(orderBy), [orderBy]);
+
+  const gridInitialState = useMemo(() => {
+    if (!columnVisibilityModel || onColumnVisibilityModelChange) {
+      return initialState;
+    }
+
+    return {
+      ...initialState,
+      columns: {
+        ...initialState?.columns,
+        columnVisibilityModel: {
+          ...initialState?.columns?.columnVisibilityModel,
+          ...columnVisibilityModel,
+        },
+      },
+    };
+  }, [columnVisibilityModel, initialState, onColumnVisibilityModelChange]);
 
   const handlePaginationChange = useCallback(
     (model: { page: number; pageSize: number }) => {
@@ -68,6 +88,11 @@ const DataGrid = ({
       rows={rows}
       sortModel={sortModel}
       onSortModelChange={handleSortModelChange}
+      initialState={gridInitialState}
+      columnVisibilityModel={
+        onColumnVisibilityModelChange ? columnVisibilityModel : undefined
+      }
+      onColumnVisibilityModelChange={onColumnVisibilityModelChange}
       {...props}
     />
   );
