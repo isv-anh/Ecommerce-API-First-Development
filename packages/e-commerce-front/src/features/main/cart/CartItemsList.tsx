@@ -29,6 +29,9 @@ const formatPrice = (value: number) => {
   }).format(value);
 };
 
+const FREE_SHIPPING_THRESHOLD = 500000;
+const SHIPPING_FEE = 30000;
+
 interface CartItemsListProps {
   cart: any;
 }
@@ -72,7 +75,7 @@ export const CartItemsList = ({ cart }: CartItemsListProps) => {
         });
       }
       await queryClient.invalidateQueries({ queryKey: getGetCartItemsQueryKey(cart.cartId) });
-    } catch (err) {
+    } catch {
       enqueueSnackbar("Lỗi khi cập nhật giỏ hàng", { variant: "error" });
     }
   };
@@ -82,7 +85,7 @@ export const CartItemsList = ({ cart }: CartItemsListProps) => {
       await deleteCartItemMutation.mutateAsync({ cartId: cart.cartId, productVariantId });
       enqueueSnackbar("Đã xóa sản phẩm khỏi giỏ hàng", { variant: "info" });
       await queryClient.invalidateQueries({ queryKey: getGetCartItemsQueryKey(cart.cartId) });
-    } catch (err) {
+    } catch {
       enqueueSnackbar("Lỗi khi xóa sản phẩm", { variant: "error" });
     }
   };
@@ -105,7 +108,7 @@ export const CartItemsList = ({ cart }: CartItemsListProps) => {
     }
   }
 
-  const shippingFee = subtotal >= 500000 || subtotal === 0 ? 0 : 30000;
+  const shippingFee = subtotal >= FREE_SHIPPING_THRESHOLD || subtotal === 0 ? 0 : SHIPPING_FEE;
   const total = subtotal + shippingFee;
 
   if (items.length === 0) {
@@ -198,7 +201,7 @@ export const CartItemsList = ({ cart }: CartItemsListProps) => {
 
             {shippingFee > 0 && (
               <Typography variant="regularXs" color="text.secondary" sx={{ textAlign: "right", display: "block", mt: -1 }}>
-                (Miễn phí vận chuyển cho đơn hàng từ {formatPrice(500000)})
+                (Miễn phí vận chuyển cho đơn hàng từ {formatPrice(FREE_SHIPPING_THRESHOLD)})
               </Typography>
             )}
 

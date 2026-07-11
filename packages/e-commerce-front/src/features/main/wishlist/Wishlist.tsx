@@ -31,8 +31,10 @@ const Wishlist = () => {
   const [userId, setUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // TODO: save userId to store
   useEffect(() => {
     const extractedUserId = getUserIdFromToken();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setUserId(extractedUserId);
     setLoading(false);
   }, []);

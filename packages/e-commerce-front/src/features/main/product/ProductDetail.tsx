@@ -45,6 +45,8 @@ import { FavoriteButton } from "./FavoriteButton";
 import { ProductGallery } from "./ProductGallery";
 import { ProductReviews } from "./ProductReviews";
 
+const STATUS_NOT_FOUND = 404;
+
 const formatPrice = (value: number | string) => {
   const n = typeof value === "string" ? Number.parseFloat(value) : value;
   if (!Number.isFinite(n) || n <= 0) return "Liên hệ";
@@ -145,7 +147,7 @@ const ProductDetail = ({ productId }: { productId: string }) => {
         cartId = cart.cartId;
       } catch (error: any) {
         const status = error?.response?.status || error?.status;
-        if (status === 404 || String(error).includes("404")) {
+        if (status === STATUS_NOT_FOUND || String(error).includes("404")) {
           const newCart = await postCartMutation.mutateAsync({ data: { userId } });
           cartId = newCart.cartId;
           queryClient.setQueryData(getGetCartQueryKey({ userId }), newCart);

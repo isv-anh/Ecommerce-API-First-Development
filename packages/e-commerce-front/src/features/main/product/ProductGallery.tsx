@@ -9,6 +9,8 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import Image from "next/image";
 
+const INACTIVE_OPACITY = 0.6;
+
 interface ProductGalleryProps {
   allImages: string[];
   productName: string;
@@ -170,7 +172,7 @@ export const ProductGallery = ({
                 cursor: "pointer",
                 border: "2px solid",
                 borderColor: activeImageIdx === idx ? "primary.main" : "divider",
-                opacity: activeImageIdx === idx ? 1 : 0.6,
+                opacity: activeImageIdx === idx ? 1 : INACTIVE_OPACITY,
                 transition: "all 0.2s ease",
                 "&:hover": {
                   opacity: 1,

@@ -40,7 +40,7 @@ export const WishlistItemsList = ({ wishlistId }: WishlistItemsListProps) => {
       await queryClient.invalidateQueries({
         queryKey: getGetWishlistItemsQueryKey(wishlistId),
       });
-    } catch (err) {
+    } catch {
       enqueueSnackbar("Có lỗi xảy ra khi xóa", { variant: "error" });
     }
   };

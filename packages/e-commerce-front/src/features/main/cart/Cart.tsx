@@ -34,6 +34,7 @@ const Cart = () => {
 
   useEffect(() => {
     const extractedUserId = getUserIdFromToken();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setUserId(extractedUserId);
 
     if (!extractedUserId) {

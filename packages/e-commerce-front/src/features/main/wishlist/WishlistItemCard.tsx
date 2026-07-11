@@ -27,6 +27,8 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
 
+const STATUS_NOT_FOUND = 404;
+
 const formatPrice = (value: number) => {
   if (value <= 0) return "Liên hệ";
   return new Intl.NumberFormat("vi-VN", {
@@ -57,6 +59,7 @@ interface WishlistItemCardProps {
 
 export const WishlistItemCard = ({
   item,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   wishlistId,
   onDelete,
 }: WishlistItemCardProps) => {
@@ -97,7 +100,7 @@ export const WishlistItemCard = ({
         cartId = cart.cartId;
       } catch (error: any) {
         const status = error?.response?.status || error?.status;
-        if (status === 404 || String(error).includes("404")) {
+        if (status === STATUS_NOT_FOUND || String(error).includes("404")) {
           const newCart = await postCartMutation.mutateAsync({ data: { userId } });
           cartId = newCart.cartId;
           queryClient.setQueryData(getGetCartQueryKey({ userId }), newCart);

@@ -25,11 +25,15 @@ interface ProductReviewsProps {
   productId: string;
 }
 
+const DEFAULT_RATING = 5;
+const DATE_PAD_LENGTH = 2;
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const ProductReviews = ({ productId }: ProductReviewsProps) => {
   const { enqueueSnackbar } = useSnackbar();
   const [newCommentName, setNewCommentName] = useState("");
   const [newCommentText, setNewCommentText] = useState("");
-  const [newRating, setNewRating] = useState<number | null>(5);
+  const [newRating, setNewRating] = useState<number | null>(DEFAULT_RATING);
 
   const [reviews, setReviews] = useState<Review[]>([
     {
@@ -57,14 +61,14 @@ export const ProductReviews = ({ productId }: ProductReviewsProps) => {
 
     const reviewName = newCommentName.trim() || "Khách hàng";
     const today = new Date();
-    const formattedDate = `${String(today.getDate()).padStart(2, "0")}/${String(
+    const formattedDate = `${String(today.getDate()).padStart(DATE_PAD_LENGTH, "0")}/${String(
       today.getMonth() + 1
-    ).padStart(2, "0")}/${today.getFullYear()}`;
+    ).padStart(DATE_PAD_LENGTH, "0")}/${today.getFullYear()}`;
 
     const newReview: Review = {
       id: `r-${Date.now()}`,
       userName: reviewName,
-      rating: newRating || 5,
+      rating: newRating || DEFAULT_RATING,
       date: formattedDate,
       content: newCommentText.trim(),
     };
@@ -72,7 +76,7 @@ export const ProductReviews = ({ productId }: ProductReviewsProps) => {
     setReviews((prev) => [newReview, ...prev]);
     setNewCommentName("");
     setNewCommentText("");
-    setNewRating(5);
+    setNewRating(DEFAULT_RATING);
 
     enqueueSnackbar("Gửi nhận xét thành công!", { variant: "success" });
   };
