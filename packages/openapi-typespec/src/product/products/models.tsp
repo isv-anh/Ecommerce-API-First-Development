@@ -15,6 +15,7 @@ model PostProductRequestBody {
     brandId?: UUID | null;
     slug: Slug;
     thumbnailUrl?: string | null;
+    isPublished?: boolean | null;
 
     @maxItems(10)
     images?: Image[] | null;
@@ -31,6 +32,7 @@ model PatchProductRequestBody {
     brandId?: UUID | null;
     slug?: Slug | null;
     thumbnailUrl?: string | null;
+    isPublished?: boolean | null;
 
     @maxItems(10)
     images?: Image[] | null;
@@ -44,6 +46,7 @@ model ProductResponse {
     location: string;
     price: integer;
     slug: string;
+    isPublished: boolean;
 }
 
 model ProductByIdResponse {
@@ -54,6 +57,7 @@ model ProductByIdResponse {
     thumbnailUrl?: string;
     description?: string;
     slug: string;
+    isPublished: boolean;
     images?: Image[];
 }
 

@@ -3336,6 +3336,16 @@
               }
             ]
           },
+          "isPublished": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "images": {
             "anyOf": [
               {
@@ -3643,6 +3653,16 @@
               }
             ]
           },
+          "isPublished": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "images": {
             "anyOf": [
               {
@@ -3864,7 +3884,8 @@
           "productId",
           "productName",
           "categoryId",
-          "slug"
+          "slug",
+          "isPublished"
         ],
         "properties": {
           "productId": {
@@ -3887,6 +3908,9 @@
           },
           "slug": {
             "type": "string"
+          },
+          "isPublished": {
+            "type": "boolean"
           },
           "images": {
             "type": "array",
@@ -3961,7 +3985,8 @@
           "thumbnailUrl",
           "location",
           "price",
-          "slug"
+          "slug",
+          "isPublished"
         ],
         "properties": {
           "productId": {
@@ -3984,6 +4009,9 @@
           },
           "slug": {
             "type": "string"
+          },
+          "isPublished": {
+            "type": "boolean"
           }
         }
       },

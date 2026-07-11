@@ -39,6 +39,12 @@ export class ProductsService implements BaseProductsControllerInterface {
     return await this.productsRepository.getProducts(query);
   }
 
+  async getUserProducts(
+    query: GetProductsQueryParams,
+  ): Promise<GetProducts200Response> {
+    return await this.productsRepository.getUserProducts(query);
+  }
+
   /**
    * GET /v1/products/:productId
    *

@@ -12,9 +12,9 @@ import { CartsRepository } from '@/api/v1/cart/carts/carts.repository';
 @Injectable()
 export class CartsService implements BaseCartsControllerInterface {
   constructor(private readonly cartsRepository: CartsRepository) {}
-  getCart(query: GetCartQueryParams): Promise<GetCart200Response> {
+  async getCart(query: GetCartQueryParams): Promise<GetCart200Response> {
     console.log('getCart called with query:', query);
-    throw new Error('Method not implemented.');
+    return await this.cartsRepository.getCartByUserId(query.userId);
   }
 
   /**

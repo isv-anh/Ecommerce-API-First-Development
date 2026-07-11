@@ -253,6 +253,12 @@ Trong quá trình cài đặt, script sẽ yêu cầu các giá trị sau:
 - `Enter POSTGRES_PASSWORD:`
   - Nhập mật khẩu cho superuser PostgreSQL.
 
+- `Nhập ADMIN_PASSWORD:`
+  - Nhập mật khẩu cho tài khoản admin mặc định.
+  - Tài khoản admin mặc định:
+    - Username: `admin`
+    - Email: `admin@example.com`
+
 - `Please enter POSTGRES_DB:`
   - Nhập tên cơ sở dữ liệu.
   - Ví dụ: `e-commerce_db`

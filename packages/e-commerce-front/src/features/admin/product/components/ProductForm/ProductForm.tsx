@@ -11,6 +11,8 @@ import useUpload from "@/hooks/useUpload";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Switch from "@mui/material/Switch";
 import dynamic from "next/dynamic";
 import {
   Controller,
@@ -77,6 +79,24 @@ const ProductForm = () => {
                 label="Thương hiệu"
               />
             </SuspenseWrapper>
+          </Grid>
+
+          <Grid size={{ xs: 12, md: 3 }} sx={{ display: "flex", alignItems: "center" }}>
+            <Controller
+              control={control}
+              name="isPublished"
+              render={({ field }) => (
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={!!field.value}
+                      onChange={(e) => field.onChange(e.target.checked)}
+                    />
+                  }
+                  label="Xuất bản sản phẩm"
+                />
+              )}
+            />
           </Grid>
 
           <Grid size={12}>

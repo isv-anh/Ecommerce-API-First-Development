@@ -3,6 +3,17 @@ import { palette } from "@/theme/palette";
 import { typography } from "@/theme/typography";
 import { alpha, createTheme, type Shadows } from "@mui/material/styles";
 
+declare module "@mui/material/styles" {
+  interface Palette {
+    primaryGradient: string;
+    primaryGradientHover: string;
+  }
+  interface PaletteOptions {
+    primaryGradient?: string;
+    primaryGradientHover?: string;
+  }
+}
+
 const createPrimaryShadow = (mainColor: string): Shadows => {
   return [
     "none",
@@ -67,6 +78,17 @@ const theme = createTheme({
         outlined: {
           borderWidth: 2,
         },
+        containedPrimary: ({ theme }) => ({
+          background: theme.palette.primaryGradient,
+          color: theme.palette.text.white,
+          border: "none",
+          boxShadow: `0 4px 14px 0 rgba(130, 37, 236, 0.25)`,
+          transition: "all 0.2s ease-in-out",
+          "&:hover": {
+            background: theme.palette.primaryGradientHover,
+            boxShadow: `0 6px 20px 0 rgba(130, 37, 236, 0.4)`,
+          },
+        }),
         text: ({ theme, ownerState }) => {
           const color = ownerState.color;
 

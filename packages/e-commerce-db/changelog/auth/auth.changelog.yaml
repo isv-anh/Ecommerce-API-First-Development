@@ -325,3 +325,13 @@ databaseChangeLog:
             relativeToChangelogFile: true
             splitStatements: false
             stripComments: false
+
+  - changeSet:
+      id: auth-010-seed-admin-user
+      author: hoanganh
+      changes:
+        - sqlFile:
+            path: ../sql/seed-admin-user.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+            stripComments: false

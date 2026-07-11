@@ -18,7 +18,7 @@ const Header = () => {
         <NotificationButton />
         <Button
           component={NextLink}
-          href={"/me/favorites"}
+          href={"/wishlist"}
           variant="text"
           startIcon={<GradeRoundedIcon />}
           size="small"

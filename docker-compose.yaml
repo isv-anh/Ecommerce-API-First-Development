@@ -39,6 +39,7 @@ services:
       - --changeLogFile=db.changelog-master.yaml
       - --searchPath=/liquibase/changelog
       - update
+      - -DadminPassword=${ADMIN_PASSWORD:?ADMIN_PASSWORD is required. Run ansible/setup.sh or add ADMIN_PASSWORD to .env}
     networks:
       - e-commerce-network
 

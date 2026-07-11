@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 
 import { ProductsController } from './products.controller';
 import { ProductsService } from './products.service';
+import { UserProductsController } from './user-products.controller';
 import {
   BaseProductsController,
   PRODUCTS_CONTROLLER,
@@ -9,7 +10,7 @@ import {
 import { ProductsRepository } from '@/api/v1/product/products/products.repository';
 
 @Module({
-  controllers: [BaseProductsController],
+  controllers: [BaseProductsController, UserProductsController],
   providers: [
     ProductsService,
     {

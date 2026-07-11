@@ -3,10 +3,19 @@
 import Grid from "@mui/material/Grid";
 
 import ProductCard from "@/features/main/components/ProductCard/ProductCard";
-import { useGetProductsSuspense } from "@e-commerce/api-client/endpoints/product";
+import { customInstance } from "@e-commerce/api-client/mutator/custom-instance";
+import type { ProductsResponse } from "@e-commerce/api-client/schemas/product";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 const ProductList = () => {
-  const { data } = useGetProductsSuspense();
+  const { data } = useSuspenseQuery({
+    queryKey: ["/api/v1/user/products"],
+    queryFn: () =>
+      customInstance<ProductsResponse>({
+        url: "/api/v1/user/products",
+        method: "GET",
+      }),
+  });
   return (
     <Grid container spacing={1.5}>
       {data.products.map((product) => (

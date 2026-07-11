@@ -11,6 +11,7 @@ import { useMemo, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { routes } from "@/utils/pathMap";
+import Chip from "@mui/material/Chip";
 
 const ProductGrid = () => {
   const { params, setParam, setParams } = productSearchContext.useSearch();
@@ -23,6 +24,18 @@ const ProductGrid = () => {
     { field: "slug", headerName: "slug", flex: 1 },
     { field: "categoryName", headerName: "Danh mục", flex: 1 },
     { field: "brandName", headerName: "Thương hiệu", flex: 1 },
+    {
+      field: "isPublished",
+      headerName: "Trạng thái",
+      flex: 1,
+      renderCell: (params) => {
+        return params.value ? (
+          <Chip label="Đã xuất bản" color="success" size="small" />
+        ) : (
+          <Chip label="Bản nháp" color="default" size="small" />
+        );
+      },
+    },
     {
       field: "thumbnailUrl",
       headerName: "Hình ảnh",

@@ -10,6 +10,7 @@ if [ -f "$ENV_FILE_MAIN" ]; then
 fi
 
 POSTGRES_PASSWORD="${POSTGRES_PASSWORD:-}"
+ADMIN_PASSWORD="${ADMIN_PASSWORD:-}"
 
 if [ -z "${POSTGRES_USER:-}" ]; then
     read -p "Nhập POSTGRES_USER: " POSTGRES_USER
@@ -19,6 +20,14 @@ if [ -z "${POSTGRES_PASSWORD:-}" ]; then
     read -sp "Nhập POSTGRES_PASSWORD: " POSTGRES_PASSWORD
     echo
 fi
+
+while [ -z "${ADMIN_PASSWORD:-}" ] || [[ "$ADMIN_PASSWORD" == *'$admin_password$'* ]]; do
+    if [ -n "${ADMIN_PASSWORD:-}" ]; then
+        echo 'ADMIN_PASSWORD không được chứa chuỗi $admin_password$. Vui lòng nhập lại.'
+    fi
+    read -sp "Nhập ADMIN_PASSWORD: " ADMIN_PASSWORD
+    echo
+done
 
 if [ -z "${DB_NAME:-}" ]; then
     read -p "Nhập DB_NAME: " DB_NAME
@@ -58,6 +67,7 @@ fi
 cat > "$ENV_FILE_MAIN" <<EOF
 POSTGRES_USER=$POSTGRES_USER
 POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+ADMIN_PASSWORD=$ADMIN_PASSWORD
 DB_NAME=$DB_NAME
 DB_PORT=$DB_PORT
 DB_HOST=$DB_HOST
@@ -77,6 +87,7 @@ fi
 ansible-playbook ~/e-commerce/setup.yaml --ask-become-pass \
     -e "pg_user=${POSTGRES_USER}" \
     -e "pg_password=${POSTGRES_PASSWORD}" \
+    -e "admin_password=${ADMIN_PASSWORD}" \
     -e "db_host=${DB_HOST}" \
     -e "db_port=${DB_PORT}" \
     -e "db_name=${DB_NAME}"
