@@ -21,7 +21,7 @@ const Home = () => {
       <SpotlightCarousel timeout={3000} />
       <FeaturedCategories />
       <SuspenseWrapper height={500}>
-        <ProductGrid />
+        <ProductGrid params={{ page: 1, pageSize: 8 }} />
       </SuspenseWrapper>
       <Newsletter />
     </Stack>

@@ -28,21 +28,53 @@ const Newsletter = () => {
   return (
     <Box
       component="section"
-      sx={{ width: "100%", px: { xs: 2, md: 6 }, py: 4 }}
+      sx={{
+        width: "100%",
+        px: { xs: 2, md: 6 },
+        py: { xs: 4, md: 6 },
+      }}
     >
-      <Typography variant="header" sx={{ mb: 1 }}>
-        Đăng ký nhận tin
-      </Typography>
-      <Typography variant="regularS" sx={{ mb: 2, color: "text.secondary" }}>
-        Nhận mã giảm giá và cập nhật sản phẩm mới nhất.
-      </Typography>
-
-      <Box component="form" onSubmit={handleSubmit(onSubmit)}>
-        <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-          <TextField label="Email" {...register("email")} />
-          <Button type="submit" variant="contained" color="primary">
-            Đăng ký
-          </Button>
+      <Box
+        component="form"
+        onSubmit={handleSubmit(onSubmit)}
+        sx={{
+          borderRadius: 2,
+          p: { xs: 3, md: 4 },
+          bgcolor: "#151426",
+          color: "common.white",
+        }}
+      >
+        <Stack
+          direction={{ xs: "column", md: "row" }}
+          spacing={3}
+          alignItems={{ xs: "stretch", md: "center" }}
+          justifyContent="space-between"
+        >
+          <Box>
+            <Typography variant="title" sx={{ mb: 1 }}>
+              Đăng ký nhận tin
+            </Typography>
+            <Typography
+              variant="regularS"
+              sx={{ color: "rgba(255,255,255,.72)" }}
+            >
+              Nhận mã giảm giá và cập nhật sản phẩm mới nhất.
+            </Typography>
+          </Box>
+          <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5}>
+            <TextField
+              label="Email"
+              {...register("email")}
+              sx={{
+                minWidth: { sm: 320 },
+                bgcolor: "common.white",
+                borderRadius: 1,
+              }}
+            />
+            <Button type="submit" variant="contained" color="primary">
+              Đăng ký
+            </Button>
+          </Stack>
         </Stack>
       </Box>
     </Box>

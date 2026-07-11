@@ -36,6 +36,7 @@ const ProductDetail = ({ productId }: { productId: string }) => {
     resolver: zodResolver(patchProductBody),
     defaultValues: {
       images: [],
+      isPublished: false,
     },
   });
 

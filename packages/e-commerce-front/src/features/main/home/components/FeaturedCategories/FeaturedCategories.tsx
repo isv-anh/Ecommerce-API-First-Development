@@ -1,8 +1,9 @@
 "use client";
 import Box from "@mui/material/Box";
-import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 // Lightweight placeholder categories until categories API is available
 const DEFAULT_CATEGORIES = [
@@ -22,17 +23,30 @@ const FeaturedCategories = ({
       component="section"
       sx={{ width: "100%", px: { xs: 2, md: 6 }, py: 4 }}
     >
-      <Typography variant="header" sx={{ mb: 2 }}>
+      <Typography variant="title" sx={{ mb: 2 }}>
         {title}
       </Typography>
 
-      <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+      <Grid container spacing={2}>
         {DEFAULT_CATEGORIES.map((c) => (
-          <Button key={c.id} href={c.href} variant="outlined" sx={{ flex: 1 }}>
-            {c.name}
-          </Button>
+          <Grid key={c.id} size={{ xs: 6, md: 3 }}>
+            <Button
+              href={c.href}
+              variant="outlined"
+              fullWidth
+              endIcon={<ArrowForwardIcon />}
+              sx={{
+                minHeight: 72,
+                justifyContent: "space-between",
+                borderRadius: 2,
+                bgcolor: "background.paper",
+              }}
+            >
+              {c.name}
+            </Button>
+          </Grid>
         ))}
-      </Stack>
+      </Grid>
     </Box>
   );
 };

@@ -39,36 +39,72 @@ export class ProductsRepository {
   async getProducts(
     query: GetProductsQueryParams,
   ): Promise<GetProducts200Response> {
+    return this.findProducts(query);
+  }
+
+  async getUserProducts(
+    query: GetProductsQueryParams,
+  ): Promise<GetProducts200Response> {
+    return this.findProducts(query, { onlyPublished: true });
+  }
+
+  private async findProducts(
+    query: GetProductsQueryParams,
+    options: { onlyPublished?: boolean } = {},
+  ): Promise<GetProducts200Response> {
+    const page = query.page ?? 1;
+    const pageSize = query.pageSize ?? 20;
     const whereClause = {
       name: query.productName,
       id: query.productId,
       category_id: query.categoryId,
+      ...(options.onlyPublished && { is_published: true }),
     };
 
     const productsResult = await this.prisma.products.findMany({
       where: whereClause,
       include: {
         categories: true,
+        product_variants: {
+          include: {
+            warehouse_inventory: {
+              include: {
+                warehouses: true,
+              },
+            },
+          },
+        },
       },
-      take: query.pageSize,
-      skip: query.pageSize * (query.page - 1),
+      take: pageSize,
+      skip: pageSize * (page - 1),
     });
 
-    const products = productsResult.map((product) => ({
-      productId: product.id,
-      productName: product.name,
-      categoryName: product.categories?.name || 'Uncategorized',
-      thumbnailUrl: product.thumbnail_url || '',
-      location: 'Unknown', // Missing in schema
-      price: 0, // Should come from variants, defaulting to 0 for now based on typespec
-      slug: product.slug || '',
-    }));
+    const products = productsResult.map((product) => {
+      const variantPrices = product.product_variants
+        .map((variant) => Number(variant.price ?? 0))
+        .filter((price) => price > 0);
+
+      const warehouseName = product.product_variants
+        .flatMap((variant) => variant.warehouse_inventory)
+        .find((inventory) => inventory.warehouses?.name)?.warehouses?.name;
+
+      return {
+        productId: product.id,
+        productName: product.name,
+        categoryName: product.categories?.name || 'Uncategorized',
+        thumbnailUrl: product.thumbnail_url || '',
+        location: warehouseName || 'Online',
+        price: variantPrices.length > 0 ? Math.min(...variantPrices) : 0,
+        slug: product.slug || '',
+        isPublished: product.is_published ?? false,
+      };
+    });
 
     const totalCount = await this.prisma.products.count({
       where: whereClause,
     });
 
-    const totalPages = Math.ceil(totalCount / query.pageSize);
+    const totalPages = Math.ceil(totalCount / pageSize);
 
     return {
       totalCount,
@@ -103,6 +139,7 @@ export class ProductsRepository {
           url: img.url ?? '',
         })) || [],
       slug: product.slug || '',
+      isPublished: product.is_published ?? false,
     };
   }
 
@@ -133,6 +170,7 @@ export class ProductsRepository {
           ...(data.thumbnailUrl != null && {
             thumbnail_url: data.thumbnailUrl,
           }),
+          ...(data.isPublished != null && { is_published: data.isPublished }),
         },
       });
 
@@ -192,7 +230,7 @@ export class ProductsRepository {
           category_id: data.categoryId,
           thumbnail_url: data.thumbnailUrl,
           slug: data.slug,
-          is_published: false,
+          is_published: data.isPublished ?? false,
         },
       });
 

@@ -1,181 +1,166 @@
 "use client";
-import Card from "@mui/material/Card";
-import type { ProductCardProps } from "./types";
-import Typography from "@mui/material/Typography";
-import Stack from "@mui/material/Stack";
-import CardContent from "@mui/material/CardContent";
-import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
-import Box from "@mui/material/Box";
-
-import Image from "next/image";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import VisibilityIcon from "@mui/icons-material/Visibility";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Chip from "@mui/material/Chip";
+import IconButton from "@mui/material/IconButton";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import Image from "next/image";
+import type { ProductCardProps } from "./types";
 
 const formatPrice = (value: number | string) => {
-  try {
-    const n = typeof value === "string" ? parseFloat(value) : value;
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(n);
-  } catch {
-    return String(value);
+  const n = typeof value === "string" ? Number.parseFloat(value) : value;
+
+  if (!Number.isFinite(n) || n <= 0) {
+    return "Liên hệ";
   }
+
+  return new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+    maximumFractionDigits: 0,
+  }).format(n);
+};
+
+const isImageSrc = (src?: string) => {
+  return Boolean(src && (src.startsWith("/") || src.startsWith("http")));
 };
 
 const ProductCard = ({ product }: ProductCardProps) => {
-  const handleQuickView = () => {
-    // placeholder quick view
-
-    console.log("quick view", product);
-  };
-
-  const handleAddToWishlist = () => {
-    console.log("wishlist", product);
-  };
-
-  const handleAddToCart = () => {
-    console.log("add to cart", product);
-  };
+  const imageSrc = isImageSrc(product.thumbnailUrl)
+    ? product.thumbnailUrl
+    : undefined;
 
   return (
     <Card
       sx={{
-        transition:
-          "transform 0.22s ease, box-shadow 0.22s ease, border-color 0.2s",
-        transformOrigin: "center",
-        "&:hover": {
-          boxShadow: 12,
-        },
-        display: "flex",
-        flexDirection: "column",
         height: "100%",
-        position: "relative",
-        overflow: "visible",
-        bgcolor: "background.paper",
-        "&:focus-within": {
-          boxShadow: 8,
+        overflow: "hidden",
+        border: "1px solid",
+        borderColor: "divider",
+        borderRadius: 3,
+        boxShadow: "0 4px 20px rgba(21, 20, 38, 0.04)",
+        transition: "border-color 0.3s ease, box-shadow 0.3s ease",
+        "&:hover": {
+          borderColor: "rgba(129, 140, 248, 0.5)",
+          boxShadow: "0 12px 30px rgba(129, 140, 248, 0.12)",
         },
-
-        "&:hover .product-overlay": {
+        "&:hover img": {
+          transform: "scale(1.06)",
+        },
+        "&:hover .product-actions": {
           opacity: 1,
-          pointerEvents: "auto",
           transform: "translateY(0)",
+          pointerEvents: "auto",
         },
       }}
     >
-      {/* Image area with overlay actions */}
       <Box
-        className="image-top"
         sx={{
           aspectRatio: "4/3",
-          width: "100%",
           position: "relative",
-          bgcolor: "grey.100",
-          borderTop: "4px solid transparent",
           overflow: "hidden",
+          bgcolor: "#f5f3ff",
         }}
       >
-        {product.thumbnailUrl ? (
+        {imageSrc ? (
           <Image
-            src={product.thumbnailUrl}
+            src={imageSrc}
             alt={product.productName}
             fill
+            sizes="(max-width: 600px) 50vw, (max-width: 1200px) 33vw, 25vw"
             style={{
               objectFit: "cover",
-              objectPosition: "center",
-              borderTopRightRadius: 8,
-              borderTopLeftRadius: 8,
+              transition: "transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
             }}
           />
         ) : (
-          <Box
-            sx={{
-              height: "100%",
-              width: "100%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              bgcolor: "grey.100",
-            }}
+          <Stack
+            alignItems="center"
+            justifyContent="center"
+            sx={{ height: "100%", px: 2, textAlign: "center" }}
           >
-            <Typography color="text.secondary">No image available</Typography>
-          </Box>
+            <Typography variant="boldS" color="text.secondary">
+              {product.productName}
+            </Typography>
+          </Stack>
         )}
 
-        {/* overlay actions */}
-        <Box
+        <Chip
+          label={product.categoryName}
+          size="small"
           sx={{
             position: "absolute",
-            inset: 0,
-            display: "flex",
-            alignItems: "flex-end",
-            justifyContent: "center",
-            pb: 1.5,
-            transition: "opacity 0.18s ease, transform 0.18s ease",
-            opacity: 0,
-            pointerEvents: "none",
-            "${Card}:hover &": {
-              opacity: 1,
-              pointerEvents: "auto",
-            },
+            top: 10,
+            left: 10,
+            bgcolor: "rgba(255, 255, 255, 0.92)",
+            fontWeight: 700,
           }}
-          className="product-overlay"
+        />
+
+        <Stack
+          className="product-actions"
+          direction="row"
+          spacing={1}
+          sx={{
+            position: "absolute",
+            right: 10,
+            bottom: 10,
+            opacity: { xs: 1, md: 0 },
+            transform: { xs: "none", md: "translateY(8px)" },
+            pointerEvents: { xs: "auto", md: "none" },
+            transition: "opacity 0.18s ease, transform 0.18s ease",
+          }}
         >
-          <Stack direction="row" spacing={1}>
-            <IconButton
-              aria-label="Quick view"
-              onClick={handleQuickView}
-              sx={(theme) => ({
-                bgcolor: theme.palette.common.white,
-                color: theme.palette.info.main,
-                "&:hover": {
-                  bgcolor: theme.palette.info.main,
-                  color: theme.palette.common.white,
-                },
-              })}
-            >
-              <VisibilityIcon fontSize="small" />
-            </IconButton>
-            <IconButton
-              aria-label="Add to wishlist"
-              onClick={handleAddToWishlist}
-              sx={(theme) => ({
-                bgcolor: theme.palette.common.white,
-                color: theme.palette.error.main,
-                "&:hover": {
-                  bgcolor: theme.palette.error.main,
-                  color: theme.palette.common.white,
-                },
-              })}
-            >
-              <FavoriteBorderIcon fontSize="small" />
-            </IconButton>
-            <IconButton
-              aria-label="Add to cart"
-              onClick={handleAddToCart}
-              sx={(theme) => ({
-                bgcolor: theme.palette.common.white,
-                color: theme.palette.success.main,
-                "&:hover": {
-                  bgcolor: theme.palette.success.main,
-                  color: theme.palette.common.white,
-                },
-              })}
-            >
-              <ShoppingCartIcon fontSize="small" />
-            </IconButton>
-          </Stack>
-        </Box>
+          <IconButton
+            aria-label="Xem nhanh"
+            href={`/product/${product.productId}`}
+            size="small"
+            sx={{
+              bgcolor: "common.white",
+              color: "text.primary",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+              "&:hover": {
+                bgcolor: "#f1f5f9",
+                color: "primary.main",
+                transform: "scale(1.05)",
+              },
+              transition: "all 0.2s ease",
+            }}
+          >
+            <VisibilityIcon fontSize="small" />
+          </IconButton>
+          <IconButton
+            aria-label="Thêm vào yêu thích"
+            size="small"
+            sx={{
+              bgcolor: "common.white",
+              color: "text.primary",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+              "&:hover": {
+                bgcolor: "#f1f5f9",
+                color: "primary.main",
+                transform: "scale(1.05)",
+              },
+              transition: "all 0.2s ease",
+            }}
+          >
+            <FavoriteBorderIcon fontSize="small" />
+          </IconButton>
+        </Stack>
       </Box>
 
-      <CardContent sx={{ pt: 2, pb: 1, flexGrow: 1 }}>
-        <Stack spacing={0.5}>
+      <CardContent sx={{ p: { xs: 1.5, md: 2 } }}>
+        <Stack spacing={1.25}>
           <Typography
             variant="boldM"
             sx={{
+              minHeight: 44,
               display: "-webkit-box",
               WebkitLineClamp: 2,
               WebkitBoxOrient: "vertical",
@@ -185,26 +170,24 @@ const ProductCard = ({ product }: ProductCardProps) => {
             {product.productName}
           </Typography>
 
-          <Stack
-            direction="row"
-            spacing={1}
-            alignItems="center"
-            justifyContent="space-between"
-            sx={{ mt: 1 }}
-          >
-            <Typography sx={{ fontWeight: 700 }}>
+          <Stack spacing={0.25}>
+            <Typography variant="title" color="primary.main">
               {formatPrice(product.price)}
             </Typography>
-            <Button
-              variant="contained"
-              size="small"
-              color="primary"
-              onClick={handleAddToCart}
-              startIcon={<ShoppingCartIcon />}
-            >
-              Thêm
-            </Button>
+            <Typography variant="regularXs" color="text.secondary">
+              {product.location}
+            </Typography>
           </Stack>
+
+          <Button
+            href={`/product/${product.productId}`}
+            variant="contained"
+            fullWidth
+            startIcon={<ShoppingCartIcon />}
+            sx={{ borderRadius: 1.5 }}
+          >
+            Xem sản phẩm
+          </Button>
         </Stack>
       </CardContent>
     </Card>

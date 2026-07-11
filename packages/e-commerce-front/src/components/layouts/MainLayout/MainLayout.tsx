@@ -46,7 +46,7 @@ const MainLayout = ({ children }: { children: ReactNode }) => {
         >
           <CategoryTree />
         </Box>
-        <Box>
+        <Box sx={{ flexGrow: 1, minWidth: 0 }}>
           <Box
             sx={{
               position: "sticky",

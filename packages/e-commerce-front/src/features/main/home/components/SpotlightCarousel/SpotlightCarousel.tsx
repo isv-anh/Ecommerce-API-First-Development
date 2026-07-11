@@ -43,6 +43,9 @@ const DEFAULT_SLIDES: Slide[] = [
   },
 ];
 
+const ACTIVE_DOT_WIDTH = 26;
+const DOT_SIZE = 10;
+
 const SpotlightCarousel = ({
   slides = DEFAULT_SLIDES,
   timeout,
@@ -72,17 +75,16 @@ const SpotlightCarousel = ({
   return (
     <Box
       component="section"
-      sx={{ width: "100%", px: { xs: 2, md: 6 }, py: 4 }}
+      sx={{ width: "100%", px: { xs: 2, md: 6 }, pt: { xs: 2, md: 4 } }}
     >
       <Box sx={{ position: "relative" }}>
         <Box
           sx={{
-            height: { xs: 160, sm: 220, md: 280 },
+            minHeight: { xs: 300, md: 430 },
             borderRadius: 2,
             overflow: "hidden",
             display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+            alignItems: "stretch",
             backgroundColor: "surface.card",
             backgroundImage: active.image ? `url(${active.image})` : "none",
             backgroundSize: "cover",
@@ -91,24 +93,33 @@ const SpotlightCarousel = ({
         >
           <Stack
             spacing={2}
-            alignItems="center"
-            justifyContent="flex-end"
+            alignItems="flex-start"
+            justifyContent="center"
             sx={{
               width: "100%",
               height: "100%",
-              backgroundColor: "rgba(0,0,0,0.3)",
+              background:
+                "linear-gradient(90deg, rgba(21,20,38,.72) 0%, rgba(21,20,38,.38) 48%, rgba(21,20,38,.12) 100%)",
               borderRadius: 2,
-              p: 3,
+              p: { xs: 3, md: 6 },
             }}
           >
-            <Typography variant="header" color="textWhite" sx={{ mb: 1 }}>
+            <Typography
+              variant="title"
+              color="textWhite"
+              sx={{ maxWidth: 520, fontSize: { xs: 28, md: 42 } }}
+            >
               {active.title}
             </Typography>
-            <Typography variant="regularM" color="textWhite" sx={{ mb: 2 }}>
+            <Typography
+              variant="regularM"
+              color="textWhite"
+              sx={{ maxWidth: 460, color: "rgba(255,255,255,.82)" }}
+            >
               {active.subtitle}
             </Typography>
             {active.href && (
-              <Button href={active.href} variant="contained" color="secondary">
+              <Button href={active.href} variant="contained" color="primary">
                 Xem ngay
               </Button>
             )}
@@ -150,14 +161,15 @@ const SpotlightCarousel = ({
             key={s.id}
             onClick={() => setIndex(i)}
             sx={(theme) => ({
-              width: 10,
-              height: 10,
-              borderRadius: "50%",
+              width: i === index ? ACTIVE_DOT_WIDTH : DOT_SIZE,
+              height: DOT_SIZE,
+              borderRadius: 99,
               bgcolor:
                 i === index
-                  ? theme.palette.common.black
+                  ? theme.palette.primary.main
                   : theme.palette.action.disabledBackground,
               cursor: "pointer",
+              transition: "width 0.18s ease",
             })}
           />
         ))}

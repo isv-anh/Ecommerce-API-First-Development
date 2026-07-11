@@ -25,6 +25,7 @@ const ProductNew = () => {
     resolver: zodResolver(postProductBody),
     defaultValues: {
       images: [],
+      isPublished: false,
     },
   });
 
