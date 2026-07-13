@@ -10,6 +10,7 @@ import { CustomerReviewsModule } from '@/api/v1/customer/customer-reviews/custom
 import { CustomerWishlistItemsModule } from '@/api/v1/customer/customer-wishlist-items/customer-wishlist-items.module';
 import { CustomerWishlistsModule } from '@/api/v1/customer/customer-wishlists/customer-wishlists.module';
 import { ProductsModule } from '@/api/v1/product/products/products.module';
+import { UserProductsModule } from '@/api/v1/product/user-products/user-products.module';
 import { ProductVariantsModule } from '@/api/v1/product/product-variants/product-variants.module';
 import { WarehouseInventoriesModule } from '@/api/v1/product/warehouse-inventories/warehouse-inventories.module';
 import { WarehousesModule } from '@/api/v1/product/warehouses/warehouses.module';
@@ -44,6 +45,7 @@ import { ProductAttributesModule } from '@/api/v1/product/product-attributes/pro
     CustomerWishlistItemsModule,
     CustomerWishlistsModule,
     ProductsModule,
+    UserProductsModule,
     ProductVariantsModule,
     WarehousesModule,
     WarehouseInventoriesModule,

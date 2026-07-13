@@ -5,6 +5,7 @@ import "@typespec/versioning";
 import "./categories/routes.tsp";
 import "./brands/routes.tsp";
 import "./products/routes.tsp";
+import "./user-products/routes.tsp";
 import "./product-images/routes.tsp";
 import "./product-variants/routes.tsp";
 import "./product-variants-images/routes.tsp";

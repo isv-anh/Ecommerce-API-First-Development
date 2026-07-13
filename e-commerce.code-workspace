@@ -92,6 +92,28 @@
           "reveal": "always",
         },
       },
+      {
+        "label": "Start Dev Api",
+        "detail": "Start api dev mode",
+        "command": "pnpm run dev:api",
+        "type": "shell",
+        "args": [],
+        "problemMatcher": [],
+        "presentation": {
+          "reveal": "always",
+        },
+      },
+       {
+        "label": "Start Dev Front-End",
+        "detail": "Start front-end dev mode",
+        "command": "pnpm run dev:front",
+        "type": "shell",
+        "args": [],
+        "problemMatcher": [],
+        "presentation": {
+          "reveal": "always",
+        },
+      },
     ],
   },
 }

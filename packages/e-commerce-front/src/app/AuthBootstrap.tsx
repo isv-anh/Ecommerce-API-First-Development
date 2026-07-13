@@ -1,26 +1,17 @@
 "use client";
 
-import { bootstrapAuth } from "@/utils/authBootstrap";
-import tokenStore from "@e-commerce/api-client/storages/token-storage";
+import { useAuth } from "@/hooks/useAuth";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
-import { type ReactNode, useEffect, useState } from "react";
+import { type ReactNode } from "react";
 
 export function AuthBootstrap({ children }: { children: ReactNode }) {
-  const [ready, setReady] = useState(false);
+  const { isInitialized } = useAuth();
 
-  useEffect(() => {
-    bootstrapAuth()
-      .then((data) => tokenStore.setTokens(data))
-      .finally(() => {
-        setReady(true);
-      });
-  }, []);
-
-  if (!ready) {
+  if (!isInitialized) {
     return (
-      <Backdrop open={true}>
-        <CircularProgress />
+      <Backdrop open={true} sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+        <CircularProgress color="inherit" />
       </Backdrop>
     );
   }

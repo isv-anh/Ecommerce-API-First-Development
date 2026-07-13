@@ -15,6 +15,9 @@
       "name": "products"
     },
     {
+      "name": "user-products"
+    },
+    {
       "name": "product-images"
     },
     {
@@ -647,7 +650,8 @@
         },
         "tags": [
           "categories"
-        ]
+        ],
+        "x-public": true
       },
       "post": {
         "operationId": "postCategory",
@@ -2262,6 +2266,67 @@
         "tags": [
           "products"
         ]
+      }
+    },
+    "/api/v1/user/products": {
+      "get": {
+        "operationId": "getUserProducts",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/GetProductRequestParams.productId"
+          },
+          {
+            "$ref": "#/components/parameters/GetProductRequestParams.productName"
+          },
+          {
+            "$ref": "#/components/parameters/GetProductRequestParams.categoryId"
+          },
+          {
+            "$ref": "#/components/parameters/PageQueryParams.page"
+          },
+          {
+            "$ref": "#/components/parameters/PageQueryParams.pageSize"
+          },
+          {
+            "$ref": "#/components/parameters/PageQueryParams.orderBy"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "user-products"
+        ],
+        "x-public": true
       }
     },
     "/api/v1/warehouse-inventories": {

@@ -1,6 +1,5 @@
 "use client";
 import { useEffect } from "react";
-import { useSuspenseQuery } from "@tanstack/react-query";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import Box from "@mui/material/Box";
@@ -10,19 +9,10 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { useBreadcrumbs } from "@/components/navigation/Breadcrumbs/components/BreadcrumbsProvider/hooks";
 import ProductCard from "@/features/main/components/ProductCard/ProductCard";
-import { customInstance } from "@e-commerce/api-client/mutator/custom-instance";
+import { useGetUserProductsSuspense } from "@e-commerce/api-client/endpoints/product";
 import type {
-  GetProductsParams,
-  ProductsResponse,
+  GetUserProductsParams,
 } from "@e-commerce/api-client/schemas/product";
-
-const getUserProducts = (params?: GetProductsParams) => {
-  return customInstance<ProductsResponse>({
-    url: "/api/v1/user/products",
-    method: "GET",
-    params,
-  });
-};
 
 const ProductGrid = ({
   title = "Sản phẩm nổi bật",
@@ -32,13 +22,10 @@ const ProductGrid = ({
 }: {
   title?: string;
   subtitle?: string;
-  params?: GetProductsParams;
+  params?: GetUserProductsParams;
   showViewAll?: boolean;
 }) => {
-  const { data } = useSuspenseQuery({
-    queryKey: ["/api/v1/user/products", params],
-    queryFn: () => getUserProducts(params),
-  });
+  const { data } = useGetUserProductsSuspense(params);
   const { setBreadcrumbs } = useBreadcrumbs();
 
   useEffect(() => {

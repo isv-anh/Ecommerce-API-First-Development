@@ -20,6 +20,7 @@ namespace Product.Categories {
     @route("")
     @operationId("getCategories")
     @tag("categories")
+    @extension("x-public", true)
     op getCategories(
         ...GetCategoryRequestParams,
     ): GetCategoriesResponse200 | BadRequestError | InternalServerError;

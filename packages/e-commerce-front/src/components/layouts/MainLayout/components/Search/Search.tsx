@@ -11,30 +11,21 @@ import Tooltip from "@mui/material/Tooltip";
 import Badge from "@mui/material/Badge";
 import NextLink from "next/link";
 import { useQueryClient } from "@tanstack/react-query";
-import tokenStore from "@e-commerce/api-client/storages/token-storage";
 import { getCart, getCartItems } from "@e-commerce/api-client/endpoints/cart";
-
-const getUserIdFromToken = () => {
-  if (typeof window === "undefined") return null;
-  const token = tokenStore.getAccessToken();
-  if (!token) return null;
-  try {
-    const payloadBase64 = token.split(".")[1];
-    const decodedPayload = JSON.parse(atob(payloadBase64));
-    return decodedPayload.sub || null;
-  } catch {
-    return null;
-  }
-};
+import { useAuth } from "@/hooks/useAuth";
 
 const Search = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const [badgeCount, setBadgeCount] = useState(0);
+  const { userId } = useAuth();
 
   useEffect(() => {
-    const userId = getUserIdFromToken();
-    if (!userId) return;
+    if (!userId) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setBadgeCount(0);
+      return;
+    }
 
     let active = true;
 
@@ -60,7 +51,7 @@ const Search = () => {
       active = false;
       unsubscribe();
     };
-  }, [queryClient]);
+  }, [userId, queryClient]);
 
   const { control, handleSubmit } = useForm<{ textSearch: string }>({
     defaultValues: {

@@ -49,6 +49,7 @@ export const getPermissions: Record<Operation, PolicyRule[]> = {
   getProductVariantImages: [],
   getProductVariants: [],
   getProducts: [],
+  getUserProducts: [],
   getProfile: [],
   getReviewById: [],
   getReviews: [],
