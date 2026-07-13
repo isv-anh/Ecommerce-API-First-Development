@@ -1,105 +1,89 @@
 ---
 name: frontend-design
-description: This skill provides frontend design capabilities, including generating design mockups, creating responsive layouts, and suggesting design improvements based on user feedback.
+description: Hướng dẫn thiết kế giao diện Frontend, tạo responsive layouts, quản lý theme, styles và tối ưu hóa UI/UX dựa trên phản hồi của người dùng.
 ---
 
-## 1. Overview
+## 1. Tổng quan (Overview)
 
-The frontend-design skill is designed to assist developers and designers in creating visually appealing and user-friendly interfaces. It can generate design mockups based on user requirements, create responsive layouts that adapt to different screen sizes, and suggest design improvements based on user feedback.
+Tài liệu này hướng dẫn các nguyên tắc và quy trình thiết kế giao diện (UI) và trải nghiệm người dùng (UX) cho phía Frontend của dự án `e-commerce-front`. Mục tiêu là xây dựng giao diện chất lượng cao, nhất quán, phản hồi nhanh (responsive) và tuân thủ các chuẩn mực tiếp cận (accessibility).
 
-## 2. Structure frontend project
+---
+
+## 2. Cấu trúc thư mục dự án Frontend
 
 ```text
-packages/
-├── e-commerce-front/ (frontend Next.js)
-|   ├── .storybook (config for Storybook)
-│   ├── public/ (static assets)
-│   ├── src/
-│   |   ├── app (next.js app directory)
-│   |   ├── components/ (reusable UI components)
-│   |   ├── features/ (feature-specific components and logic)
-│   |   ├── hooks/ (custom React hooks)
-│   |   ├── theme/ (theme and styling MUI configuration)
-│   |   ├── utils/ (utility functions)
+packages/e-commerce-front/ (Next.js Frontend App)
+├── .storybook/          # Cấu hình Storybook cho UI components
+├── public/              # Tài nguyên tĩnh (images, icons, vv.)
+├── src/
+│   ├── app/             # Định tuyến Next.js App Router
+│   ├── components/      # Các UI components tái sử dụng chung
+│   ├── features/        # Các components và logic riêng theo từng chức năng (admin, main, vv.)
+│   ├── hooks/           # Các React hooks tùy chỉnh
+│   ├── theme/           # Cấu hình theme và styling cho Material UI (MUI)
+│   └── utils/           # Các hàm tiện ích (utility functions)
 ```
 
-## 3. Rules
+---
 
-### Use the mui-mcp server to answer any MUI questions --
+## 3. Các quy tắc thiết kế & phát triển
 
-- 1. call the "useMuiDocs" tool to fetch the docs of the package relevant in the question
-- 2. call the "fetchDocs" tool to fetch any additional docs if needed using ONLY the URLs present in the returned content.
-- 3. repeat steps 1-2 until you have fetched all relevant docs for the given question
-- 4. use the fetched content to answer the question
+### 3.1. Sử dụng mui-mcp Server để tra cứu tài liệu MUI
+Khi có câu hỏi hoặc cần tìm hiểu về các component của Material UI (MUI):
+- Bước 1: Gọi công cụ `useMuiDocs` để tải tài liệu liên quan đến package đang sử dụng.
+- Bước 2: Gọi công cụ `fetchDocs` để tải thêm tài liệu nếu cần thông qua các URL trả về từ bước 1.
+- Bước 3: Lặp lại bước 1-2 cho đến khi có đầy đủ thông tin để trả lời câu hỏi.
 
-### Theme and Styling
+### 3.2. Quản lý Theme và Styling
+- **Sử dụng Material UI (MUI)** một cách nhất quán cho toàn bộ ứng dụng.
+- Tất cả cấu hình màu sắc, kiểu chữ được tập trung trong thư mục `src/theme/` (thông qua `palette.ts`, `typography.ts`, và `theme.ts`).
+- Không viết cứng (hardcode) mã màu hex hoặc kích thước chữ trong component. Luôn tham chiếu qua theme token (ví dụ: `theme.palette.primary.main`).
 
-- 1. Use Material UI (MUI) for consistent styling and theming across the application.
-- 2. Define a custom theme in the `theme/` directory to maintain a cohesive design language.
+### 3.3. Thiết kế Component
+- Xây dựng các UI component dùng chung trong thư mục `components/` để tăng tính tái sử dụng và tránh trùng lặp mã nguồn.
+- Tuân thủ các nguyên tắc thiết kế của Material UI.
+- Sử dụng **Storybook** để phát triển và kiểm tra các component một cách độc lập trước khi tích hợp vào dự án.
 
-### Component Design
+### 3.4. Responsive Layouts (Bố cục đáp ứng)
+- Đảm bảo tất cả giao diện đều hiển thị tốt trên mọi kích thước màn hình bằng cách sử dụng component `Grid` và `Box` của MUI.
+- Kiểm tra giao diện trên nhiều thiết bị giả lập để đảm bảo trải nghiệm liền mạch.
+- Sử dụng các điểm dừng `theme.breakpoints` để tùy biến bố cục động (dự án định nghĩa các breakpoint: `xs: 600`, `sm: 900`, `md: 1200`, `lg: 1536`, `xl: 1920`).
 
-- 1. Create reusable UI components in the `components/` directory to promote consistency and reduce code duplication.
-- 2. Follow MUI design principles and best practices when creating components.
-- 3. Use Storybook for developing and showcasing UI components in isolation.
+### 3.5. Quy tắc Import
+- Khuyến khích import trực tiếp (path imports) thay vì named imports để tối ưu hóa kích thước bundle khi đóng gói sản phẩm.
 
-### Responsive Layouts
-
-- 1. Ensure that all layouts are responsive and adapt to different screen sizes using MUI's Grid and Box components.
-- 2. Test layouts on various devices to ensure a seamless user experience.
-- 3. Use theme.breakpoints to create responsive design patterns.
-
-### Color and Typography
-
-- 1. Define a color palette in the custom theme to maintain visual consistency.
-- 2. Use MUI's typography system to ensure consistent font usage across the application.
-- 3. Ensure sufficient contrast between text and background colors for accessibility.
-
-### Import and Usage
-
-- 1. Prefer direct (path) imports instead of named imports to optimize bundle size.
-
-```ts
-// ✅ Recommended
+```typescript
+// ✅ Khuyên dùng
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 
-// ❌ Avoid
+// ❌ Nên tránh
 import { Box, Button } from "@mui/material";
 ```
 
-- 2. Use the `sx` prop or styled components for custom styling instead of inline styles to leverage the theme and maintain consistency.
-- 3. Prefer using custom components from the project's design system instead of directly using MUI components.
+- Sử dụng thuộc tính `sx` hoặc `styled` components của MUI thay vì CSS inline thông thường để tận dụng hệ thống theme của dự án.
 
-### Data Fetching
+### 3.6. Gọi và xử lý dữ liệu (Data Fetching)
+- Sử dụng các hooks (TanStack Query) được sinh tự động trong `@e-commerce/api-client` cho toàn bộ các tác vụ gọi API.
+- Không tự viết các hàm gọi API trực tiếp hoặc sử dụng `fetch`/`axios` thủ công trong component.
 
-- 1. Use hooks (TanStack Query) generated from `@e-commerce/api-client` for all data fetching.
-- 2. Avoid direct API calls or using `fetch`/`axios` directly in components.
+### 3.7. Biểu mẫu và Xác thực (Form & Validation)
+- Sử dụng **React Hook Form** làm thư viện chính để quản lý trạng thái biểu mẫu.
+- Sử dụng **Zod** để định nghĩa schema và thực hiện validation để đảm bảo an toàn kiểu dữ liệu.
+- Luôn ưu tiên tái sử dụng các types và Zod schemas được xuất bản từ gói chung `@e-commerce/api-client` hoặc `@e-commerce/api-validation` để đồng bộ xác thực giữa Frontend và Backend.
 
-### Form and Validation
-
-- 1. Use React Hook Form as the primary library for managing form state and submission.
-
-- 2. Use Zod for schema-based validation to ensure type safety and consistency.
-
-- 3. Always prefer reusing types and Zod schemas from `@e-commerce/api-client` to keep frontend and backend validation aligned.
-
-- 4. Avoid writing inline validation logic inside components; validation should be defined through Zod schemas.
-
-**Example:**
-
-```ts
+**Ví dụ thực tế:**
+```typescript
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-// Define schema (normally should come from @e-commerce/api-client)
+// Schema xác thực (thông thường được import từ @e-commerce/api-validation)
 export const postLoginBody = z.object({
-  username: z.string().min(1, "Username is required"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  username: z.string().min(1, "Tên đăng nhập không được để trống"),
+  password: z.string().min(6, "Mật khẩu phải chứa ít nhất 6 ký tự"),
 });
 
-// Infer type from schema
 type LoginRequest = z.infer<typeof postLoginBody>;
 
 const { control, handleSubmit, setError } = useForm<LoginRequest>({
@@ -112,41 +96,26 @@ const { control, handleSubmit, setError } = useForm<LoginRequest>({
 });
 ```
 
-## Quick checklist for maintainers
+---
 
-- Token exists and is semantic.
-- Storybook example added/updated.
-- Contrast checked and documented.
-- Linting rules and PR checklist updated if needed.
+## 4. Danh sách kiểm tra nhanh dành cho nhà phát triển (Checklist)
+- [ ] UI Token tồn tại và có tính ngữ nghĩa (semantic).
+- [ ] Storybook component đã được thêm hoặc cập nhật.
+- [ ] Tỷ lệ tương phản màu sắc được kiểm tra đạt chuẩn tiếp cận (accessibility).
+- [ ] Không có mã màu hex hoặc kích thước chữ viết cứng trong file TSX.
 
 ---
 
-## 4. Related Documentation
+## 5. Tài liệu liên quan
 
-- Material UI (MUI)
-  - https://mui.com/material-ui/getting-started/overview/
-  - https://mui.com/material-ui/customization/theming/
-
-- Storybook
-  - https://storybook.js.org/docs/react/get-started/introduction
-  - https://storybook.js.org/docs/react/writing-stories/introduction
-  - https://storybook.js.org/addons/@storybook/addon-a11y
-
-- TanStack Query
-  - https://tanstack.com/query/latest/docs/react/overview
-
-- React Hook Form
-  - https://react-hook-form.com/get-started
-
-- Zod
-  - https://zod.dev/
-
-- Next.js (App Router)
-  - https://nextjs.org/docs/app
-
-- Internal Packages
-  - `@e-commerce/api-client`: Generated API hooks and schemas
-  - `@e-commerce/api-validation`: Generate Zod Validation
-
-- Additional Skills
-  - [Theme Guidelines](./theme/THEME.md): Guidelines for theme usage and token management.
+- Material UI (MUI): [MUI Docs](https://mui.com/material-ui/getting-started/overview/)
+- Storybook: [Storybook Docs](https://storybook.js.org/docs/react/get-started/introduction)
+- TanStack Query: [TanStack Query Docs](https://tanstack.com/query/latest/docs/react/overview)
+- React Hook Form: [React Hook Form Docs](https://react-hook-form.com/get-started)
+- Zod: [Zod Docs](https://zod.dev/)
+- Next.js (App Router): [Next.js Docs](https://nextjs.org/docs/app)
+- Internal Packages:
+  - `@e-commerce/api-client`: Các API hooks và schemas sinh tự động.
+  - `@e-commerce/api-validation`: Chứa các Zod validation schemas chung.
+- Tài liệu bổ sung:
+  - [Hướng dẫn sử dụng Theme](./theme/THEME.md): Chi tiết về bảng màu (palette) và kiểu chữ (typography).

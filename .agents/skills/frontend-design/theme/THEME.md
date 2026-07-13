@@ -1,37 +1,36 @@
-# Theme Rules — Color & Typography
+# Nguyên tắc sử dụng Theme — Màu sắc & Kiểu chữ (Colors & Typography)
 
-This document defines rules and best practices for using color and typography tokens from the shared MUI theme. Follow these rules to keep UI consistent, accessible, and easy to maintain.
-
-## Summary (Direct)
-
-- Always use theme tokens (theme.palette, theme.typography). Do not hardcode hex colors, font sizes, or font weights in components.
-- Use the custom typography variants declared in the theme: `title`, `subtitle`, `header`, `regularXxs`, `regularXs`, `regularS`, `regularM`, `regularL`, `boldXs`, `boldS`, `boldM`, `boldL`.
-- Use semantic color tokens (e.g., `primary`, `background.default`, `surface.card`, `success`, `error`, `neutral[...]`) rather than arbitrary color names.
-- Ensure contrast: minimum 4.5:1 for normal text, 3:1 for large text.
-- For hover/active states, use alpha compositing with theme palette values (e.g., `alpha(theme.palette.primary.main, 0.12)`).
+Tài liệu này định nghĩa các quy tắc và thực tiễn tốt nhất để sử dụng các token màu sắc và kiểu chữ từ cấu hình theme chung của Material UI (MUI). Tuân thủ các quy tắc này giúp giao diện nhất quán, dễ truy cập và dễ bảo trì.
 
 ---
 
-## Why these rules
+## 1. Tóm tắt nhanh (Quy tắc trực tiếp)
 
-- Consistency: single source of truth for brand colors and typography.
-- Accessibility: enforced contrast and focus styles improve usability.
-- Maintainability: change the token in one place to update the whole app.
-- Designer handoff: tokens serve as canonical tokens for Figma and development.
+- **Luôn sử dụng token từ theme** (`theme.palette`, `theme.typography`). Tuyệt đối không viết cứng mã màu hex, kích thước chữ (font-size) hoặc độ đậm nhạt (font-weight) trong các component.
+- **Sử dụng các biến thể kiểu chữ (typography variants) tùy chỉnh** đã được khai báo trong theme: `title`, `subtitle`, `header`, `regularXxs`, `regularXs`, `regularS`, `regularM`, `regularL`, `boldXs`, `boldS`, `boldM`, `boldL`.
+- **Sử dụng token màu sắc có tính ngữ nghĩa** (ví dụ: `primary`, `background.default`, `success`, `error`, `text.primary`, `text.secondary`) thay vì các mã màu tùy tiện.
+- **Đảm bảo độ tương phản màu sắc**: tối thiểu 4.5:1 đối với văn bản bình thường, và 3:1 đối với văn bản kích thước lớn.
+- **Đối với trạng thái hover/active**: sử dụng hàm ghép màu `alpha` từ MUI với giá trị màu của theme (ví dụ: `alpha(theme.palette.primary.main, 0.12)`).
 
 ---
 
-## Tokens (recommended file layout)
+## 2. Tại sao phải tuân thủ quy tắc này?
 
-Place tokens under `theme/` (example files shown below). These tokens should reflect the theme augmentation used throughout the codebase.
+- **Tính nhất quán**: Một nguồn đáng tin cậy duy nhất cho tất cả màu sắc thương hiệu và kiểu chữ.
+- **Khả năng tiếp cận (Accessibility)**: Đảm bảo độ tương phản tốt và kiểu hiển thị focus rõ ràng giúp nâng cao tính tương tác.
+- **Dễ bảo trì**: Chỉ cần cập nhật token tại một nơi (file định nghĩa theme) để thay đổi giao diện toàn bộ ứng dụng.
+- **Đồng bộ thiết kế**: Các token này khớp hoàn toàn với các token thiết kế (Figma Design Tokens) được bàn giao từ đội ngũ thiết kế.
 
-Example: theme/colors.ts (illustrative)
+---
 
-```ts
-export const colors = {
+## 3. Danh sách Token thực tế của dự án
+
+### 3.1. Bảng màu (Palette) (`theme/palette.ts`)
+```typescript
+export const palette: ThemeOptions["palette"] = {
   primary: {
-    main: "#9B5DE0",
-    light: "#C77DFF",
+    main: "#8225ec",         // Màu tím chủ đạo của thương hiệu
+    light: "#9a28f1",
     dark: "#7A3CC8",
     contrastText: "#FFFFFF",
   },
@@ -39,22 +38,27 @@ export const colors = {
   warning: { main: "#F59E0B", contrastText: "#000000" },
   error: { main: "#EF4444", contrastText: "#FFFFFF" },
   info: { main: "#3B82F6", contrastText: "#FFFFFF" },
-  text: { primary: "#151426", secondary: "#6B6B78", white: "#FFFFFF" },
+  text: {
+    primary: "#151426",      // Màu chữ tối mặc định
+    secondary: "#6B6B78",    // Màu chữ nhạt cho thông tin phụ
+    white: "#FFFFFF",
+  },
 };
 ```
 
-Example: theme/typography.ts (illustrative)
-
-```ts
-export const typography = {
+### 3.2. Kiểu chữ (Typography) (`theme/typography.ts`)
+```typescript
+export const typography: ThemeOptions["typography"] = {
   title: { fontSize: "24px", fontWeight: 600, lineHeight: 1.25 },
   header: { fontSize: "20px", fontWeight: 500, lineHeight: 1.3 },
   subtitle: { fontSize: "16px", fontWeight: 400, lineHeight: 1.4 },
+
   regularXxs: { fontSize: "10px", fontWeight: 400 },
   regularXs: { fontSize: "12px", fontWeight: 400 },
   regularS: { fontSize: "14px", fontWeight: 400 },
   regularM: { fontSize: "16px", fontWeight: 400 },
   regularL: { fontSize: "18px", fontWeight: 400 },
+
   boldXs: { fontSize: "12px", fontWeight: 700 },
   boldS: { fontSize: "14px", fontWeight: 700 },
   boldM: { fontSize: "16px", fontWeight: 700 },
@@ -64,92 +68,69 @@ export const typography = {
 
 ---
 
-## Usage examples
+## 4. Ví dụ sử dụng trong Code
 
-Do:
-
+### Nên làm (Do):
 ```tsx
 import { Typography, Button } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 
-// typography variant (preferred)
-<Typography variant="title">Page Title</Typography>
+// Sử dụng typography variant của theme (Khuyên dùng)
+<Typography variant="title">Tiêu đề Trang</Typography>
 
-// use palette token via sx or theme callback
-<Button sx={{ backgroundColor: theme => theme.palette.primary.main, color: theme => theme.palette.text.white }}>
-  Primary action
+// Sử dụng palette token thông qua sx hoặc theme callback
+<Button 
+  sx={{ 
+    backgroundColor: (theme) => theme.palette.primary.main, 
+    color: (theme) => theme.palette.text.white 
+  }}
+>
+  Hành động chính
 </Button>
 
-// hover state using alpha()
+// Trạng thái hover sử dụng hàm alpha()
 <Button
   variant="text"
   sx={{
-    "&:hover": (theme) => ({ backgroundColor: alpha(theme.palette.primary.main, 0.12) }),
+    "&:hover": (theme) => ({ 
+      backgroundColor: alpha(theme.palette.primary.main, 0.12) 
+    }),
   }}
 >
-  Hover me
+  Hover vào tôi
 </Button>
 ```
 
-Don't:
-
+### Không nên làm (Don't):
 ```tsx
-// hardcoded color or font-size — avoid this
-<div style={{ color: "#9B5DE0", fontSize: "18px" }}>Wrong</div>
+// ❌ Tránh viết cứng màu hoặc kích thước font trong component
+<div style={{ color: "#8225ec", fontSize: "24px", fontWeight: 600 }}>Sai nguyên tắc</div>
 ```
 
-Prefer `sx`, `styled`, or component `classes` and theme usage over inline style attributes.
+---
+
+## 5. Ánh xạ biến thể (Variant Mapping) và Ngữ nghĩa
+
+- Theme tự động ánh xạ các biến thể tùy chỉnh sang các thẻ HTML ngữ nghĩa tương ứng (ví dụ: `title -> h1`, `subtitle -> h2`, `regularS -> p`).
+- Hãy luôn sử dụng thuộc tính `variant` trên component `Typography` của MUI thay vì dùng thẻ HTML thuần (h1, h2) kèm css inline để bảo toàn cấu trúc ngữ nghĩa tốt cho SEO và thiết bị đọc màn hình.
 
 ---
 
-## Variant mapping and semantics
+## 6. Quy tắc tiếp cận (Accessibility Rules)
 
-- The theme maps custom variants to semantic HTML elements (e.g., `title -> h1`, `subtitle -> h2`, `regularS -> p`). Use `variant` prop on MUI `Typography`.
-- Do not use raw HTML heading tags with inline styles to mimic theme — use the MUI Typography variant mapping so accessibility semantics are preserved.
-
----
-
-## Accessibility rules
-
-- Contrast:
-  - Body / normal text: contrast ratio >= 4.5:1.
-  - Large text (>= 18pt bold or >= 24pt regular): contrast ratio >= 3:1.
-- Focus:
-  - Interactive elements (buttons, links, inputs) must expose a visible focus state (recommend using `:focus-visible`).
-- Color-only:
-  - Do not convey information using color alone. Provide textual, iconographic, or ARIA alternatives.
+- **Độ tương phản**:
+  - Đối với chữ thường: Tỷ lệ tương phản tối thiểu giữa chữ và nền phải >= 4.5:1.
+  - Đối với chữ lớn (>= 18pt bold hoặc >= 24pt regular): Tỷ lệ tương phản tối thiểu phải >= 3:1.
+- **Trạng thái Focus**:
+  - Tất cả các phần tử tương tác (nút bấm, liên kết, ô nhập liệu) phải có trạng thái focus hiển thị rõ ràng (khuyến khích sử dụng `:focus-visible`).
+- **Không chỉ dùng màu sắc**:
+  - Không truyền đạt thông tin chỉ thông qua màu sắc đơn thuần. Luôn đi kèm văn bản giải thích hoặc icon tương ứng.
 
 ---
 
-## Adding or extending tokens (process)
-
-1. Pick a semantic name (e.g., `surface.card`, not `cardGrey1`).
-2. Add token to `theme/colors.ts` (include `contrastText` where applicable).
-3. Add a Storybook swatch story showing the new token.
-4. Validate its contrast ratio against the intended background(s).
-5. Add a short usage example to the theme docs.
-
----
-
-## Enforcement & developer workflow
-
-Linting
-
-- Add / enable a lint rule to detect hex literals in JSX/TSX or inline styles. Example approaches:
-  - Use an ESLint plugin or a custom rule to detect `#[0-9A-Fa-f]{3,6}` string literals in style props.
-  - Restrict usage in code reviews by searching for hex patterns before merge.
-
-PR checklist (add to PR template)
-
-- [ ] No hardcoded colors in components — used theme tokens.
-- [ ] No hardcoded font sizes or weights — used theme typography variants.
-- [ ] Accessibility: color contrast verified for any new color usage.
-- [ ] Storybook updated for any new or changed tokens.
-
----
-
-## Responsive typography
-
-- Use MUI `responsiveFontSizes()` if you want automatic scaling, or define variant breakpoints within theme (e.g., larger font size at `md` and up).
-- When adding responsive tokens, show examples in Storybook for multiple breakpoints.
-
----
+## 7. Quy trình thêm mới hoặc mở rộng Token
+1. Chọn tên có tính ngữ nghĩa cao (ví dụ: `surface.card`, tránh đặt tên kiểu `cardGrey1`).
+2. Thêm định nghĩa token vào `theme/palette.ts` hoặc `theme/typography.ts`.
+3. Tạo hoặc cập nhật câu chuyện Storybook (swatch story) hiển thị token mới.
+4. Kiểm tra độ tương phản của màu sắc mới trên các nền khác nhau.
+5. Thêm hướng dẫn và ví dụ sử dụng ngắn gọn vào tài liệu này.
