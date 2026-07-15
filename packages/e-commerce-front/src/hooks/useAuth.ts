@@ -1,53 +1,46 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { useQuery } from "@tanstack/react-query";
 import tokenStore from "@e-commerce/api-client/storages/token-storage";
+import { getProfile, getGetProfileQueryKey } from "@e-commerce/api-client/endpoints/auth";
 
 /**
  * Hook custom để sử dụng thông tin xác thực một cách reactive trong các React components.
  * Sử dụng `useSyncExternalStore` (React 18+) để đồng bộ hóa và lắng nghe trạng thái của `tokenStore`
  * (một in-memory vanilla store nằm ngoài luồng quản lý của React).
  *
- * Nhờ cơ chế này:
- * - Khi `tokenStore` cập nhật (đăng nhập, đăng xuất, tự động refresh), giao diện của React tự động cập nhật theo.
- * - Tránh được các lỗi warning về setState lồng nhau trong useEffect khi mount.
- * - Hỗ trợ đầy đủ SSR/SEO nhờ truyền giá trị server mặc định làm tham số thứ 3.
+ * Kết hợp với React Query `useQuery` để tải thông tin profile người dùng khi token khả dụng.
  */
 export function useAuth() {
-  // Lắng nghe và đồng bộ hóa access token
+  // Lắng nghe và đồng bộ hóa access token từ store
   const token = useSyncExternalStore(
-    // 1. Đăng ký hàm lắng nghe sự thay đổi từ store
     (onStoreChange) => tokenStore.subscribe(onStoreChange),
-    // 2. Hàm lấy giá trị hiện tại ở phía client
     () => tokenStore.getAccessToken(),
-    // 3. Giá trị mặc định trả về khi kết xuất ở phía server (SSR) để tránh Hydration Mismatch
     () => null
   );
 
-  // Lắng nghe và đồng bộ hóa cờ initialized (đã nạp xong token từ API hay chưa)
+  // Lắng nghe cờ khởi tạo từ store
   const isInitialized = useSyncExternalStore(
     (onStoreChange) => tokenStore.subscribe(onStoreChange),
     () => tokenStore.isInitialized(),
     () => false
   );
 
-  /**
-   * Giải mã UserId (subject) từ JWT payload
-   */
-  const getUserId = () => {
-    if (!token) return null;
-    try {
-      const payloadBase64 = token.split(".")[1];
-      const decodedPayload = JSON.parse(atob(payloadBase64));
-      return decodedPayload.sub || null;
-    } catch {
-      return null;
-    }
-  };
+  // Truy vấn lấy dữ liệu profile bằng React Query khi đã có token
+  const { data: profile, isFetching: isLoadingProfile } = useQuery({
+    queryKey: getGetProfileQueryKey(),
+    queryFn: () => getProfile(),
+    enabled: !!token && typeof window !== "undefined",
+    // eslint-disable-next-line @typescript-eslint/no-magic-numbers -- 5 minutes
+    staleTime: 5 * 60 * 1000, // Cấu hình cache 5 phút
+  });
 
   return {
     token,
-    userId: getUserId(),
+    userId: profile?.id || null,
+    profile: profile || null,
     isInitialized,
+    isLoadingProfile: !!token && isLoadingProfile,
   };
 }

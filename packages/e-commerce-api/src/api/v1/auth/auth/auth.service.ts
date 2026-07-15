@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/require-await */
-// TODO: Implement AuthService methods and remove eslint-disable comments
 import {
   Injectable,
   NotFoundException,
@@ -18,6 +15,7 @@ import type {
 import { UsersService } from '@/api/v1/auth/services/user-service/users.service';
 import { JwtService } from '@/api/v1/auth/services/jwt-service/jwt.service';
 import { JwtPayload } from '@/api/v1/auth/services/jwt-service/types';
+import { ClsService } from '@/common/services/cls/cls.service';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -25,13 +23,28 @@ export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
+    private readonly clsService: ClsService,
   ) {}
 
   /**
    * GET /auth/profile
    */
   async getProfile(): Promise<GetProfile200Response> {
-    throw new Error('Not implemented');
+    const userId = this.clsService.userId;
+    if (!userId) {
+      throw new UnauthorizedException('Invalid or missing token');
+    }
+
+    const user = await this.usersService.findById(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return {
+      id: user.uid,
+      email: user.email,
+      name: user.full_name || user.username,
+    };
   }
 
   /**

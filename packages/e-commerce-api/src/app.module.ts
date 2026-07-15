@@ -1,8 +1,10 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from './common/services/prisma.module';
 import { HealthModule } from './health.module';
 import { AuthModule } from './api/v1/auth/auth/auth.module';
+import { ClsModule } from './common/services/cls/cls.module';
+import { ClsMiddleware } from './common/services/cls/cls.middleware';
 import { CategoriesModule } from '@/api/v1/product/categories/categories.module';
 import { BrandsModule } from '@/api/v1/product/brands/brands.module';
 import { CustomerAddressesModule } from '@/api/v1/customer/customer-addresses/customer-addresses.module';
@@ -34,6 +36,7 @@ import { ProductAttributesModule } from '@/api/v1/product/product-attributes/pro
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    ClsModule,
     JwtModule,
     PrismaModule,
     HealthModule,
@@ -74,4 +77,8 @@ import { ProductAttributesModule } from '@/api/v1/product/product-attributes/pro
     },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(ClsMiddleware).forRoutes('*');
+  }
+}

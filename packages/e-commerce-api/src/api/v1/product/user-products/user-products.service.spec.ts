@@ -4,6 +4,7 @@ import { ProductsRepository } from '@/api/v1/product/products/products.repositor
 import type {
   GetUserProducts200Response,
   GetUserProductsQueryParams,
+  GetProductBySlug200Response,
 } from '@e-commerce/api-validation/types/product';
 
 jest.mock('@/common/services/prisma.service', () => ({
@@ -70,6 +71,39 @@ describe('UserProductsService', () => {
       repository.getUserProducts.mockRejectedValue(new Error('DB error'));
 
       await expect(service.getUserProducts(query)).rejects.toThrow('DB error');
+    });
+  });
+
+  describe('getProductBySlug', () => {
+    const slug = 'samsung-galaxy-s22-ultra';
+    const params = { slug };
+
+    it('should return product by slug from repository', async () => {
+      const mockResult = {
+        productId,
+        productName: 'Samsung Galaxy S22 Ultra',
+        categoryId: 'cat-id-123',
+        slug: 'samsung-galaxy-s22-ultra',
+        isPublished: true,
+      } as GetProductBySlug200Response;
+
+      repository.getProductBySlug.mockResolvedValue(mockResult);
+
+      const result = await service.getProductBySlug(params);
+
+      expect(repository.getProductBySlug).toHaveBeenCalledTimes(1);
+      expect(repository.getProductBySlug).toHaveBeenCalledWith(slug);
+      expect(result).toEqual(mockResult);
+    });
+
+    it('should throw if repository throws', async () => {
+      repository.getProductBySlug.mockRejectedValue(
+        new Error('Product not found'),
+      );
+
+      await expect(service.getProductBySlug(params)).rejects.toThrow(
+        'Product not found',
+      );
     });
   });
 });

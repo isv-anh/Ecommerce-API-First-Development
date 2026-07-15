@@ -3,6 +3,7 @@ import {
   GetProducts200Response,
   GetProductsQueryParams,
   GetProductByProductId200Response,
+  GetProductBySlug200Response,
   PatchProductBody,
   PostProductBody,
 } from '@e-commerce/api-validation/types/product';
@@ -13,6 +14,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
+import { Prisma } from 'generated/prisma/client';
 
 @Injectable()
 export class ProductsRepository {
@@ -54,30 +56,158 @@ export class ProductsRepository {
   ): Promise<GetProducts200Response> {
     const page = query.page ?? 1;
     const pageSize = query.pageSize ?? 20;
-    const whereClause = {
-      name: query.productName,
+
+    const brandIdList = query.brandIds
+      ? query.brandIds.split(',').filter(Boolean)
+      : [];
+
+    const whereClause: Record<string, any> = {
+      ...(query.productName && {
+        name: {
+          contains: query.productName,
+          mode: 'insensitive',
+        },
+      }),
       id: query.productId,
       category_id: query.categoryId,
+      ...(brandIdList.length > 0 && {
+        brand_id: {
+          in: brandIdList,
+        },
+      }),
       ...(options.onlyPublished && { is_published: true }),
     };
 
-    const productsResult = await this.prisma.products.findMany({
-      where: whereClause,
+    // Khoảng giá (minPrice, maxPrice) dựa trên giá của variants
+    const priceCondition: Record<string, number> = {};
+    if (query.minPrice !== undefined) {
+      priceCondition.gte = query.minPrice;
+    }
+    if (query.maxPrice !== undefined) {
+      priceCondition.lte = query.maxPrice;
+    }
+
+    if (Object.keys(priceCondition).length > 0) {
+      whereClause.product_variants = {
+        some: {
+          price: priceCondition,
+        },
+      };
+    }
+
+    // Kiểm tra xem có yêu cầu sắp xếp theo giá không
+    const isPriceSort = query.sortBy === 'price';
+
+    type ProductWithRelations = Prisma.productsGetPayload<{
       include: {
-        categories: true,
+        categories: true;
         product_variants: {
           include: {
             warehouse_inventory: {
               include: {
-                warehouses: true,
+                warehouses: true;
+              };
+            };
+          };
+        };
+      };
+    }>;
+
+    let productsResult: ProductWithRelations[] = [];
+    let totalCount = 0;
+
+    if (isPriceSort) {
+      // 1. Lấy toàn bộ sản phẩm khớp bộ lọc cùng với giá của variant
+      const allMatchingProducts = await this.prisma.products.findMany({
+        where: whereClause,
+        select: {
+          id: true,
+          product_variants: {
+            select: {
+              price: true,
+            },
+          },
+        },
+      });
+
+      // 2. Tính toán giá nhỏ nhất (minPrice) của từng sản phẩm để sắp xếp
+      const productsWithPrices = allMatchingProducts.map((p) => {
+        const prices = p.product_variants
+          .map((v) => Number(v.price ?? 0))
+          .filter((price) => price > 0);
+        const minPrice = prices.length > 0 ? Math.min(...prices) : 0;
+        return { id: p.id, minPrice };
+      });
+
+      // 3. Sắp xếp trong bộ nhớ
+      const order = query.sortOrder === 'desc' ? -1 : 1;
+      productsWithPrices.sort((a, b) => (a.minPrice - b.minPrice) * order);
+
+      // 4. Phân trang
+      totalCount = productsWithPrices.length;
+      const pageIds = productsWithPrices
+        .slice(pageSize * (page - 1), pageSize * page)
+        .map((p) => p.id);
+
+      // 5. Lấy dữ liệu chi tiết cho trang hiện tại
+      const details = await this.prisma.products.findMany({
+        where: {
+          id: { in: pageIds },
+        },
+        include: {
+          categories: true,
+          product_variants: {
+            include: {
+              warehouse_inventory: {
+                include: {
+                  warehouses: true,
+                },
               },
             },
           },
         },
-      },
-      take: pageSize,
-      skip: pageSize * (page - 1),
-    });
+      });
+
+      // Đảm bảo kết quả trả về đúng theo thứ tự đã sắp xếp của pageIds
+      const detailsMap = new Map(details.map((d) => [d.id, d]));
+      productsResult = pageIds
+        .map((id) => detailsMap.get(id))
+        .filter((d): d is NonNullable<typeof d> => d !== undefined);
+    } else {
+      // Sắp xếp ở Database Level (createdAt, productName, vv.)
+      const orderByClause: any = {};
+      if (query.sortBy === 'productName') {
+        orderByClause.name = query.sortOrder === 'desc' ? 'desc' : 'asc';
+      } else if (query.sortBy === 'createdAt') {
+        orderByClause.created_at = query.sortOrder === 'desc' ? 'desc' : 'asc';
+      } else {
+        // Mặc định sắp xếp theo ngày tạo giảm dần (mới nhất trước)
+        orderByClause.created_at = 'desc';
+      }
+
+      productsResult = await this.prisma.products.findMany({
+        where: whereClause,
+        include: {
+          categories: true,
+          product_variants: {
+            include: {
+              warehouse_inventory: {
+                include: {
+                  warehouses: true,
+                },
+              },
+            },
+          },
+        },
+        orderBy: orderByClause,
+        take: pageSize,
+        skip: pageSize * (page - 1),
+      });
+
+      totalCount = await this.prisma.products.count({
+        where: whereClause,
+      });
+    }
 
     const products = productsResult.map((product) => {
       const variantPrices = product.product_variants
@@ -100,10 +230,6 @@ export class ProductsRepository {
       };
     });
 
-    const totalCount = await this.prisma.products.count({
-      where: whereClause,
-    });
-
     const totalPages = Math.ceil(totalCount / pageSize);
 
     return {
@@ -118,6 +244,34 @@ export class ProductsRepository {
   ): Promise<GetProductByProductId200Response> {
     const product = await this.prisma.products.findUnique({
       where: { id: productId },
+      include: {
+        categories: true,
+        brands: true,
+        product_images: true,
+      },
+    });
+    if (!product) {
+      throw new NotFoundException('Product not found');
+    }
+    return {
+      productId: product.id,
+      productName: product.name,
+      categoryId: product.categories?.id || '',
+      thumbnailUrl: product.thumbnail_url || '',
+      brandId: product.brand_id || undefined,
+      description: product.description || '',
+      images:
+        product.product_images.map((img) => ({
+          url: img.url ?? '',
+        })) || [],
+      slug: product.slug || '',
+      isPublished: product.is_published ?? false,
+    };
+  }
+
+  async getProductBySlug(slug: string): Promise<GetProductBySlug200Response> {
+    const product = await this.prisma.products.findFirst({
+      where: { slug, is_published: true },
       include: {
         categories: true,
         brands: true,

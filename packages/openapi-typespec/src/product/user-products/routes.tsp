@@ -2,6 +2,7 @@ import "@typespec/http";
 import "@typespec/openapi";
 import "../products/models.tsp";
 import "../../common/models/errors.tsp";
+import "../../common/scalars/scalars.tsp";
 
 using TypeSpec.Http;
 using TypeSpec.OpenAPI;
@@ -16,4 +17,13 @@ namespace Product.UserProducts {
     op getUserProducts(
         ...GetProductRequestParams,
     ): GetProductsResponse200 | BadRequestError | InternalServerError;
+
+    @get
+    @route("/slug/{slug}")
+    @operationId("getProductBySlug")
+    @tag("user-products")
+    @extension("x-public", true)
+    op getProductBySlug(
+        @path slug: Slug,
+    ): GetProductBySlugResponse200 | BadRequestError | InternalServerError;
 }

@@ -6,9 +6,9 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { type ReactNode } from "react";
 
 export function AuthBootstrap({ children }: { children: ReactNode }) {
-  const { isInitialized } = useAuth();
+  const { isInitialized, token, isLoadingProfile } = useAuth();
 
-  if (!isInitialized) {
+  if (!isInitialized || (token && isLoadingProfile)) {
     return (
       <Backdrop open={true} sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
         <CircularProgress color="inherit" />

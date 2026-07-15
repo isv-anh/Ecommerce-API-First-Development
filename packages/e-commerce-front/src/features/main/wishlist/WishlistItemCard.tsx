@@ -12,7 +12,7 @@ import {
   getGetCartQueryKey,
 } from "@e-commerce/api-client/endpoints/cart";
 import { useQueryClient } from "@tanstack/react-query";
-import tokenStore from "@e-commerce/api-client/storages/token-storage";
+import { useUser } from "@/providers/UserProvider/UserProvider";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
@@ -38,18 +38,7 @@ const formatPrice = (value: number) => {
   }).format(value);
 };
 
-const getUserIdFromToken = () => {
-  if (typeof window === "undefined") return null;
-  const token = tokenStore.getAccessToken();
-  if (!token) return null;
-  try {
-    const payloadBase64 = token.split(".")[1];
-    const decodedPayload = JSON.parse(atob(payloadBase64));
-    return decodedPayload.sub || null;
-  } catch {
-    return null;
-  }
-};
+
 
 interface WishlistItemCardProps {
   item: any;
@@ -63,6 +52,7 @@ export const WishlistItemCard = ({
   wishlistId,
   onDelete,
 }: WishlistItemCardProps) => {
+  const { userId } = useUser();
   const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
 
@@ -79,7 +69,6 @@ export const WishlistItemCard = ({
   const imageUrl = defaultVariant?.thumbnailUrl || product.thumbnailUrl || "";
 
   const handleAddToCart = async () => {
-    const userId = getUserIdFromToken();
     if (!userId) {
       enqueueSnackbar("Vui lòng đăng nhập để thực hiện chức năng này!", { variant: "warning" });
       return;

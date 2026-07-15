@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from "react";
+"use client";
+
+import React, { useState, useEffect, Suspense } from "react";
 import TextField from "@/components/inputs/TextField/TextField";
 import Stack from "@mui/material/Stack";
 import { useForm } from "react-hook-form";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import LocalMallIcon from "@mui/icons-material/LocalMall";
 import Button from "@mui/material/Button";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import Badge from "@mui/material/Badge";
@@ -14,11 +16,14 @@ import { useQueryClient } from "@tanstack/react-query";
 import { getCart, getCartItems } from "@e-commerce/api-client/endpoints/cart";
 import { useAuth } from "@/hooks/useAuth";
 
-const Search = () => {
+const SearchBar = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const queryClient = useQueryClient();
   const [badgeCount, setBadgeCount] = useState(0);
   const { userId } = useAuth();
+
+  const textSearchParam = searchParams.get("productName") || "";
 
   useEffect(() => {
     if (!userId) {
@@ -53,16 +58,24 @@ const Search = () => {
     };
   }, [userId, queryClient]);
 
-  const { control, handleSubmit } = useForm<{ textSearch: string }>({
+  const { control, handleSubmit, reset } = useForm<{ textSearch: string }>({
     defaultValues: {
-      textSearch: "",
+      textSearch: textSearchParam,
     },
   });
+
+  useEffect(() => {
+    reset({
+      textSearch: textSearchParam,
+    });
+  }, [textSearchParam, reset]);
 
   const handleSearch = (data: { textSearch: string }) => {
     const query = data.textSearch.trim();
     if (query !== "") {
-      router.push(`/search?q=${encodeURIComponent(query)}`);
+      router.push(`/product?productName=${encodeURIComponent(query)}`);
+    } else {
+      router.push(`/product`);
     }
   };
 
@@ -125,6 +138,29 @@ const Search = () => {
         </Tooltip>
       </Stack>
     </Stack>
+  );
+};
+
+const Search = () => {
+  return (
+    <Suspense
+      fallback={
+        <Stack
+          height={90}
+          direction={"row"}
+          alignItems={"center"}
+          justifyContent={"space-evenly"}
+          spacing={4}
+          px={2}
+        >
+          <Stack width={200}>LOGO</Stack>
+          <Stack flexGrow={1} />
+          <Stack width={40} height={40} />
+        </Stack>
+      }
+    >
+      <SearchBar />
+    </Suspense>
   );
 };
 

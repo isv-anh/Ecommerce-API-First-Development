@@ -43,6 +43,20 @@ export class UsersService {
     };
   }
 
+  async findById(uid: string) {
+    const user = await this.prismaService.users.findUnique({
+      where: { uid },
+      select: {
+        uid: true,
+        email: true,
+        full_name: true,
+        username: true,
+      },
+    });
+
+    return user;
+  }
+
   async register(body: PostRegisterBody) {
     const hashedPassword = await bcrypt.hash(body.password, 10);
 

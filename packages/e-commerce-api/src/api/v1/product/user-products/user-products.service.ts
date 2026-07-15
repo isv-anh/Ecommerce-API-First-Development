@@ -3,6 +3,8 @@ import type {
   GetUserProductsQueryParams,
   GetUserProducts200Response,
   GetProductsQueryParams,
+  GetProductBySlugParams,
+  GetProductBySlug200Response,
 } from '@e-commerce/api-validation/types/product';
 import type { BaseUserProductsControllerInterface } from '@generated-controller/product/user-products/base-user-products.controller.interface';
 import { ProductsRepository } from '@/api/v1/product/products/products.repository';
@@ -26,6 +28,22 @@ export class UserProductsService
   ): Promise<GetUserProducts200Response> {
     return await this.productsRepository.getUserProducts(
       query as GetProductsQueryParams,
+    );
+  }
+
+  /**
+   * GET /api/v1/user/products/slug/:slug
+   *
+   * Retrieves a product by its slug, if published.
+   *
+   * @param params - Path parameters typed as {@link GetProductBySlugParams}
+   * @returns {@link GetProductBySlug200Response}
+   */
+  async getProductBySlug(
+    params: GetProductBySlugParams,
+  ): Promise<GetProductBySlug200Response> {
+    return await this.productsRepository.getProductBySlug(
+      params.slug as string,
     );
   }
 }

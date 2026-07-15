@@ -11,6 +11,7 @@ import BreadcrumbsProvider from "@/components/navigation/Breadcrumbs/components/
 import dynamic from "next/dynamic";
 import { SnackbarProvider } from "notistack";
 import FabsProvider from "@/components/inputs/Fabs/provider/FabsProvider";
+import { UserProvider } from "@/providers/UserProvider/UserProvider";
 
 import { AuthInitializer } from "@/app/AuthInitializer";
 
@@ -35,18 +36,20 @@ const Providers = ({ children }: { children: ReactNode }) => {
         <ThemeProvider theme={theme}>
           <SnackbarProvider maxSnack={3}>
             <FabsProvider>
-              <CssBaseline />
-              <AuthInitializer />
+              <UserProvider>
+                <CssBaseline />
+                <AuthInitializer />
 
-              {process.env.NEXT_PUBLIC_ENABLE_MOCKS === "true" ? (
-                <MockBrowser>{content}</MockBrowser>
-              ) : (
-                content
-              )}
+                {process.env.NEXT_PUBLIC_ENABLE_MOCKS === "true" ? (
+                  <MockBrowser>{content}</MockBrowser>
+                ) : (
+                  content
+                )}
 
-              {process.env.NODE_ENV === "development" && (
-                <ReactQueryDevtools initialIsOpen={false} />
-              )}
+                {process.env.NODE_ENV === "development" && (
+                  <ReactQueryDevtools initialIsOpen={false} />
+                )}
+              </UserProvider>
             </FabsProvider>
           </SnackbarProvider>
         </ThemeProvider>

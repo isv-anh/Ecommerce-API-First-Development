@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import { getCart } from "@e-commerce/api-client/endpoints/cart";
-import tokenStore from "@e-commerce/api-client/storages/token-storage";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
@@ -13,42 +12,30 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Link from "next/link";
 import CircularProgress from "@mui/material/CircularProgress";
 import { CartItemsList } from "./CartItemsList";
-
-const getUserIdFromToken = () => {
-  if (typeof window === "undefined") return null;
-  const token = tokenStore.getAccessToken();
-  if (!token) return null;
-  try {
-    const payloadBase64 = token.split(".")[1];
-    const decodedPayload = JSON.parse(atob(payloadBase64));
-    return decodedPayload.sub || null;
-  } catch {
-    return null;
-  }
-};
+import { useUser } from "@/providers/UserProvider/UserProvider";
 
 const Cart = () => {
+  const { userId, isInitialized } = useUser();
   const [loading, setLoading] = useState(true);
   const [cart, setCart] = useState<any>(null);
-  const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
-    const extractedUserId = getUserIdFromToken();
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setUserId(extractedUserId);
+    if (!isInitialized) return;
 
-    if (!extractedUserId) {
+    if (!userId) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLoading(false);
       return;
     }
 
-    getCart({ userId: extractedUserId })
+    setLoading(true);
+    getCart({ userId })
       .then((data) => setCart(data))
       .catch((err) => {
         console.log("Cart empty or not found:", err);
       })
       .finally(() => setLoading(false));
-  }, []);
+  }, [userId, isInitialized]);
 
   if (loading) {
     return (

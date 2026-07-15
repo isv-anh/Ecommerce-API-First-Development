@@ -7,6 +7,7 @@ import {
 } from "@e-commerce/api-client/endpoints/product";
 import { dehydrate } from "@tanstack/react-query";
 import type { Metadata } from "next";
+import { getUserProductsQueryParams } from "@e-commerce/api-validation/zod/product";
 
 export const metadata: Metadata = {
   title: "Danh sách sản phẩm | E-Commerce",
@@ -37,12 +38,18 @@ export const metadata: Metadata = {
   },
 };
 
-const ProductPage = async () => {
+interface ProductPageProps {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}
+
+const ProductPage = async ({ searchParams }: ProductPageProps) => {
+  const resolvedSearchParams = await searchParams;
+  const parsedParams = getUserProductsQueryParams.parse(resolvedSearchParams);
   const queryClient = getQueryClient();
 
   await queryClient.prefetchQuery({
-    queryKey: getGetUserProductsQueryKey(),
-    queryFn: () => getUserProducts(),
+    queryKey: getGetUserProductsQueryKey(parsedParams),
+    queryFn: () => getUserProducts(parsedParams),
   });
 
   return (
