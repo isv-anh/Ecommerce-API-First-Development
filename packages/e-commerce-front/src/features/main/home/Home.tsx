@@ -2,7 +2,6 @@
 import FeaturedCategories from "@/features/main/home/components/FeaturedCategories/FeaturedCategories";
 import Newsletter from "@/features/main/home/components/Newsletter/Newsletter";
 import SpotlightCarousel from "@/features/main/home/components/SpotlightCarousel/SpotlightCarousel";
-import Stack from "@mui/material/Stack";
 import SuspenseWrapper from "@/components/feedback/SuspenseWrapper/SuspenseWrapper";
 import dynamic from "next/dynamic";
 import Skeleton from "@mui/material/Skeleton";
@@ -17,14 +16,16 @@ const ProductGrid = dynamic(
 
 const Home = () => {
   return (
-    <Stack>
-      <SpotlightCarousel timeout={3000} />
-      <FeaturedCategories />
-      <SuspenseWrapper height={500}>
-        <ProductGrid params={{ page: 1, pageSize: 8 }} />
-      </SuspenseWrapper>
-      <Newsletter />
-    </Stack>
+    <div className="flex flex-col gap-12 pb-12">
+      <SpotlightCarousel timeout={5000} />
+      <div className="max-w-7xl mx-auto px-4 md:px-8 w-full flex flex-col gap-12">
+        <FeaturedCategories />
+        <SuspenseWrapper height={500}>
+          <ProductGrid params={{ page: 1, pageSize: 8 }} />
+        </SuspenseWrapper>
+        <Newsletter />
+      </div>
+    </div>
   );
 };
 

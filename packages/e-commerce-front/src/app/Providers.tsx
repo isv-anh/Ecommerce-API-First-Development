@@ -11,7 +11,9 @@ import BreadcrumbsProvider from "@/components/navigation/Breadcrumbs/components/
 import dynamic from "next/dynamic";
 import { SnackbarProvider } from "notistack";
 import FabsProvider from "@/components/inputs/Fabs/provider/FabsProvider";
-import { AuthBootstrap } from "@/app/AuthBootstrap";
+import { UserProvider } from "@/providers/UserProvider/UserProvider";
+
+import { AuthInitializer } from "@/app/AuthInitializer";
 
 const ReactQueryDevtools = dynamic(
   async () =>
@@ -29,26 +31,27 @@ const Providers = ({ children }: { children: ReactNode }) => {
   const content = <BreadcrumbsProvider>{children}</BreadcrumbsProvider>;
 
   return (
-    <AppRouterCacheProvider>
+    <AppRouterCacheProvider options={{ enableCssLayer: true }}>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider theme={theme}>
-          <AuthBootstrap>
           <SnackbarProvider maxSnack={3}>
             <FabsProvider>
-              <CssBaseline />
+              <UserProvider>
+                <CssBaseline />
+                <AuthInitializer />
 
-              {process.env.NEXT_PUBLIC_ENABLE_MOCKS === "true" ? (
-                <MockBrowser>{content}</MockBrowser>
-              ) : (
-                content
-              )}
+                {process.env.NEXT_PUBLIC_ENABLE_MOCKS === "true" ? (
+                  <MockBrowser>{content}</MockBrowser>
+                ) : (
+                  content
+                )}
 
-              {process.env.NODE_ENV === "development" && (
-                <ReactQueryDevtools initialIsOpen={false} />
-              )}
+                {process.env.NODE_ENV === "development" && (
+                  <ReactQueryDevtools initialIsOpen={false} />
+                )}
+              </UserProvider>
             </FabsProvider>
           </SnackbarProvider>
-           </AuthBootstrap>
         </ThemeProvider>
       </QueryClientProvider>
     </AppRouterCacheProvider>

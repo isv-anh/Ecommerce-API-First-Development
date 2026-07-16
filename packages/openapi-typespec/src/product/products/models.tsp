@@ -75,6 +75,21 @@ model GetProductRequestParams extends PageQueryParams {
 
     @query
     categoryId?: UUID;
+
+    @query
+    brandIds?: string;
+
+    @query
+    minPrice?: int32;
+
+    @query
+    maxPrice?: int32;
+
+    @query
+    sortBy?: string;
+
+    @query
+    sortOrder?: string;
 }
 
 model GetProductsResponse200 {
@@ -83,6 +98,11 @@ model GetProductsResponse200 {
 }
 
 model GetProductByProductIdResponse200 {
+    @statusCode statusCode: 200;
+    @body body: ProductByIdResponse;
+}
+
+model GetProductBySlugResponse200 {
     @statusCode statusCode: 200;
     @body body: ProductByIdResponse;
 }

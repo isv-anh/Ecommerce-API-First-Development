@@ -1,40 +1,38 @@
-import React, { useState, useEffect } from "react";
+"use client";
+
+import React, { useState, useEffect, Suspense } from "react";
 import TextField from "@/components/inputs/TextField/TextField";
 import Stack from "@mui/material/Stack";
 import { useForm } from "react-hook-form";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import LocalMallIcon from "@mui/icons-material/LocalMall";
 import Button from "@mui/material/Button";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import Badge from "@mui/material/Badge";
 import NextLink from "next/link";
 import { useQueryClient } from "@tanstack/react-query";
-import tokenStore from "@e-commerce/api-client/storages/token-storage";
 import { getCart, getCartItems } from "@e-commerce/api-client/endpoints/cart";
+import { useAuth } from "@/hooks/useAuth";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 
-const getUserIdFromToken = () => {
-  if (typeof window === "undefined") return null;
-  const token = tokenStore.getAccessToken();
-  if (!token) return null;
-  try {
-    const payloadBase64 = token.split(".")[1];
-    const decodedPayload = JSON.parse(atob(payloadBase64));
-    return decodedPayload.sub || null;
-  } catch {
-    return null;
-  }
-};
-
-const Search = () => {
+const SearchBar = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const queryClient = useQueryClient();
   const [badgeCount, setBadgeCount] = useState(0);
+  const { userId } = useAuth();
+
+  const textSearchParam = searchParams.get("productName") || "";
 
   useEffect(() => {
-    const userId = getUserIdFromToken();
-    if (!userId) return;
+    if (!userId) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setBadgeCount(0);
+      return;
+    }
 
     let active = true;
 
@@ -60,80 +58,149 @@ const Search = () => {
       active = false;
       unsubscribe();
     };
-  }, [queryClient]);
+  }, [userId, queryClient]);
 
-  const { control, handleSubmit } = useForm<{ textSearch: string }>({
+  const { control, handleSubmit, reset } = useForm<{ textSearch: string }>({
     defaultValues: {
-      textSearch: "",
+      textSearch: textSearchParam,
     },
   });
+
+  useEffect(() => {
+    reset({
+      textSearch: textSearchParam,
+    });
+  }, [textSearchParam, reset]);
 
   const handleSearch = (data: { textSearch: string }) => {
     const query = data.textSearch.trim();
     if (query !== "") {
-      router.push(`/search?q=${encodeURIComponent(query)}`);
+      router.push(`/product?productName=${encodeURIComponent(query)}`);
+    } else {
+      router.push(`/product`);
     }
   };
 
   return (
-    <Stack
-      component={"form"}
-      onSubmit={handleSubmit(handleSearch)}
-      height={90}
-      direction={"row"}
-      alignItems={"center"}
-      justifyContent={"space-evenly"}
-      spacing={4}
-      px={2}
+    <Box
+      className="w-full bg-white border-b border-gray-100 transition-all duration-300"
     >
-      <Stack width={200}>LOGO</Stack>
-      <TextField
-        control={control}
-        name="textSearch"
-        sx={{
-          flexGrow: 1,
-          "& .MuiOutlinedInput-root": {
-            borderRadius: "12px",
-            "&:hover .MuiOutlinedInput-notchedOutline": {
-              borderColor: (theme) => theme.palette.primary.main,
+      <Stack
+        component={"form"}
+        onSubmit={handleSubmit(handleSearch)}
+        direction={"row"}
+        alignItems={"center"}
+        justifyContent={"space-between"}
+        spacing={4}
+        className="max-w-7xl mx-auto px-4 md:px-8 h-20"
+      >
+        <Stack
+          width={240}
+          component={NextLink}
+          href="/"
+          sx={{
+            textDecoration: "none",
+            color: "text.primary",
+          }}
+        >
+          <Typography
+            variant="title"
+            sx={{
+              color: "#000",
+              letterSpacing: "-0.5px",
+              fontSize: "1.6rem",
+            }}
+          >
+            E-Commerce
+          </Typography>
+        </Stack>
+        <TextField
+          control={control}
+          name="textSearch"
+          className="grow max-w-2xl"
+          placeholder="Tìm kiếm sản phẩm..."
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "8px",
+              backgroundColor: "#f9fafb",
+              transition: "all 0.2s ease",
+              "&:hover .MuiOutlinedInput-notchedOutline": {
+                borderColor: "#d1d5db",
+              },
+              "&.Mui-focused": {
+                backgroundColor: "#ffffff",
+                "& .MuiOutlinedInput-notchedOutline": {
+                   borderColor: "#000000",
+                   borderWidth: "1px",
+                }
+              },
             },
-          },
-          "& .MuiInputBase-root": {
-            paddingRight: 0,
-          },
-        }}
-        slotProps={{
-          input: {
-            endAdornment: (
-              <Button
-                variant="contained"
-                sx={{
-                  borderRadius: "12px",
-                  height: "40px",
-                }}
-                type="submit"
-              >
-                <SearchRoundedIcon />
-              </Button>
-            ),
-          },
-        }}
-      />
-      <Stack>
-        <Tooltip title="Giỏ hàng">
-          <IconButton color="primary" component={NextLink} href="/cart">
-            <Badge badgeContent={badgeCount} color={"error"}>
-              <LocalMallIcon
-                sx={{
-                  width: 40,
-                  height: 40,
-                }}
-              />
-            </Badge>
-          </IconButton>
-        </Tooltip>
+            "& .MuiInputBase-root": {
+              paddingRight: "6px",
+            },
+          }}
+          slotProps={{
+            input: {
+              endAdornment: (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  sx={{
+                    borderRadius: "6px",
+                    height: "36px",
+                    minWidth: "48px",
+                    px: 2,
+                  }}
+                  type="submit"
+                >
+                  <SearchRoundedIcon fontSize="small" />
+                </Button>
+              ),
+            },
+          }}
+        />
+        <Stack>
+          <Tooltip title="Giỏ hàng">
+            <IconButton
+              component={NextLink}
+              href="/cart"
+              className="bg-gray-50 hover:bg-gray-100 transition-colors"
+              sx={{ width: 48, height: 48, color: "#111827" }}
+            >
+              <Badge badgeContent={badgeCount} color={"error"}>
+                <LocalMallIcon sx={{ fontSize: 24 }} />
+              </Badge>
+            </IconButton>
+          </Tooltip>
+        </Stack>
       </Stack>
-    </Stack>
+    </Box>
+  );
+};
+
+const Search = () => {
+  return (
+    <Suspense
+      fallback={
+        <Box
+          className="w-full bg-white border-b border-gray-200"
+        >
+          <Stack
+            direction={"row"}
+            alignItems={"center"}
+            justifyContent={"space-between"}
+            spacing={4}
+            className="max-w-7xl mx-auto px-4 md:px-8 h-20"
+          >
+            <Stack width={240}>LOGO</Stack>
+            <Stack flexGrow={1} />
+            <Stack width={48} height={48} />
+          </Stack>
+        </Box>
+      }
+    >
+      <SearchBar />
+    </Suspense>
   );
 };
 

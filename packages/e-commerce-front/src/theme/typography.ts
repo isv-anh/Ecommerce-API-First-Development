@@ -68,19 +68,20 @@ declare module "@mui/material/Typography" {
 }
 
 export const typography: ThemeOptions["typography"] = {
-  // use same keys as your theme augmentation (title, subtitle, header, regularS...)
-  title: { fontSize: "24px", fontWeight: 600, lineHeight: 1.25 },
-  header: { fontSize: "20px", fontWeight: 500, lineHeight: 1.3 },
-  subtitle: { fontSize: "16px", fontWeight: 400, lineHeight: 1.4 },
+  fontFamily: "var(--font-geist-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
+  // use same keys as your theme augmentation
+  title: { fontSize: "32px", fontWeight: 700, lineHeight: 1.1, letterSpacing: "-0.02em" },
+  header: { fontSize: "24px", fontWeight: 600, lineHeight: 1.2, letterSpacing: "-0.01em" },
+  subtitle: { fontSize: "18px", fontWeight: 500, lineHeight: 1.4 },
 
-  regularXxs: { fontSize: "10px", fontWeight: 400 },
-  regularXs: { fontSize: "12px", fontWeight: 400 },
-  regularS: { fontSize: "14px", fontWeight: 400 },
-  regularM: { fontSize: "16px", fontWeight: 400 },
+  regularXxs: { fontSize: "12px", fontWeight: 400 },
+  regularXs: { fontSize: "13px", fontWeight: 400 },
+  regularS: { fontSize: "15px", fontWeight: 400, color: "#52525B" },
+  regularM: { fontSize: "16px", fontWeight: 400, color: "#27272A" },
   regularL: { fontSize: "18px", fontWeight: 400 },
 
-  boldXs: { fontSize: "12px", fontWeight: 700 },
-  boldS: { fontSize: "14px", fontWeight: 700 },
-  boldM: { fontSize: "16px", fontWeight: 700 },
-  boldL: { fontSize: "18px", fontWeight: 700 },
+  boldXs: { fontSize: "13px", fontWeight: 600 },
+  boldS: { fontSize: "15px", fontWeight: 600 },
+  boldM: { fontSize: "16px", fontWeight: 600 },
+  boldL: { fontSize: "18px", fontWeight: 600 },
 };

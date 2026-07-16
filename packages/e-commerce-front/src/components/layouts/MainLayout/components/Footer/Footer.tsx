@@ -17,10 +17,10 @@ const Footer = () => {
       <Container maxWidth="lg">
         <Grid container spacing={4}>
           <Grid size={{ xs: 12, md: 3 }}>
-            <Typography variant="title" sx={{ mb: 1 }}>
+            <Typography variant="boldM" sx={{ mb: 1.5, fontSize: "1.2rem" }}>
               E-Commerce
             </Typography>
-            <Typography variant="regularS" sx={{ color: "text.secondary" }}>
+            <Typography variant="regularXs" sx={{ color: "text.secondary", fontSize: "0.85rem", lineHeight: 1.6 }}>
               Nơi mua sắm đáng tin cậy — sản phẩm chất lượng, giao hàng nhanh.
             </Typography>
             <Stack direction="row" spacing={1} sx={{ mt: 2 }}>
@@ -37,49 +37,49 @@ const Footer = () => {
           </Grid>
 
           <Grid size={{ xs: 12, md: 3 }}>
-            <Typography variant="header" sx={{ mb: 1 }}>
+            <Typography variant="boldS" sx={{ mb: 1.5, fontSize: "0.95rem", textTransform: "uppercase", letterSpacing: "0.05em", color: "#111827" }}>
               Công ty
             </Typography>
             <Stack spacing={1}>
               <Link component={NextLink} href="/about" underline="none">
-                <Typography variant="regularS">Về chúng tôi</Typography>
+                <Typography variant="regularXs" sx={{ fontSize: "0.85rem", color: "text.secondary", "&:hover": { color: "#111827" }, transition: "color 0.2s" }}>Về chúng tôi</Typography>
               </Link>
               <Link component={NextLink} href="/careers" underline="none">
-                <Typography variant="regularS">Tuyển dụng</Typography>
+                <Typography variant="regularXs" sx={{ fontSize: "0.85rem", color: "text.secondary", "&:hover": { color: "#111827" }, transition: "color 0.2s" }}>Tuyển dụng</Typography>
               </Link>
               <Link component={NextLink} href="/contact" underline="none">
-                <Typography variant="regularS">Liên hệ</Typography>
+                <Typography variant="regularXs" sx={{ fontSize: "0.85rem", color: "text.secondary", "&:hover": { color: "#111827" }, transition: "color 0.2s" }}>Liên hệ</Typography>
               </Link>
             </Stack>
           </Grid>
 
           <Grid size={{ xs: 12, md: 3 }}>
-            <Typography variant="header" sx={{ mb: 1 }}>
+            <Typography variant="boldS" sx={{ mb: 1.5, fontSize: "0.95rem", textTransform: "uppercase", letterSpacing: "0.05em", color: "#111827" }}>
               Hỗ trợ
             </Typography>
             <Stack spacing={1}>
               <Link component={NextLink} href="/help" underline="none">
-                <Typography variant="regularS">Trợ giúp</Typography>
+                <Typography variant="regularXs" sx={{ fontSize: "0.85rem", color: "text.secondary", "&:hover": { color: "#111827" }, transition: "color 0.2s" }}>Trợ giúp</Typography>
               </Link>
               <Link component={NextLink} href="/shipping" underline="none">
-                <Typography variant="regularS">Vận chuyển</Typography>
+                <Typography variant="regularXs" sx={{ fontSize: "0.85rem", color: "text.secondary", "&:hover": { color: "#111827" }, transition: "color 0.2s" }}>Vận chuyển</Typography>
               </Link>
               <Link component={NextLink} href="/returns" underline="none">
-                <Typography variant="regularS">Hoàn trả</Typography>
+                <Typography variant="regularXs" sx={{ fontSize: "0.85rem", color: "text.secondary", "&:hover": { color: "#111827" }, transition: "color 0.2s" }}>Hoàn trả</Typography>
               </Link>
             </Stack>
           </Grid>
 
           <Grid size={{ xs: 12, md: 3 }}>
-            <Typography variant="header" sx={{ mb: 1 }}>
+            <Typography variant="boldS" sx={{ mb: 1.5, fontSize: "0.95rem", textTransform: "uppercase", letterSpacing: "0.05em", color: "#111827" }}>
               Luật & Quy định
             </Typography>
             <Stack spacing={1}>
               <Link component={NextLink} href="/terms" underline="none">
-                <Typography variant="regularS">Điều khoản dịch vụ</Typography>
+                <Typography variant="regularXs" sx={{ fontSize: "0.85rem", color: "text.secondary", "&:hover": { color: "#111827" }, transition: "color 0.2s" }}>Điều khoản dịch vụ</Typography>
               </Link>
               <Link component={NextLink} href="/privacy" underline="none">
-                <Typography variant="regularS">Chính sách bảo mật</Typography>
+                <Typography variant="regularXs" sx={{ fontSize: "0.85rem", color: "text.secondary", "&:hover": { color: "#111827" }, transition: "color 0.2s" }}>Chính sách bảo mật</Typography>
               </Link>
             </Stack>
           </Grid>

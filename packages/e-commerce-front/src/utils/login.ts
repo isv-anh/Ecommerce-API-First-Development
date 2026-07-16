@@ -22,3 +22,8 @@ export async function login(body: PostLoginBody) {
     throw error;
   }
 }
+
+export async function logout() {
+  const cookieStore = await cookies();
+  cookieStore.delete("refresh_token");
+}

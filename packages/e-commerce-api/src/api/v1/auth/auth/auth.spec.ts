@@ -1,12 +1,13 @@
 // ─── Imports ──────────────────────────────────────────────────────────────────
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { UnauthorizedException } from '@nestjs/common';
+import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
 import { AuthService } from './auth.service';
 import { UsersService } from '@/api/v1/auth/services/user-service/users.service';
 import { JwtService } from '@/api/v1/auth/services/jwt-service/jwt.service';
+import { ClsService } from '@/common/services/cls/cls.service';
 
 jest.mock('bcrypt', () => ({
   compare: jest.fn(),
@@ -36,15 +37,32 @@ describe('AuthService', () => {
   let service: AuthService;
   let usersService: jest.Mocked<UsersService>;
   let jwtService: jest.Mocked<JwtService>;
+  let mockUserId: string | undefined;
+  let mockUserPayload: unknown;
 
   beforeEach(async () => {
+    mockUserId = mockUser.uid;
+    mockUserPayload = { ...mockPayload };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
         {
+          provide: ClsService,
+          useFactory: () => ({
+            get userId(): string | undefined {
+              return mockUserId;
+            },
+            get payload(): unknown {
+              return mockUserPayload;
+            },
+          }),
+        },
+        {
           provide: UsersService,
           useValue: {
             findByEmail: jest.fn(),
+            findById: jest.fn(),
             register: jest.fn(),
           },
         },
@@ -253,8 +271,35 @@ describe('AuthService', () => {
   // ─── getProfile ──────────────────────────────────────────────────────────
 
   describe('getProfile', () => {
-    it('should throw not implemented error', async () => {
-      await expect(service.getProfile()).rejects.toThrow('Not implemented');
+    it('should return user profile when user exists', async () => {
+      usersService.findById.mockResolvedValue({
+        uid: mockUser.uid,
+        email: mockUser.email,
+        full_name: 'Test User',
+        username: 'testuser',
+      });
+
+      const result = await service.getProfile();
+
+      expect(usersService.findById).toHaveBeenCalledTimes(1);
+      expect(usersService.findById).toHaveBeenCalledWith(mockUser.uid);
+      expect(result).toEqual({
+        id: mockUser.uid,
+        email: mockUser.email,
+        name: 'Test User',
+      });
+    });
+
+    it('should throw UnauthorizedException when payload is missing', async () => {
+      mockUserId = undefined;
+
+      await expect(service.getProfile()).rejects.toThrow(UnauthorizedException);
+    });
+
+    it('should throw NotFoundException when user does not exist', async () => {
+      usersService.findById.mockResolvedValue(null);
+
+      await expect(service.getProfile()).rejects.toThrow(NotFoundException);
     });
   });
 });

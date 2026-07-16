@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import { useGetWishlistsSuspense } from "@e-commerce/api-client/endpoints/customer";
-import tokenStore from "@e-commerce/api-client/storages/token-storage";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
@@ -13,31 +12,18 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Link from "next/link";
 import CircularProgress from "@mui/material/CircularProgress";
 import { WishlistItemsList } from "./WishlistItemsList";
-
-const getUserIdFromToken = () => {
-  if (typeof window === "undefined") return null;
-  const token = tokenStore.getAccessToken();
-  if (!token) return null;
-  try {
-    const payloadBase64 = token.split(".")[1];
-    const decodedPayload = JSON.parse(atob(payloadBase64));
-    return decodedPayload.sub || null;
-  } catch {
-    return null;
-  }
-};
+import { useUser } from "@/providers/UserProvider/UserProvider";
 
 const Wishlist = () => {
-  const [userId, setUserId] = useState<string | null>(null);
+  const { userId, isInitialized } = useUser();
   const [loading, setLoading] = useState(true);
 
-  // TODO: save userId to store
   useEffect(() => {
-    const extractedUserId = getUserIdFromToken();
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setUserId(extractedUserId);
-    setLoading(false);
-  }, []);
+    if (isInitialized) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setLoading(false);
+    }
+  }, [isInitialized]);
 
   if (loading) {
     return (

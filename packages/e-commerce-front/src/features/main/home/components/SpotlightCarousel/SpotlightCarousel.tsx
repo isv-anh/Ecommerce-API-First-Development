@@ -14,41 +14,40 @@ type Slide = {
   title: string;
   subtitle?: string;
   href?: string;
-  image?: string;
+  gradient: string;
 };
 
 const DEFAULT_SLIDES: Slide[] = [
   {
     id: "s1",
-    title: "Bộ sưu tập mùa hè",
-    subtitle: "Ưu đãi tới 50% cho các sản phẩm chọn lọc",
-    href: "/collections/summer",
-    image:
-      "https://i.pinimg.com/736x/c6/5b/e9/c65be95c075b8320206dede275efb86e.jpg",
+    title: "Minimalist Essentials",
+    subtitle: "Khám phá bộ sưu tập phong cách tối giản với sự tĩnh lặng tinh tế",
+    href: "/product",
+    gradient: "linear-gradient(135deg, #000000 0%, #171717 100%)", // Solid Black
   },
   {
     id: "s2",
-    title: "Đồ điện tử nổi bật",
-    subtitle: "Thiết bị mới nhất — giá tốt",
-    href: "/collections/electronics",
-    image:
-      "https://i.pinimg.com/1200x/82/cf/db/82cfdb751feb1f38f60722d82fb52576.jpg",
+    title: "Thiết Kế Đột Phá",
+    subtitle: "Sự kết hợp hoàn hảo giữa công nghệ và triết lý thiết kế phẳng",
+    href: "/product",
+    gradient: "linear-gradient(135deg, #27272A 0%, #3F3F46 100%)", // Zinc
   },
   {
     id: "s3",
-    title: "Trang trí nhà cửa",
-    subtitle: "Mang hơi ấm về tổ ấm của bạn",
-    image:
-      "https://i.pinimg.com/1200x/13/d6/24/13d624efee9651fbc56841050f8c9620.jpg",
+    title: "Không Gian Sạch",
+    subtitle: "Trải nghiệm ranh giới mới của nghệ thuật sắp đặt không gian",
+    href: "/product",
+    gradient: "linear-gradient(135deg, #F3F4F6 0%, #E5E7EB 100%)", // Light Gray
   },
 ];
 
 const ACTIVE_DOT_WIDTH = 26;
 const DOT_SIZE = 10;
+const SLIDE_INTERVAL = 4000;
 
 const SpotlightCarousel = ({
   slides = DEFAULT_SLIDES,
-  timeout,
+  timeout = SLIDE_INTERVAL,
 }: {
   slides?: Slide[];
   timeout?: number;
@@ -75,52 +74,106 @@ const SpotlightCarousel = ({
   return (
     <Box
       component="section"
-      sx={{ width: "100%", px: { xs: 2, md: 6 }, pt: { xs: 2, md: 4 } }}
+      sx={{ width: "100%", px: 0, pt: 0 }}
     >
       <Box sx={{ position: "relative" }}>
         <Box
           sx={{
-            minHeight: { xs: 300, md: 430 },
-            borderRadius: 2,
+            minHeight: { xs: 300, md: 400 },
+            borderRadius: 0,
             overflow: "hidden",
             display: "flex",
             alignItems: "stretch",
-            backgroundColor: "surface.card",
-            backgroundImage: active.image ? `url(${active.image})` : "none",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
+            background: active.gradient,
+            transition: "background 0.5s ease-in-out",
+            position: "relative",
           }}
         >
+          {/* Glowing Ambient Spheres */}
+          <Box
+            sx={{
+              position: "absolute",
+              width: 320,
+              height: 320,
+              borderRadius: "50%",
+              background: "rgba(255, 255, 255, 0.15)",
+              filter: "blur(60px)",
+              top: -80,
+              right: -80,
+              pointerEvents: "none",
+            }}
+          />
+          <Box
+            sx={{
+              position: "absolute",
+              width: 240,
+              height: 240,
+              borderRadius: "50%",
+              background: "rgba(255, 255, 255, 0.1)",
+              filter: "blur(50px)",
+              bottom: -40,
+              right: 120,
+              pointerEvents: "none",
+            }}
+          />
+
           <Stack
-            spacing={2}
-            alignItems="flex-start"
+            spacing={3}
+            alignItems="center"
             justifyContent="center"
             sx={{
               width: "100%",
               height: "100%",
-              background:
-                "linear-gradient(90deg, rgba(21,20,38,.72) 0%, rgba(21,20,38,.38) 48%, rgba(21,20,38,.12) 100%)",
-              borderRadius: 2,
-              p: { xs: 3, md: 6 },
+              zIndex: 2,
+              p: { xs: 4, md: 6 },
+              textAlign: "center",
             }}
           >
             <Typography
               variant="title"
-              color="textWhite"
-              sx={{ maxWidth: 520, fontSize: { xs: 28, md: 42 } }}
+              sx={{
+                maxWidth: 800,
+                color: active.id === "s3" ? "#000" : "common.white",
+                fontSize: { xs: "2rem", md: "3rem" },
+                fontWeight: 800,
+                letterSpacing: "-0.04em",
+                lineHeight: 1.1,
+              }}
             >
               {active.title}
             </Typography>
             <Typography
-              variant="regularM"
-              color="textWhite"
-              sx={{ maxWidth: 460, color: "rgba(255,255,255,.82)" }}
+              variant="regularL"
+              sx={{
+                maxWidth: 500,
+                color: active.id === "s3" ? "#4B5563" : "rgba(255,255,255,0.7)",
+                fontSize: { xs: "1rem", md: "1.2rem" },
+                fontWeight: 500,
+              }}
             >
               {active.subtitle}
             </Typography>
             {active.href && (
-              <Button href={active.href} variant="contained" color="primary">
-                Xem ngay
+              <Button
+                href={active.href}
+                variant="contained"
+                sx={{
+                  bgcolor: active.id === "s3" ? "#000" : "common.white",
+                  color: active.id === "s3" ? "#fff" : "#000",
+                  borderRadius: "99px",
+                  px: 5,
+                  py: 1.5,
+                  fontWeight: 600,
+                  fontSize: "1rem",
+                  boxShadow: "none",
+                  "&:hover": {
+                    bgcolor: active.id === "s3" ? "#333" : "rgba(255,255,255,0.8)",
+                    transform: "scale(1.02)",
+                  },
+                  transition: "all 0.2s ease",
+                }}
+              >
+                Mua ngay
               </Button>
             )}
           </Stack>
@@ -130,28 +183,34 @@ const SpotlightCarousel = ({
           aria-label="Previous"
           onClick={prev}
           sx={{
-            color: "common.white",
+            color: "rgba(255,255,255,0.8)",
             position: "absolute",
-            left: 8,
+            left: 12,
             top: "50%",
             transform: "translateY(-50%)",
+            bgcolor: "rgba(0,0,0,0.15)",
+            "&:hover": { bgcolor: "rgba(0,0,0,0.3)" },
+            zIndex: 3,
           }}
         >
-          <ArrowBackIosNewIcon />
+          <ArrowBackIosNewIcon fontSize="small" />
         </IconButton>
 
         <IconButton
           aria-label="Next"
           onClick={next}
           sx={{
-            color: "common.white",
+            color: "rgba(255,255,255,0.8)",
             position: "absolute",
-            right: 8,
+            right: 12,
             top: "50%",
             transform: "translateY(-50%)",
+            bgcolor: "rgba(0,0,0,0.15)",
+            "&:hover": { bgcolor: "rgba(0,0,0,0.3)" },
+            zIndex: 3,
           }}
         >
-          <ArrowForwardIosIcon />
+          <ArrowForwardIosIcon fontSize="small" />
         </IconButton>
       </Box>
 
@@ -169,7 +228,7 @@ const SpotlightCarousel = ({
                   ? theme.palette.primary.main
                   : theme.palette.action.disabledBackground,
               cursor: "pointer",
-              transition: "width 0.18s ease",
+              transition: "all 0.2s ease",
             })}
           />
         ))}

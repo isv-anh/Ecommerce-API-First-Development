@@ -20,6 +20,7 @@ namespace Product.Brands {
     @route("")
     @operationId("getBrands")
     @tag("brands")
+    @extension("x-public", true)
     op getbrands(
         ...GetBrandRequestParams,
     ): GetBrandsResponse200 | BadRequestError | InternalServerError;

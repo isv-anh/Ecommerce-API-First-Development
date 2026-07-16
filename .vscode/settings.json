@@ -2,5 +2,6 @@
     "editor.fontSize": 14,
     "editor.codeActionsOnSave": {},
     "editor.formatOnSave": true,
-    "typespec.tsp-server.path": "${workspaceFolder}/openapi-typespec/node_modules/@typespec/compiler"
+    "typespec.tsp-server.path": "${workspaceFolder}/openapi-typespec/node_modules/@typespec/compiler",
+    "tailwindCSS.experimental.classRegex": [["className\\s*:\\s*['\"]([^'\"]*)['\"]"]]
 }

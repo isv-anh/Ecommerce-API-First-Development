@@ -1,28 +1,17 @@
 "use client";
 import { useEffect } from "react";
-import { useSuspenseQuery } from "@tanstack/react-query";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Grid from "@mui/material/Grid";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { useBreadcrumbs } from "@/components/navigation/Breadcrumbs/components/BreadcrumbsProvider/hooks";
 import ProductCard from "@/features/main/components/ProductCard/ProductCard";
-import { customInstance } from "@e-commerce/api-client/mutator/custom-instance";
+import { useGetUserProductsSuspense } from "@e-commerce/api-client/endpoints/product";
 import type {
-  GetProductsParams,
-  ProductsResponse,
+  GetUserProductsParams,
 } from "@e-commerce/api-client/schemas/product";
-
-const getUserProducts = (params?: GetProductsParams) => {
-  return customInstance<ProductsResponse>({
-    url: "/api/v1/user/products",
-    method: "GET",
-    params,
-  });
-};
 
 const ProductGrid = ({
   title = "Sản phẩm nổi bật",
@@ -32,13 +21,10 @@ const ProductGrid = ({
 }: {
   title?: string;
   subtitle?: string;
-  params?: GetProductsParams;
+  params?: GetUserProductsParams;
   showViewAll?: boolean;
 }) => {
-  const { data } = useSuspenseQuery({
-    queryKey: ["/api/v1/user/products", params],
-    queryFn: () => getUserProducts(params),
-  });
+  const { data } = useGetUserProductsSuspense(params);
   const { setBreadcrumbs } = useBreadcrumbs();
 
   useEffect(() => {
@@ -48,7 +34,7 @@ const ProductGrid = ({
   return (
     <Box
       component="section"
-      sx={{ width: "100%", px: { xs: 2, md: 6 }, py: { xs: 4, md: 6 } }}
+      sx={{ width: "100%", px: 0, py: { xs: 2, md: 4 } }}
     >
       <Stack
         direction={{ xs: "column", sm: "row" }}
@@ -75,13 +61,11 @@ const ProductGrid = ({
       </Stack>
 
       {data.products.length > 0 ? (
-        <Grid container spacing={{ xs: 1.5, md: 2.5 }}>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-5">
           {data.products.map((product) => (
-            <Grid key={product.productId} size={{ xs: 6, sm: 6, md: 4, lg: 3 }}>
-              <ProductCard product={product} />
-            </Grid>
+            <ProductCard key={product.productId} product={product} />
           ))}
-        </Grid>
+        </div>
       ) : (
         <Stack
           alignItems="center"

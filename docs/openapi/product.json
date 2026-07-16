@@ -15,6 +15,9 @@
       "name": "products"
     },
     {
+      "name": "user-products"
+    },
+    {
       "name": "product-images"
     },
     {
@@ -366,7 +369,8 @@
         },
         "tags": [
           "brands"
-        ]
+        ],
+        "x-public": true
       },
       "post": {
         "operationId": "postBrand",
@@ -647,7 +651,8 @@
         },
         "tags": [
           "categories"
-        ]
+        ],
+        "x-public": true
       },
       "post": {
         "operationId": "postCategory",
@@ -1997,6 +2002,21 @@
             "$ref": "#/components/parameters/GetProductRequestParams.categoryId"
           },
           {
+            "$ref": "#/components/parameters/GetProductRequestParams.brandIds"
+          },
+          {
+            "$ref": "#/components/parameters/GetProductRequestParams.minPrice"
+          },
+          {
+            "$ref": "#/components/parameters/GetProductRequestParams.maxPrice"
+          },
+          {
+            "$ref": "#/components/parameters/GetProductRequestParams.sortBy"
+          },
+          {
+            "$ref": "#/components/parameters/GetProductRequestParams.sortOrder"
+          },
+          {
             "$ref": "#/components/parameters/PageQueryParams.page"
           },
           {
@@ -2262,6 +2282,133 @@
         "tags": [
           "products"
         ]
+      }
+    },
+    "/api/v1/user/products": {
+      "get": {
+        "operationId": "getUserProducts",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/GetProductRequestParams.productId"
+          },
+          {
+            "$ref": "#/components/parameters/GetProductRequestParams.productName"
+          },
+          {
+            "$ref": "#/components/parameters/GetProductRequestParams.categoryId"
+          },
+          {
+            "$ref": "#/components/parameters/GetProductRequestParams.brandIds"
+          },
+          {
+            "$ref": "#/components/parameters/GetProductRequestParams.minPrice"
+          },
+          {
+            "$ref": "#/components/parameters/GetProductRequestParams.maxPrice"
+          },
+          {
+            "$ref": "#/components/parameters/GetProductRequestParams.sortBy"
+          },
+          {
+            "$ref": "#/components/parameters/GetProductRequestParams.sortOrder"
+          },
+          {
+            "$ref": "#/components/parameters/PageQueryParams.page"
+          },
+          {
+            "$ref": "#/components/parameters/PageQueryParams.pageSize"
+          },
+          {
+            "$ref": "#/components/parameters/PageQueryParams.orderBy"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "user-products"
+        ],
+        "x-public": true
+      }
+    },
+    "/api/v1/user/products/slug/{slug}": {
+      "get": {
+        "operationId": "getProductBySlug",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Slug"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductByIdResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "user-products"
+        ],
+        "x-public": true
       }
     },
     "/api/v1/warehouse-inventories": {
@@ -2888,12 +3035,41 @@
         },
         "explode": false
       },
+      "GetProductRequestParams.brandIds": {
+        "name": "brandIds",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string"
+        },
+        "explode": false
+      },
       "GetProductRequestParams.categoryId": {
         "name": "categoryId",
         "in": "query",
         "required": false,
         "schema": {
           "$ref": "#/components/schemas/UUID"
+        },
+        "explode": false
+      },
+      "GetProductRequestParams.maxPrice": {
+        "name": "maxPrice",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "explode": false
+      },
+      "GetProductRequestParams.minPrice": {
+        "name": "minPrice",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "format": "int32"
         },
         "explode": false
       },
@@ -2912,6 +3088,24 @@
         "required": false,
         "schema": {
           "$ref": "#/components/schemas/NonEmptyString"
+        },
+        "explode": false
+      },
+      "GetProductRequestParams.sortBy": {
+        "name": "sortBy",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string"
+        },
+        "explode": false
+      },
+      "GetProductRequestParams.sortOrder": {
+        "name": "sortOrder",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string"
         },
         "explode": false
       },

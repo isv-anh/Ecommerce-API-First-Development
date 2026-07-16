@@ -15,7 +15,9 @@
     "api-client:build": "pnpm --filter @e-commerce/api-client build",
     "api-validation:build": "pnpm --filter @e-commerce/api-validation build",
     "generate:all": "pnpm run generate:open-api && pnpm run api-client:build && pnpm run api-validation:build && pnpm run generate:api-base-controllers",
-    "migrate": "docker compose run --rm liquibase"
+    "migrate": "docker compose run --rm liquibase",
+    "dev:api": "pnpm --filter e-commerce-api start:dev",
+    "dev:front": "pnpm --filter e-commerce-front dev"
   },
   "pnpm": {
     "overrides": {

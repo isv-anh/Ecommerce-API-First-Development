@@ -21,7 +21,7 @@ import {
   getGetWishlistItemsQueryKey,
 } from "@e-commerce/api-client/endpoints/customer";
 import { useQueryClient } from "@tanstack/react-query";
-import tokenStore from "@e-commerce/api-client/storages/token-storage";
+import { useUser } from "@/providers/UserProvider/UserProvider";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
@@ -80,18 +80,7 @@ const ProductDetail = ({ productId }: { productId: string }) => {
   const { data: variantsData } = useGetProductVariantsSuspense({ productId });
   const variants = variantsData?.productVariants || [];
 
-  const userId = React.useMemo(() => {
-    if (typeof window === "undefined") return null;
-    const token = tokenStore.getAccessToken();
-    if (!token) return null;
-    try {
-      const payloadBase64 = token.split(".")[1];
-      const decodedPayload = JSON.parse(atob(payloadBase64));
-      return decodedPayload.sub || null;
-    } catch {
-      return null;
-    }
-  }, []);
+  const { userId } = useUser();
 
   // Extract selected variant details
   const activeVariant = variants[selectedVariantIdx] || null;
@@ -111,20 +100,9 @@ const ProductDetail = ({ productId }: { productId: string }) => {
 
   const allImages = Array.from(new Set([...baseImages, ...variantImages])).filter(Boolean);
 
-  const getUserIdFromToken = () => {
-    const token = tokenStore.getAccessToken();
-    if (!token) return null;
-    try {
-      const payloadBase64 = token.split(".")[1];
-      const decodedPayload = JSON.parse(atob(payloadBase64));
-      return decodedPayload.sub || null;
-    } catch {
-      return null;
-    }
-  };
+
 
   const handleAddToCart = async () => {
-    const userId = getUserIdFromToken();
     if (!userId) {
       enqueueSnackbar("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng!", {
         variant: "warning",
@@ -177,7 +155,6 @@ const ProductDetail = ({ productId }: { productId: string }) => {
   };
 
   const handleAddToWishlist = async (isFav: boolean, wishlistItems: any[]) => {
-    const userId = getUserIdFromToken();
     if (!userId) {
       enqueueSnackbar("Vui lòng đăng nhập để lưu sản phẩm yêu thích!", {
         variant: "warning",

@@ -1,5 +1,6 @@
 import { JwtService } from '@/api/v1/auth/services/jwt-service/jwt.service';
 import { IS_PUBLIC_KEY } from '@/common/decorators/public.decorator';
+import { ClsService } from '@/common/services/cls/cls.service';
 import {
   CanActivate,
   ExecutionContext,
@@ -15,6 +16,7 @@ export class AuthGuard implements CanActivate {
   constructor(
     private readonly jwtService: JwtService,
     private reflector: Reflector,
+    private readonly clsService: ClsService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -33,6 +35,13 @@ export class AuthGuard implements CanActivate {
 
     const jwtPayload = await this.jwtService.extractAccessTokenPayload(token);
     request['payload'] = jwtPayload;
+
+    const store = this.clsService.getStore();
+    if (store) {
+      store.userId = jwtPayload.sub;
+      store.payload = jwtPayload;
+    }
+
     return true;
   }
 

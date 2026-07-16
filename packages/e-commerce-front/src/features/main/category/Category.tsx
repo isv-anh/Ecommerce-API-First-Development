@@ -8,10 +8,10 @@ import Stack from "@mui/material/Stack";
 
 const Category = () => {
   return (
-    <Stack direction={"row"} spacing={4} py={2}>
-      <Stack flex={1} spacing={2} alignItems={"center"}>
-        <Stack>
-          <Box px={6}>
+    <Stack direction={"row"} spacing={4} py={2} sx={{ width: "100%" }}>
+      <Stack flex={1} spacing={2} alignItems={"center"} sx={{ width: "100%" }}>
+        <Stack sx={{ width: "100%" }}>
+          <Box sx={{ px: 0, mb: 1 }}>
             <ProductSearch />
           </Box>
           <ProductGrid />
