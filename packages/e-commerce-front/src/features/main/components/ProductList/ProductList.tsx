@@ -95,7 +95,7 @@ const ProductListContent = () => {
       {data.products.length > 0 ? (
         <Grid container spacing={2}>
           {data.products.map((product) => (
-            <Grid key={product.productId} size={{ xs: 6, sm: 6, md: 4, lg: 3 }}>
+            <Grid key={product.productId} size={{ xs: 12, sm: 6, md: 6, lg: 4 }}>
               <ProductCard product={product} />
             </Grid>
           ))}

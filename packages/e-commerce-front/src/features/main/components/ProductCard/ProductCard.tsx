@@ -38,26 +38,11 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
   return (
     <Card
+      className="group relative overflow-hidden rounded-2xl bg-white border border-gray-200 transition-all duration-300 hover:border-gray-900"
       sx={{
         height: "100%",
-        overflow: "hidden",
-        border: "1px solid",
-        borderColor: "divider",
-        borderRadius: 3,
-        boxShadow: "0 4px 20px rgba(21, 20, 38, 0.04)",
-        transition: "border-color 0.3s ease, box-shadow 0.3s ease",
-        "&:hover": {
-          borderColor: "rgba(129, 140, 248, 0.5)",
-          boxShadow: "0 12px 30px rgba(129, 140, 248, 0.12)",
-        },
-        "&:hover img": {
-          transform: "scale(1.06)",
-        },
-        "&:hover .product-actions": {
-          opacity: 1,
-          transform: "translateY(0)",
-          pointerEvents: "auto",
-        },
+        display: "flex",
+        flexDirection: "column",
       }}
     >
       <Box
@@ -65,7 +50,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
           aspectRatio: "4/3",
           position: "relative",
           overflow: "hidden",
-          bgcolor: "#f5f3ff",
+          bgcolor: "#f9fafb",
         }}
       >
         {imageSrc ? (
@@ -74,10 +59,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
             alt={product.productName}
             fill
             sizes="(max-width: 600px) 50vw, (max-width: 1200px) 33vw, 25vw"
-            style={{
-              objectFit: "cover",
-              transition: "transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
-            }}
+            className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-110"
           />
         ) : (
           <Stack
@@ -104,18 +86,9 @@ const ProductCard = ({ product }: ProductCardProps) => {
         />
 
         <Stack
-          className="product-actions"
+          className="product-actions absolute right-3 bottom-3 opacity-100 md:opacity-0 md:translate-y-2 pointer-events-auto md:pointer-events-none transition-all duration-300 md:group-hover:opacity-100 md:group-hover:translate-y-0 md:group-hover:pointer-events-auto z-10"
           direction="row"
           spacing={1}
-          sx={{
-            position: "absolute",
-            right: 10,
-            bottom: 10,
-            opacity: { xs: 1, md: 0 },
-            transform: { xs: "none", md: "translateY(8px)" },
-            pointerEvents: { xs: "auto", md: "none" },
-            transition: "opacity 0.18s ease, transform 0.18s ease",
-          }}
         >
           <IconButton
             aria-label="Xem nhanh"
@@ -158,7 +131,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
       <CardContent sx={{ p: { xs: 1.5, md: 2 } }}>
         <Stack spacing={1.25}>
           <Typography
-            variant="boldM"
+            variant="boldS"
             sx={{
               minHeight: 44,
               display: "-webkit-box",
@@ -171,7 +144,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
           </Typography>
 
           <Stack spacing={0.25}>
-            <Typography variant="title" color="primary.main">
+            <Typography variant="title" sx={{ color: "#111827", fontSize: "1.15rem" }}>
               {formatPrice(product.price)}
             </Typography>
             <Typography variant="regularXs" color="text.secondary">
@@ -183,8 +156,8 @@ const ProductCard = ({ product }: ProductCardProps) => {
             href={`/product/${product.productId}`}
             variant="contained"
             fullWidth
-            startIcon={<ShoppingCartIcon />}
-            sx={{ borderRadius: 1.5 }}
+            startIcon={<ShoppingCartIcon sx={{ fontSize: 18 }} />}
+            sx={{ borderRadius: "8px", bgcolor: "#000", color: "#fff", "&:hover": { bgcolor: "#333" }, py: 1, fontSize: "0.9rem" }}
           >
             Xem sản phẩm
           </Button>

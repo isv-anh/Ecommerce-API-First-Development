@@ -31,7 +31,7 @@ const Providers = ({ children }: { children: ReactNode }) => {
   const content = <BreadcrumbsProvider>{children}</BreadcrumbsProvider>;
 
   return (
-    <AppRouterCacheProvider>
+    <AppRouterCacheProvider options={{ enableCssLayer: true }}>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider theme={theme}>
           <SnackbarProvider maxSnack={3}>

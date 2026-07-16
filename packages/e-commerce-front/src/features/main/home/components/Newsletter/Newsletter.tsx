@@ -30,18 +30,19 @@ const Newsletter = () => {
       component="section"
       sx={{
         width: "100%",
-        px: { xs: 2, md: 6 },
-        py: { xs: 4, md: 6 },
+        px: 0,
+        py: { xs: 3, md: 5 },
       }}
     >
       <Box
         component="form"
         onSubmit={handleSubmit(onSubmit)}
         sx={{
-          borderRadius: 2,
-          p: { xs: 3, md: 4 },
-          bgcolor: "#151426",
+          borderRadius: 4,
+          p: { xs: 4, md: 6 },
+          background: "#000000",
           color: "common.white",
+          border: "1px solid #333333",
         }}
       >
         <Stack
@@ -51,27 +52,56 @@ const Newsletter = () => {
           justifyContent="space-between"
         >
           <Box>
-            <Typography variant="title" sx={{ mb: 1 }}>
+            <Typography variant="title" sx={{ mb: 1, color: "common.white" }}>
               Đăng ký nhận tin
             </Typography>
             <Typography
               variant="regularS"
-              sx={{ color: "rgba(255,255,255,.72)" }}
+              sx={{ color: "rgba(255, 255, 255, 0.75)" }}
             >
-              Nhận mã giảm giá và cập nhật sản phẩm mới nhất.
+              Nhận ngay mã giảm giá đặc biệt và cập nhật sản phẩm mới nhất.
             </Typography>
           </Box>
           <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5}>
             <TextField
-              label="Email"
+              placeholder="Nhập email của bạn..."
               {...register("email")}
               sx={{
                 minWidth: { sm: 320 },
-                bgcolor: "common.white",
-                borderRadius: 1,
+                bgcolor: "rgba(255, 255, 255, 0.06)",
+                borderRadius: "12px",
+                "& .MuiOutlinedInput-root": {
+                  color: "common.white",
+                  borderRadius: "12px",
+                  "& fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.15)",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "rgba(255, 255, 255, 0.3)",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "primary.main",
+                  },
+                },
               }}
             />
-            <Button type="submit" variant="contained" color="primary">
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              sx={{
+                borderRadius: "12px",
+                px: 4,
+                py: { xs: 1.5, sm: 0 },
+                fontWeight: 600,
+                boxShadow: "none",
+                "&:hover": {
+                  transform: "translateY(-2px)",
+                  boxShadow: "0 4px 12px rgba(255, 255, 255, 0.1)",
+                },
+                transition: "all 0.2s ease",
+              }}
+            >
               Đăng ký
             </Button>
           </Stack>

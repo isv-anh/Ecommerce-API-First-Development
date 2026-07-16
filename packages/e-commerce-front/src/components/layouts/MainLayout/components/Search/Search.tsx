@@ -15,6 +15,8 @@ import NextLink from "next/link";
 import { useQueryClient } from "@tanstack/react-query";
 import { getCart, getCartItems } from "@e-commerce/api-client/endpoints/cart";
 import { useAuth } from "@/hooks/useAuth";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 
 const SearchBar = () => {
   const router = useRouter();
@@ -80,64 +82,99 @@ const SearchBar = () => {
   };
 
   return (
-    <Stack
-      component={"form"}
-      onSubmit={handleSubmit(handleSearch)}
-      height={90}
-      direction={"row"}
-      alignItems={"center"}
-      justifyContent={"space-evenly"}
-      spacing={4}
-      px={2}
+    <Box
+      className="w-full bg-white border-b border-gray-100 transition-all duration-300"
     >
-      <Stack width={200}>LOGO</Stack>
-      <TextField
-        control={control}
-        name="textSearch"
-        sx={{
-          flexGrow: 1,
-          "& .MuiOutlinedInput-root": {
-            borderRadius: "12px",
-            "&:hover .MuiOutlinedInput-notchedOutline": {
-              borderColor: (theme) => theme.palette.primary.main,
+      <Stack
+        component={"form"}
+        onSubmit={handleSubmit(handleSearch)}
+        direction={"row"}
+        alignItems={"center"}
+        justifyContent={"space-between"}
+        spacing={4}
+        className="max-w-7xl mx-auto px-4 md:px-8 h-20"
+      >
+        <Stack
+          width={240}
+          component={NextLink}
+          href="/"
+          sx={{
+            textDecoration: "none",
+            color: "text.primary",
+          }}
+        >
+          <Typography
+            variant="title"
+            sx={{
+              color: "#000",
+              letterSpacing: "-0.5px",
+              fontSize: "1.6rem",
+            }}
+          >
+            E-Commerce
+          </Typography>
+        </Stack>
+        <TextField
+          control={control}
+          name="textSearch"
+          className="grow max-w-2xl"
+          placeholder="Tìm kiếm sản phẩm..."
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "8px",
+              backgroundColor: "#f9fafb",
+              transition: "all 0.2s ease",
+              "&:hover .MuiOutlinedInput-notchedOutline": {
+                borderColor: "#d1d5db",
+              },
+              "&.Mui-focused": {
+                backgroundColor: "#ffffff",
+                "& .MuiOutlinedInput-notchedOutline": {
+                   borderColor: "#000000",
+                   borderWidth: "1px",
+                }
+              },
             },
-          },
-          "& .MuiInputBase-root": {
-            paddingRight: 0,
-          },
-        }}
-        slotProps={{
-          input: {
-            endAdornment: (
-              <Button
-                variant="contained"
-                sx={{
-                  borderRadius: "12px",
-                  height: "40px",
-                }}
-                type="submit"
-              >
-                <SearchRoundedIcon />
-              </Button>
-            ),
-          },
-        }}
-      />
-      <Stack>
-        <Tooltip title="Giỏ hàng">
-          <IconButton color="primary" component={NextLink} href="/cart">
-            <Badge badgeContent={badgeCount} color={"error"}>
-              <LocalMallIcon
-                sx={{
-                  width: 40,
-                  height: 40,
-                }}
-              />
-            </Badge>
-          </IconButton>
-        </Tooltip>
+            "& .MuiInputBase-root": {
+              paddingRight: "6px",
+            },
+          }}
+          slotProps={{
+            input: {
+              endAdornment: (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  sx={{
+                    borderRadius: "6px",
+                    height: "36px",
+                    minWidth: "48px",
+                    px: 2,
+                  }}
+                  type="submit"
+                >
+                  <SearchRoundedIcon fontSize="small" />
+                </Button>
+              ),
+            },
+          }}
+        />
+        <Stack>
+          <Tooltip title="Giỏ hàng">
+            <IconButton
+              component={NextLink}
+              href="/cart"
+              className="bg-gray-50 hover:bg-gray-100 transition-colors"
+              sx={{ width: 48, height: 48, color: "#111827" }}
+            >
+              <Badge badgeContent={badgeCount} color={"error"}>
+                <LocalMallIcon sx={{ fontSize: 24 }} />
+              </Badge>
+            </IconButton>
+          </Tooltip>
+        </Stack>
       </Stack>
-    </Stack>
+    </Box>
   );
 };
 
@@ -145,18 +182,21 @@ const Search = () => {
   return (
     <Suspense
       fallback={
-        <Stack
-          height={90}
-          direction={"row"}
-          alignItems={"center"}
-          justifyContent={"space-evenly"}
-          spacing={4}
-          px={2}
+        <Box
+          className="w-full bg-white border-b border-gray-200"
         >
-          <Stack width={200}>LOGO</Stack>
-          <Stack flexGrow={1} />
-          <Stack width={40} height={40} />
-        </Stack>
+          <Stack
+            direction={"row"}
+            alignItems={"center"}
+            justifyContent={"space-between"}
+            spacing={4}
+            className="max-w-7xl mx-auto px-4 md:px-8 h-20"
+          >
+            <Stack width={240}>LOGO</Stack>
+            <Stack flexGrow={1} />
+            <Stack width={48} height={48} />
+          </Stack>
+        </Box>
       }
     >
       <SearchBar />

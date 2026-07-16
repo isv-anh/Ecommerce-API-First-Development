@@ -3,10 +3,10 @@ import type { ThemeOptions } from "@mui/material/styles";
 export const palette: ThemeOptions["palette"] = {
   // brand / palette
   primary: {
-    main: "#8225ec",
-    light: "#9a28f1",
+    main: "#000000",
+    light: "#333333",
     // optionally dark / contrastText
-    dark: "#7A3CC8",
+    dark: "#000000",
     contrastText: "#FFFFFF",
   },
 
