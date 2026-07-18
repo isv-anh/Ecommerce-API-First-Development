@@ -45,7 +45,7 @@ const ProductSearch = () => {
           <SuspenseWrapper height={40}>
             <SelectCategory
               control={control}
-              name="categoryId"
+              name="categoryIds"
               label="Danh mục"
             />
           </SuspenseWrapper>
