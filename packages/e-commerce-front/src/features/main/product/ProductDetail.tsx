@@ -2,9 +2,7 @@
 
 import React, { useState } from "react";
 import {
-  useGetProductByProductIdSuspense,
-  useGetCategoryByCategoryIdSuspense,
-  useGetProductVariantsSuspense,
+  useGetProductBySlugSuspense,
 } from "@e-commerce/api-client/endpoints/product";
 import {
   getCart,
@@ -23,7 +21,7 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 import { useUser } from "@/providers/UserProvider/UserProvider";
 import Box from "@mui/material/Box";
-import Container from "@mui/material/Container";
+
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
@@ -57,7 +55,7 @@ const formatPrice = (value: number | string) => {
   }).format(n);
 };
 
-const ProductDetail = ({ productId }: { productId: string }) => {
+const ProductDetail = ({ slug }: { slug: string }) => {
   const { enqueueSnackbar } = useSnackbar();
   const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [selectedVariantIdx, setSelectedVariantIdx] = useState(0);
@@ -70,15 +68,12 @@ const ProductDetail = ({ productId }: { productId: string }) => {
   const postWishlistItemMutation = usePostWishlistItem();
   const deleteWishlistItemMutation = useDeleteWishlistItem();
 
-  // 1. Fetch Product details
-  const { data: product } = useGetProductByProductIdSuspense(productId);
+  // 1. Fetch Product details by slug
+  const { data: product } = useGetProductBySlugSuspense(slug);
 
-  // 2. Fetch Category details (category_id is required)
-  const { data: category } = useGetCategoryByCategoryIdSuspense(product.categoryId);
-
-  // 3. Fetch Variants
-  const { data: variantsData } = useGetProductVariantsSuspense({ productId });
-  const variants = variantsData?.productVariants || [];
+  // 2. Extract Category and Variants from Product
+  const category = product.category;
+  const variants = product.variants || [];
 
   const { userId } = useUser();
 
@@ -91,7 +86,7 @@ const ProductDetail = ({ productId }: { productId: string }) => {
 
   // Combine product image and variant images into a unified gallery list
   const baseImages = product.images && product.images.length > 0
-    ? product.images.map((img) => img.url)
+    ? product.images.map((img: { url: string }) => img.url)
     : [product.thumbnailUrl || ""];
 
   const variantImages = variants
@@ -179,7 +174,7 @@ const ProductDetail = ({ productId }: { productId: string }) => {
       }
 
       if (isFav) {
-        const item = wishlistItems?.find((i) => i.productId === productId);
+        const item = wishlistItems?.find((i) => i.productId === product.productId);
         if (item) {
           await deleteWishlistItemMutation.mutateAsync({
             wishlistId: currentWishlistId,
@@ -193,7 +188,7 @@ const ProductDetail = ({ productId }: { productId: string }) => {
       } else {
         await postWishlistItemMutation.mutateAsync({
           wishlistId: currentWishlistId,
-          data: { productId },
+          data: { productId: product.productId },
         });
         enqueueSnackbar("Đã thêm sản phẩm vào danh sách yêu thích thành công!", {
           variant: "success",
@@ -214,7 +209,7 @@ const ProductDetail = ({ productId }: { productId: string }) => {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
+    <Box sx={{ py: { xs: 4, md: 8 }, width: '100%' }}>
       {/* Breadcrumbs / Back Link */}
       <Stack direction="row" alignItems="center" spacing={1} mb={3}>
         <Link
@@ -270,12 +265,7 @@ const ProductDetail = ({ productId }: { productId: string }) => {
 
               <Typography
                 variant="title"
-                sx={{
-                  fontSize: "32px",
-                  fontWeight: 700,
-                  color: "text.primary",
-                  lineHeight: 1.2,
-                }}
+                className="text-[28px] md:text-[36px] font-extrabold text-gray-900 leading-[1.2] tracking-[-0.5px]"
               >
                 {product.productName}
               </Typography>
@@ -294,15 +284,15 @@ const ProductDetail = ({ productId }: { productId: string }) => {
               <Stack direction="row" alignItems="baseline" spacing={2}>
                 <Typography
                   variant="boldL"
-                  sx={{ fontSize: "36px", color: "primary.main", fontWeight: 800 }}
+                  className="text-[36px] font-extrabold bg-linear-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent drop-shadow-sm"
                 >
                   {formatPrice(currentPrice)}
                 </Typography>
 
                 {currentComparePrice > currentPrice && (
                   <Typography
-                    variant="regularS"
-                    sx={{ textDecoration: "line-through", color: "text.secondary" }}
+                    variant="regularM"
+                    className="line-through text-gray-400 font-medium"
                   >
                     {formatPrice(currentComparePrice)}
                   </Typography>
@@ -349,20 +339,11 @@ const ProductDetail = ({ productId }: { productId: string }) => {
                             }
                           }
                         }}
-                        sx={{
-                          px: 2,
-                          py: 1,
-                          borderRadius: 2.5,
-                          border: "1.5px solid",
-                          borderColor: isSelected ? "primary.main" : "divider",
-                          bgcolor: isSelected ? "rgba(129, 140, 248, 0.05)" : "background.paper",
-                          cursor: "pointer",
-                          transition: "all 0.2s ease-in-out",
-                          boxShadow: isSelected ? "0 2px 8px rgba(129, 140, 248, 0.1)" : "none",
-                          "&:hover": {
-                            borderColor: isSelected ? "primary.main" : "primary.light",
-                          },
-                        }}
+                        className={`px-5 py-[10px] rounded-xl border-[1.5px] cursor-pointer transition-all duration-300 hover:border-indigo-400 hover:-translate-y-0.5 hover:shadow-sm ${
+                          isSelected
+                            ? "border-indigo-600 bg-indigo-50/50 shadow-md -translate-y-0.5"
+                            : "border-gray-200 bg-white translate-y-0"
+                        }`}
                       >
                         <Typography
                           variant="boldS"
@@ -387,19 +368,16 @@ const ProductDetail = ({ productId }: { productId: string }) => {
                 disabled={currentStock <= 0}
                 startIcon={<ShoppingCartIcon />}
                 onClick={handleAddToCart}
-                sx={{
-                  flex: 2,
-                  py: 1,
-                  px: 2.5,
-                  fontSize: "14px",
-                  fontWeight: 700,
-                  borderRadius: 2.5,
-                }}
+                className={`flex-2 py-3 px-6 text-[15px] font-bold rounded-xl border-none transition-all duration-300 ${
+                  currentStock <= 0
+                    ? "bg-gray-200 text-gray-400 shadow-none transform-none"
+                    : "bg-linear-to-br from-indigo-600 to-indigo-500 text-white shadow-[0_8px_16px_-4px_rgba(79,70,229,0.4)] -translate-y-px hover:from-indigo-700 hover:to-indigo-600 hover:shadow-[0_12px_20px_-4px_rgba(79,70,229,0.5)] hover:-translate-y-0.5 active:scale-95"
+                }`}
               >
                 Thêm vào giỏ hàng
               </Button>
               <FavoriteButton
-                productId={productId}
+                productId={product.productId}
                 userId={userId}
                 handleAddToWishlist={handleAddToWishlist}
               />
@@ -408,26 +386,28 @@ const ProductDetail = ({ productId }: { productId: string }) => {
             <Divider />
 
             {/* Assurances list */}
-            <Stack spacing={2} pt={1}>
-              <Stack direction="row" spacing={1.5} alignItems="center">
-                <ShieldIcon sx={{ color: "primary.light" }} />
-                <Typography variant="regularS" color="text.primary">
-                  <strong>Bảo hành chính hãng 12 tháng:</strong> Yên tâm tuyệt đối khi mua sắm.
-                </Typography>
+            <Box className="p-5 bg-slate-50 rounded-2xl border border-gray-200">
+              <Stack spacing={2}>
+                <Stack direction="row" spacing={2} alignItems="flex-start">
+                  <ShieldIcon sx={{ color: "primary.main", mt: 0.5 }} />
+                  <Typography variant="regularS" color="text.primary" sx={{ lineHeight: 1.6 }}>
+                    <strong style={{ fontWeight: 700 }}>Bảo hành chính hãng 12 tháng:</strong> Yên tâm tuyệt đối khi mua sắm.
+                  </Typography>
+                </Stack>
+                <Stack direction="row" spacing={2} alignItems="flex-start">
+                  <LocalShippingIcon sx={{ color: "primary.main", mt: 0.5 }} />
+                  <Typography variant="regularS" color="text.primary" sx={{ lineHeight: 1.6 }}>
+                    <strong style={{ fontWeight: 700 }}>Giao hàng miễn phí:</strong> Áp dụng cho mọi đơn hàng từ 500.000đ.
+                  </Typography>
+                </Stack>
+                <Stack direction="row" spacing={2} alignItems="flex-start">
+                  <AutorenewIcon sx={{ color: "primary.main", mt: 0.5 }} />
+                  <Typography variant="regularS" color="text.primary" sx={{ lineHeight: 1.6 }}>
+                    <strong style={{ fontWeight: 700 }}>Đổi trả miễn phí trong 30 ngày:</strong> Hỗ trợ tận tâm, đổi trả dễ dàng.
+                  </Typography>
+                </Stack>
               </Stack>
-              <Stack direction="row" spacing={1.5} alignItems="center">
-                <LocalShippingIcon sx={{ color: "primary.light" }} />
-                <Typography variant="regularS" color="text.primary">
-                  <strong>Giao hàng miễn phí:</strong> Áp dụng cho mọi đơn hàng từ 500.000đ.
-                </Typography>
-              </Stack>
-              <Stack direction="row" spacing={1.5} alignItems="center">
-                <AutorenewIcon sx={{ color: "primary.light" }} />
-                <Typography variant="regularS" color="text.primary">
-                  <strong>Đổi trả miễn phí trong 30 ngày:</strong> Hỗ trợ tận tâm, đổi trả dễ dàng.
-                </Typography>
-              </Stack>
-            </Stack>
+            </Box>
           </Stack>
         </Grid>
 
@@ -435,11 +415,11 @@ const ProductDetail = ({ productId }: { productId: string }) => {
         <Grid size={{ xs: 12 }} sx={{ mt: 2 }}>
           <Paper
             sx={{
-              p: 4,
-              borderRadius: 4,
+              p: { xs: 3, md: 5 },
+              borderRadius: 5,
               border: "1px solid",
               borderColor: "divider",
-              boxShadow: "none",
+              boxShadow: "0 12px 32px -8px rgba(0,0,0,0.03)",
             }}
           >
             <Typography variant="header" mb={3} sx={{ fontWeight: 700, display: "block" }}>
@@ -450,11 +430,17 @@ const ProductDetail = ({ productId }: { productId: string }) => {
               <Box
                 dangerouslySetInnerHTML={{ __html: product.description }}
                 sx={{
-                  fontSize: "15px",
-                  lineHeight: "1.7",
+                  fontSize: "16px",
+                  lineHeight: "1.8",
                   color: "text.secondary",
-                  "& p": { mb: 2 },
-                  "& ul, & ol": { pl: 3, mb: 2 },
+                  "& p": { mb: 2.5 },
+                  "& ul, & ol": { pl: 3, mb: 2.5 },
+                  "& img": {
+                    maxWidth: "100%",
+                    height: "auto",
+                    borderRadius: 3,
+                    my: 2,
+                  },
                 }}
               />
             ) : (
@@ -467,10 +453,10 @@ const ProductDetail = ({ productId }: { productId: string }) => {
 
         {/* Comments & Review Section */}
         <Grid size={{ xs: 12 }} sx={{ mt: 2 }}>
-          <ProductReviews productId={productId} />
+          <ProductReviews  />
         </Grid>
       </Grid>
-    </Container>
+    </Box>
   );
 };
 

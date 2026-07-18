@@ -1,5 +1,8 @@
 import "../../common/scalars/scalars.tsp";
 import "../../common/models/requests.tsp";
+import "../categories/models.tsp";
+import "../brands/models.tsp";
+import "../product-variants/models.tsp";
 import "@typespec/http";
 
 using TypeSpec.Http;
@@ -53,12 +56,15 @@ model ProductByIdResponse {
     productId: UUID;
     productName: string;
     categoryId: UUID;
+    category?: CategoryResponse;
     brandId?: UUID;
+    brand?: BrandResponse;
     thumbnailUrl?: string;
     description?: string;
     slug: string;
     isPublished: boolean;
     images?: Image[];
+    variants?: ProductVariantResponse[];
 }
 
 model ProductsResponse {
@@ -74,7 +80,7 @@ model GetProductRequestParams extends PageQueryParams {
     productName?: NonEmptyString;
 
     @query
-    categoryId?: UUID;
+    categoryIds?: string;
 
     @query
     brandIds?: string;

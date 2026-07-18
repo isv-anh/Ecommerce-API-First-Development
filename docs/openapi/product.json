@@ -479,7 +479,8 @@
         },
         "tags": [
           "brands"
-        ]
+        ],
+        "x-public": true
       },
       "patch": {
         "operationId": "patchBrand",
@@ -761,7 +762,8 @@
         },
         "tags": [
           "categories"
-        ]
+        ],
+        "x-public": true
       },
       "patch": {
         "operationId": "patchCategory",
@@ -1764,7 +1766,8 @@
         },
         "tags": [
           "product-variants"
-        ]
+        ],
+        "x-public": true
       },
       "post": {
         "operationId": "postProductVariant",
@@ -1873,7 +1876,8 @@
         },
         "tags": [
           "product-variants"
-        ]
+        ],
+        "x-public": true
       },
       "patch": {
         "operationId": "patchProductVariant",
@@ -1999,7 +2003,7 @@
             "$ref": "#/components/parameters/GetProductRequestParams.productName"
           },
           {
-            "$ref": "#/components/parameters/GetProductRequestParams.categoryId"
+            "$ref": "#/components/parameters/GetProductRequestParams.categoryIds"
           },
           {
             "$ref": "#/components/parameters/GetProductRequestParams.brandIds"
@@ -2295,7 +2299,7 @@
             "$ref": "#/components/parameters/GetProductRequestParams.productName"
           },
           {
-            "$ref": "#/components/parameters/GetProductRequestParams.categoryId"
+            "$ref": "#/components/parameters/GetProductRequestParams.categoryIds"
           },
           {
             "$ref": "#/components/parameters/GetProductRequestParams.brandIds"
@@ -3044,12 +3048,12 @@
         },
         "explode": false
       },
-      "GetProductRequestParams.categoryId": {
-        "name": "categoryId",
+      "GetProductRequestParams.categoryIds": {
+        "name": "categoryIds",
         "in": "query",
         "required": false,
         "schema": {
-          "$ref": "#/components/schemas/UUID"
+          "type": "string"
         },
         "explode": false
       },
@@ -4091,8 +4095,14 @@
           "categoryId": {
             "$ref": "#/components/schemas/UUID"
           },
+          "category": {
+            "$ref": "#/components/schemas/CategoryResponse"
+          },
           "brandId": {
             "$ref": "#/components/schemas/UUID"
+          },
+          "brand": {
+            "$ref": "#/components/schemas/BrandResponse"
           },
           "thumbnailUrl": {
             "type": "string"
@@ -4110,6 +4120,12 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/Image"
+            }
+          },
+          "variants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductVariantResponse"
             }
           }
         }

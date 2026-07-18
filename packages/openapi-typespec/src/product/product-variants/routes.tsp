@@ -12,6 +12,7 @@ namespace Product.ProductVariants {
     @route("/{productVariantId}")
     @operationId("getProductVariantById")
     @tag("product-variants")
+    @extension("x-public", true)
     op getProductVariantById(
         @path productVariantId: UUID,
     ): GetProductVariantByIdResponse200 | BadRequestError | InternalServerError;
@@ -20,6 +21,7 @@ namespace Product.ProductVariants {
     @route("")
     @operationId("getProductVariants")
     @tag("product-variants")
+    @extension("x-public", true)
     op getProductVariants(
         @query productId?: UUID,
     ): GetProductVariantsResponse200 | BadRequestError | InternalServerError;

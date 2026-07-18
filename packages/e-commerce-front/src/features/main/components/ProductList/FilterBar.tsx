@@ -1,66 +1,52 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useMemo } from "react";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
+import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 
 interface FilterBarProps {
   brandIds: string | undefined;
+  categoryIds: string | undefined;
   minPrice: number | undefined;
   maxPrice: number | undefined;
   sortBy: string | undefined;
   sortOrder: string | undefined;
   hasActiveFilters: boolean;
-  onOpenBrandDialog: () => void;
+  onOpenFilterDialog: () => void;
   onApplyPrice: (min: number | undefined, max: number | undefined) => void;
   onSortChange: (sortBy: string | undefined, sortOrder: string | undefined) => void;
   onResetFilters: () => void;
 }
 
+const PRICE_OPTIONS = [
+  { label: "0đ", value: 0 },
+  { label: "100.000đ", value: 100000 },
+  { label: "500.000đ", value: 500000 },
+  { label: "1.000.000đ", value: 1000000 },
+  { label: "2.000.000đ", value: 2000000 },
+  { label: "5.000.000đ", value: 5000000 },
+  { label: "10.000.000đ", value: 10000000 },
+];
+
 const FilterBar = ({
   brandIds,
+  categoryIds,
   minPrice,
   maxPrice,
   sortBy,
   sortOrder,
   hasActiveFilters,
-  onOpenBrandDialog,
+  onOpenFilterDialog,
   onApplyPrice,
   onSortChange,
   onResetFilters,
 }: FilterBarProps) => {
-  // Local state cho khoảng giá
-  const [localMinPrice, setLocalMinPrice] = useState<string>(
-    minPrice ? String(minPrice) : ""
-  );
-  const [localMaxPrice, setLocalMaxPrice] = useState<string>(
-    maxPrice ? String(maxPrice) : ""
-  );
-
-  const [prevMinPrice, setPrevMinPrice] = useState(minPrice);
-  const [prevMaxPrice, setPrevMaxPrice] = useState(maxPrice);
-
-  if (minPrice !== prevMinPrice) {
-    setPrevMinPrice(minPrice);
-    setLocalMinPrice(minPrice ? String(minPrice) : "");
-  }
-
-  if (maxPrice !== prevMaxPrice) {
-    setPrevMaxPrice(maxPrice);
-    setLocalMaxPrice(maxPrice ? String(maxPrice) : "");
-  }
-
-  const handleApplyPriceClick = () => {
-    const min = localMinPrice ? parseInt(localMinPrice, 10) : undefined;
-    const max = localMaxPrice ? parseInt(localMaxPrice, 10) : undefined;
-    onApplyPrice(min, max);
-  };
 
   const handleSortSelectChange = (event: any) => {
     const value = event.target.value;
@@ -81,98 +67,98 @@ const FilterBar = ({
     return brandIds ? brandIds.split(",").filter(Boolean).length : 0;
   }, [brandIds]);
 
+  const selectedCategoriesCount = useMemo(() => {
+    return categoryIds ? categoryIds.split(",").filter(Boolean).length : 0;
+  }, [categoryIds]);
+
+  const totalSelectedCount = selectedBrandsCount + selectedCategoriesCount;
+
   return (
     <Paper
       elevation={0}
       sx={{
-        p: 2,
-        borderRadius: 3.5,
-        border: "1px solid",
-        borderColor: "divider",
+        p: { xs: 2, md: 2.5 },
+        borderRadius: 4,
         bgcolor: "background.paper",
         display: "flex",
         flexWrap: "wrap",
         alignItems: "center",
-        gap: 2,
-        boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.01)",
+        gap: { xs: 2, md: 3 },
+        boxShadow: "0px 4px 24px rgba(0, 0, 0, 0.04)",
+        border: "1px solid",
+        borderColor: "grey.100",
       }}
     >
-      {/* Bộ lọc Thương hiệu */}
+      {/* Nút Bộ Lọc (Thương hiệu + Danh mục) */}
       <Button
-        variant="outlined"
-        onClick={onOpenBrandDialog}
+        variant={totalSelectedCount > 0 ? "contained" : "outlined"}
+        onClick={onOpenFilterDialog}
+        startIcon={<FilterAltOutlinedIcon />}
         sx={{
-          borderRadius: 2.5,
+          borderRadius: 8,
           textTransform: "none",
-          borderColor: selectedBrandsCount > 0 ? "primary.main" : "divider",
-          color: selectedBrandsCount > 0 ? "primary.main" : "text.secondary",
-          fontWeight: selectedBrandsCount > 0 ? "bold" : "regular",
-          px: 2,
+          borderColor: totalSelectedCount > 0 ? "primary.main" : "grey.300",
+          color: totalSelectedCount > 0 ? "common.white" : "text.primary",
+          fontWeight: 600,
+          px: 3,
           py: 0.75,
           "&:hover": {
-            borderColor: selectedBrandsCount > 0 ? "primary.dark" : "text.primary",
-            bgcolor: "action.hover",
+            borderColor: "primary.main",
+            bgcolor: totalSelectedCount > 0 ? "primary.dark" : "grey.50",
           },
         }}
       >
-        {selectedBrandsCount > 0 ? `Thương hiệu (${selectedBrandsCount})` : "Chọn thương hiệu"}
+        {totalSelectedCount > 0 ? `Bộ lọc (${totalSelectedCount})` : "Bộ lọc"}
       </Button>
 
+      <Box sx={{ width: "1px", height: 24, bgcolor: "grey.200", mx: 1, display: { xs: 'none', md: 'block' } }} />
+
       {/* Lọc khoảng giá */}
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-        <TextField
-          placeholder="Giá từ đ"
-          size="small"
-          type="number"
-          value={localMinPrice}
-          onChange={(e) => setLocalMinPrice(e.target.value)}
-          slotProps={{
-            htmlInput: { min: 0 },
-          }}
-          sx={{
-            width: 150,
-            "& .MuiOutlinedInput-root": {
-              borderRadius: 2.5,
-            },
-          }}
-        />
-        <Typography variant="regularS" color="text.secondary">
-          -
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, flexWrap: "wrap" }}>
+        <Typography variant="regularS" color="text.secondary" sx={{ display: { xs: "none", sm: "block" } }}>
+          Khoảng giá:
         </Typography>
-        <TextField
-          placeholder="Đến đ"
-          size="small"
-          type="number"
-          value={localMaxPrice}
-          onChange={(e) => setLocalMaxPrice(e.target.value)}
-          slotProps={{
-            htmlInput: { min: 0 },
-          }}
-          sx={{
-            width: 150,
-            "& .MuiOutlinedInput-root": {
-              borderRadius: 2.5,
-            },
-          }}
-        />
-        <Button
-          variant="contained"
-          onClick={handleApplyPriceClick}
-          sx={{
-            borderRadius: 2.5,
-            bgcolor: "primary.main",
-            color: "common.white",
-            textTransform: "none",
-            fontWeight: "bold",
-            py: 0.75,
-            px: 2,
-            "&:hover": {
-              bgcolor: "primary.dark",
-            },
-          }}
-        >
-          Áp dụng giá
-        </Button>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <FormControl size="small" sx={{ minWidth: 140 }}>
+            <Select
+              displayEmpty
+              value={minPrice === undefined ? "" : minPrice}
+              onChange={(e) => onApplyPrice(String(e.target.value) === "" ? undefined : Number(e.target.value), maxPrice)}
+              sx={{ borderRadius: 2.5, bgcolor: "background.paper" }}
+            >
+              <MenuItem value=""><em>Từ (Không áp dụng)</em></MenuItem>
+              {PRICE_OPTIONS.map((option) => (
+                <MenuItem 
+                  key={option.value} 
+                  value={option.value}
+                  disabled={maxPrice !== undefined && option.value > maxPrice}
+                >
+                  {option.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <Typography variant="regularM" color="text.secondary">-</Typography>
+          <FormControl size="small" sx={{ minWidth: 140 }}>
+            <Select
+              displayEmpty
+              value={maxPrice === undefined ? "" : maxPrice}
+              onChange={(e) => onApplyPrice(minPrice, String(e.target.value) === "" ? undefined : Number(e.target.value))}
+              sx={{ borderRadius: 2.5, bgcolor: "background.paper" }}
+            >
+              <MenuItem value=""><em>Đến (Không áp dụng)</em></MenuItem>
+              {PRICE_OPTIONS.map((option) => (
+                <MenuItem 
+                  key={option.value} 
+                  value={option.value}
+                  disabled={minPrice !== undefined && option.value < minPrice}
+                >
+                  {option.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Box>
       </Box>
 
       {/* Spacer */}

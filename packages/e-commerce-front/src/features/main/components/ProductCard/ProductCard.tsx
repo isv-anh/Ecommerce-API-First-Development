@@ -47,7 +47,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
     >
       <Box
         sx={{
-          aspectRatio: "4/3",
+          aspectRatio: "1/1",
           position: "relative",
           overflow: "hidden",
           bgcolor: "#f9fafb",
@@ -92,7 +92,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         >
           <IconButton
             aria-label="Xem nhanh"
-            href={`/product/${product.productId}`}
+            href={`/product/${product.slug}`}
             size="small"
             sx={{
               bgcolor: "common.white",
@@ -153,7 +153,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
           </Stack>
 
           <Button
-            href={`/product/${product.productId}`}
+            href={`/product/${product.slug}`}
             variant="contained"
             fullWidth
             startIcon={<ShoppingCartIcon sx={{ fontSize: 18 }} />}

@@ -12,6 +12,7 @@ namespace Product.Categories {
     @route("/{categoryId}")
     @operationId("getCategoryByCategoryId")
     @tag("categories")
+    @extension("x-public", true)
     op getCategoryByCategoryId(
         @path categoryId: UUID,
     ): GetCategoryByCategoryIdResponse200 | BadRequestError | InternalServerError;

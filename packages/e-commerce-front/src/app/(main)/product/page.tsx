@@ -54,7 +54,9 @@ const ProductPage = async ({ searchParams }: ProductPageProps) => {
 
   return (
     <Hydration state={dehydrate(queryClient)}>
-      <ProductList />
+      <div className="w-full py-8">
+        <ProductList />
+      </div>
     </Hydration>
   );
 };

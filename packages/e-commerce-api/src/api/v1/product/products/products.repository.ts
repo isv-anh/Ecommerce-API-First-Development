@@ -61,6 +61,10 @@ export class ProductsRepository {
       ? query.brandIds.split(',').filter(Boolean)
       : [];
 
+    const categoryIdList = query.categoryIds
+      ? query.categoryIds.split(',').filter(Boolean)
+      : [];
+
     const whereClause: Record<string, any> = {
       ...(query.productName && {
         name: {
@@ -69,7 +73,11 @@ export class ProductsRepository {
         },
       }),
       id: query.productId,
-      category_id: query.categoryId,
+      ...(categoryIdList.length > 0 && {
+        category_id: {
+          in: categoryIdList,
+        },
+      }),
       ...(brandIdList.length > 0 && {
         brand_id: {
           in: brandIdList,
@@ -276,6 +284,16 @@ export class ProductsRepository {
         categories: true,
         brands: true,
         product_images: true,
+        product_variants: {
+          include: {
+            variant_attribute_values: {
+              include: {
+                attributes: true,
+              },
+            },
+            warehouse_inventory: true,
+          },
+        },
       },
     });
     if (!product) {
@@ -294,6 +312,39 @@ export class ProductsRepository {
         })) || [],
       slug: product.slug || '',
       isPublished: product.is_published ?? false,
+      category: product.categories
+        ? {
+            categoryId: product.categories.id,
+            categoryName: product.categories.name,
+            slug: product.categories.slug || '',
+            parentId: product.categories.parent_id || undefined,
+          }
+        : undefined,
+      brand: product.brands
+        ? {
+            brandId: product.brands.id,
+            brandName: product.brands.name,
+            slug: product.brands.slug || '',
+          }
+        : undefined,
+      variants: product.product_variants.map((v) => ({
+        productVariantId: v.id,
+        productId: v.product_id,
+        sku: v.sku || '',
+        thumbnailUrl: v.thumbnail_url || '',
+        price: Number(v.price),
+        comparePrice: Number(v.compare_price),
+        stock:
+          v.warehouse_inventory?.reduce(
+            (sum, item) => sum + (item.stock || 0),
+            0,
+          ) || 0,
+        variantAttributes: v.variant_attribute_values.map((attr) => ({
+          attributeId: attr.attribute_id,
+          attributeName: attr.attributes.name,
+          attributeValue: attr.value,
+        })),
+      })),
     };
   }
 
