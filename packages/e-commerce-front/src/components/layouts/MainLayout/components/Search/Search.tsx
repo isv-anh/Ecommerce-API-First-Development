@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import TextField from "@/components/inputs/TextField/TextField";
 import Stack from "@mui/material/Stack";
 import { useForm } from "react-hook-form";

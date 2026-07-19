@@ -715,6 +715,67 @@
         }
       }
     },
+    "/api/v1/categories/root": {
+      "get": {
+        "operationId": "getAllRootCategories",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/GetCategoryRequestParams.categoryName"
+          },
+          {
+            "$ref": "#/components/parameters/GetCategoryRequestParams.parentId"
+          },
+          {
+            "$ref": "#/components/parameters/GetCategoryRequestParams.slug"
+          },
+          {
+            "$ref": "#/components/parameters/PageQueryParams.page"
+          },
+          {
+            "$ref": "#/components/parameters/PageQueryParams.pageSize"
+          },
+          {
+            "$ref": "#/components/parameters/PageQueryParams.orderBy"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoriesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "categories"
+        ],
+        "x-public": true
+      }
+    },
     "/api/v1/categories/{categoryId}": {
       "get": {
         "operationId": "getCategoryByCategoryId",

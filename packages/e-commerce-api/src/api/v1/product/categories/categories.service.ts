@@ -27,6 +27,21 @@ export class CategoriesService implements BaseCategoriesControllerInterface {
   }
 
   /**
+   * GET /v1/categories/root
+   *
+   * @param query - Query parameters typed as {@link GetCategoriesQueryParams}
+   * @returns {@link GetCategories200Response}
+   */
+  async getAllRootCategories(
+    query: GetCategoriesQueryParams,
+  ): Promise<GetCategories200Response> {
+    return await this.getCategories({
+      ...query,
+      parentId: undefined,
+    });
+  }
+
+  /**
    * GET /v1/categories
    *
    * @param query - Query parameters typed as {@link GetCategoriesQueryParams}

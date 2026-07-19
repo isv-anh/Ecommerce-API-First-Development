@@ -20,6 +20,77 @@ export class CategoriesRepository {
     });
   }
 
+  async getRootCategories(
+    query: GetCategoriesQueryParams,
+  ): Promise<GetCategories200Response> {
+    const whereClause: Prisma.categoriesWhereInput = {
+      ...(query.categoryName && {
+        name: {
+          contains: query.categoryName,
+          mode: 'insensitive',
+        },
+      }),
+      ...(query.slug && {
+        slug: {
+          contains: query.slug,
+          mode: 'insensitive',
+        },
+      }),
+      parent_id: null,
+    };
+
+    const sortMap: SortMap = {
+      categoryName: 'name',
+      categoryId: 'id',
+      slug: 'slug',
+      parentName: (direction: 'asc' | 'desc') => ({
+        categories: {
+          name: direction,
+        },
+      }),
+      parentId: (direction: 'asc' | 'desc') => ({
+        categories: {
+          id: direction,
+        },
+      }),
+    };
+
+    const sort = parseSort(query.orderBy, sortMap);
+
+    const categories = (
+      await this.prisma.categories.findMany({
+        where: whereClause,
+        orderBy: sort.length > 0 ? sort : [{ id: 'asc' }],
+        take: query.pageSize,
+        skip: query.pageSize * (query.page - 1),
+        include: {
+          categories: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+      })
+    ).map((category) => ({
+      categoryId: category.id,
+      categoryName: category.name,
+      parentId: category.categories?.id || undefined,
+      parentName: category.categories?.name || undefined,
+      slug: category.slug,
+    }));
+
+    const totalCount = await this.prisma.categories.count({
+      where: whereClause,
+    });
+    const totalPages = Math.ceil(totalCount / query.pageSize);
+    return {
+      categories,
+      totalCount,
+      totalPages,
+    };
+  }
+
   async getCategories(
     query: GetCategoriesQueryParams,
   ): Promise<GetCategories200Response> {

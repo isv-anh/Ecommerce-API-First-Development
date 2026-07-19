@@ -9,6 +9,15 @@ using TypeSpec.OpenAPI;
 @route("/categories")
 namespace Product.Categories {
     @get
+    @route("/root")
+    @operationId("getAllRootCategories")
+    @tag("categories")
+    @extension("x-public", true)
+    op getAllRootCategories(
+        ...GetCategoryRequestParams,
+    ): GetCategoriesResponse200 | BadRequestError | InternalServerError;
+
+    @get
     @route("/{categoryId}")
     @operationId("getCategoryByCategoryId")
     @tag("categories")

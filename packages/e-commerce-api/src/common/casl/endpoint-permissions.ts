@@ -115,4 +115,5 @@ export const getPermissions: Record<Operation, PolicyRule[]> = {
   getProductAttributes: [],
   patchProductAttribute: [],
   postProductAttribute: [],
+  getAllRootCategories: [],
 };
