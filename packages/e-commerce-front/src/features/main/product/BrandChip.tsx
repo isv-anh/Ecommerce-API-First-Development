@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { useGetBrandByBrandIdSuspense } from "@e-commerce/api-client/endpoints/product";
 import Chip from "@mui/material/Chip";
 

@@ -28,35 +28,28 @@ const ActiveFavoriteItems = ({
   return (
     <Button
       variant={isFavorite ? "contained" : "outlined"}
-      startIcon={isFavorite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+      startIcon={
+        isFavorite ? (
+          <FavoriteIcon
+            sx={{
+              animation: "pulse 0.4s ease-in-out",
+              "@keyframes pulse": {
+                "0%": { transform: "scale(1)" },
+                "50%": { transform: "scale(1.25)" },
+                "100%": { transform: "scale(1)" },
+              },
+            }}
+          />
+        ) : (
+          <FavoriteBorderIcon />
+        )
+      }
       onClick={() => handleAddToWishlist(isFavorite, wishlistItemsData?.wishlistItems || [])}
-      sx={{
-        flex: 1,
-        py: 1,
-        px: 2,
-        fontSize: "14px",
-        fontWeight: 600,
-        borderRadius: 2.5,
-        ...(isFavorite
-          ? {
-              background: "linear-gradient(135deg, #f43f5e 0%, #fb7185 100%)",
-              boxShadow: "0 4px 12px rgba(244, 63, 94, 0.2)",
-              color: "common.white",
-              border: "none",
-              "&:hover": {
-                background: "linear-gradient(135deg, #e11d48 0%, #f43f5e 100%)",
-              },
-            }
-          : {
-              borderColor: "divider",
-              color: "text.secondary",
-              "&:hover": {
-                borderColor: "primary.light",
-                color: "primary.main",
-                bgcolor: "rgba(130, 37, 236, 0.02)",
-              },
-            }),
-      }}
+      className={`flex-1 py-2 px-4 text-[14px] font-semibold rounded-xl transition-all duration-300 ${
+        isFavorite
+          ? "bg-linear-to-br from-[#ff4b6e] to-[#ff758c] text-white shadow-[0_8px_16px_-4px_rgba(255,75,110,0.4)] border-none hover:from-[#f43f5e] hover:to-[#ff4b6e] hover:shadow-[0_12px_20px_-4px_rgba(255,75,110,0.5)] hover:-translate-y-0.5 active:scale-95"
+          : "border-[1.5px] border-gray-200 text-gray-500 hover:border-[#ff4b6e] hover:text-[#ff4b6e] hover:bg-[#ff4b6e]/5 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(255,75,110,0.1)] active:scale-95"
+      }`}
     >
       {isFavorite ? "Đã thích" : "Yêu thích"}
     </Button>
@@ -84,21 +77,7 @@ const ActiveFavoriteButton = ({
         variant="outlined"
         startIcon={<FavoriteBorderIcon />}
         onClick={() => handleAddToWishlist(false, [])}
-        sx={{
-          flex: 1,
-          py: 1,
-          px: 2,
-          fontSize: "14px",
-          fontWeight: 600,
-          borderRadius: 2.5,
-          borderColor: "divider",
-          color: "text.secondary",
-          "&:hover": {
-            borderColor: "primary.light",
-            color: "primary.main",
-            bgcolor: "rgba(130, 37, 236, 0.02)",
-          },
-        }}
+        className="flex-1 py-2 px-4 text-[14px] font-semibold rounded-xl border-[1.5px] border-gray-200 text-gray-500 transition-all duration-300 hover:border-[#ff4b6e] hover:text-[#ff4b6e] hover:bg-[#ff4b6e]/5 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(255,75,110,0.1)] active:scale-95"
       >
         Yêu thích
       </Button>
@@ -131,21 +110,7 @@ export const FavoriteButton = ({
         variant="outlined"
         startIcon={<FavoriteBorderIcon />}
         onClick={() => handleAddToWishlist(false, [])}
-        sx={{
-          flex: 1,
-          py: 1,
-          px: 2,
-          fontSize: "14px",
-          fontWeight: 600,
-          borderRadius: 2.5,
-          borderColor: "divider",
-          color: "text.secondary",
-          "&:hover": {
-            borderColor: "primary.light",
-            color: "primary.main",
-            bgcolor: "rgba(130, 37, 236, 0.02)",
-          },
-        }}
+        className="flex-1 py-2 px-4 text-[14px] font-semibold rounded-xl border-[1.5px] border-gray-200 text-gray-500 transition-all duration-300 hover:border-[#ff4b6e] hover:text-[#ff4b6e] hover:bg-[#ff4b6e]/5 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(255,75,110,0.1)] active:scale-95"
       >
         Yêu thích
       </Button>
@@ -159,16 +124,7 @@ export const FavoriteButton = ({
           variant="outlined"
           disabled
           startIcon={<FavoriteBorderIcon />}
-          sx={{
-            flex: 1,
-            py: 1,
-            px: 2,
-            fontSize: "14px",
-            fontWeight: 600,
-            borderRadius: 2.5,
-            borderColor: "divider",
-            color: "text.disabled",
-          }}
+          className="flex-1 py-2 px-4 text-[14px] font-semibold rounded-xl border-[1.5px] border-gray-200 text-gray-400"
         >
           Yêu thích
         </Button>

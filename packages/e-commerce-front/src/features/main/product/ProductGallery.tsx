@@ -9,7 +9,6 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import Image from "next/image";
 
-const INACTIVE_OPACITY = 0.6;
 
 interface ProductGalleryProps {
   allImages: string[];
@@ -35,26 +34,16 @@ export const ProductGallery = ({
   return (
     <Stack spacing={2}>
       {/* Main Image Display Carousel */}
+      {/* Main Image Display Carousel */}
       <Box
-        sx={{
-          aspectRatio: "4/3",
-          position: "relative",
-          borderRadius: 4,
-          overflow: "hidden",
-          bgcolor: "#f8fafc",
-          border: "1px solid",
-          borderColor: "divider",
-          boxShadow: "0 4px 20px rgba(0,0,0,0.02)",
-          "&:hover .carousel-nav": {
-            opacity: 1,
-          },
-        }}
+        className="group relative aspect-4/3 rounded-2xl overflow-hidden bg-slate-50 border border-gray-200 shadow-[0_12px_32px_-8px_rgba(0,0,0,0.08)]"
       >
         {allImages[activeImageIdx] ? (
           <Image
             src={allImages[activeImageIdx]}
             alt={productName}
             fill
+            className="transition-transform duration-700 ease-[cubic-bezier(0.2,0.8,0.2,1)] group-hover:scale-105"
             style={{ objectFit: "cover" }}
             priority
           />
@@ -70,49 +59,15 @@ export const ProductGallery = ({
         {allImages.length > 1 && (
           <>
             <IconButton
-              className="carousel-nav"
               onClick={handlePrevImage}
-              sx={{
-                position: "absolute",
-                left: 12,
-                top: "50%",
-                transform: "translateY(-50%)",
-                bgcolor: "rgba(255, 255, 255, 0.9)",
-                color: "text.primary",
-                opacity: 0,
-                transition: "opacity 0.2s ease, background-color 0.2s ease",
-                "&:hover": {
-                  bgcolor: "common.white",
-                  color: "primary.main",
-                },
-                width: 40,
-                height: 40,
-                boxShadow: "0 2px 8px rgba(0,0,0,0.12)",
-              }}
+              className="absolute left-4 top-1/2 -translate-y-1/2 scale-90 bg-white/60 backdrop-blur-md text-gray-800 opacity-0 transition-all duration-300 ease-in-out group-hover:opacity-100 group-hover:scale-100 hover:bg-white/95! hover:text-indigo-600! shadow-md w-11 h-11"
             >
-              <ArrowBackIosNewIcon fontSize="small" />
+              <ArrowBackIosNewIcon fontSize="small" className="ml-1" />
             </IconButton>
 
             <IconButton
-              className="carousel-nav"
               onClick={handleNextImage}
-              sx={{
-                position: "absolute",
-                right: 12,
-                top: "50%",
-                transform: "translateY(-50%)",
-                bgcolor: "rgba(255, 255, 255, 0.9)",
-                color: "text.primary",
-                opacity: 0,
-                transition: "opacity 0.2s ease, background-color 0.2s ease",
-                "&:hover": {
-                  bgcolor: "common.white",
-                  color: "primary.main",
-                },
-                width: 40,
-                height: 40,
-                boxShadow: "0 2px 8px rgba(0,0,0,0.12)",
-              }}
+              className="absolute right-4 top-1/2 -translate-y-1/2 scale-90 bg-white/60 backdrop-blur-md text-gray-800 opacity-0 transition-all duration-300 ease-in-out group-hover:opacity-100 group-hover:scale-100 hover:bg-white/95! hover:text-indigo-600! shadow-md w-11 h-11"
             >
               <ArrowForwardIosIcon fontSize="small" />
             </IconButton>
@@ -139,17 +94,9 @@ export const ProductGallery = ({
               <Box
                 key={idx}
                 onClick={() => setActiveImageIdx(idx)}
-                sx={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: "50%",
-                  bgcolor: activeImageIdx === idx ? "common.white" : "rgba(255, 255, 255, 0.5)",
-                  cursor: "pointer",
-                  transition: "all 0.2s ease",
-                  "&:hover": {
-                    bgcolor: "common.white",
-                  },
-                }}
+                className={`w-2 h-2 rounded-full cursor-pointer transition-all duration-200 hover:bg-white ${
+                  activeImageIdx === idx ? "bg-white" : "bg-white/50"
+                }`}
               />
             ))}
           </Stack>
@@ -163,22 +110,11 @@ export const ProductGallery = ({
             <Box
               key={idx}
               onClick={() => setActiveImageIdx(idx)}
-              sx={{
-                width: 70,
-                height: 70,
-                position: "relative",
-                borderRadius: 2,
-                overflow: "hidden",
-                cursor: "pointer",
-                border: "2px solid",
-                borderColor: activeImageIdx === idx ? "primary.main" : "divider",
-                opacity: activeImageIdx === idx ? 1 : INACTIVE_OPACITY,
-                transition: "all 0.2s ease",
-                "&:hover": {
-                  opacity: 1,
-                  borderColor: "primary.light",
-                },
-              }}
+              className={`w-[72px] h-[72px] relative rounded-[10px] overflow-hidden cursor-pointer transition-all duration-300 hover:opacity-100 hover:border-indigo-400 hover:-translate-y-0.5 ${
+                activeImageIdx === idx
+                  ? "border-2 border-indigo-600 opacity-100 shadow-[0_4px_12px_rgba(79,70,229,0.2)] -translate-y-0.5"
+                  : "border border-gray-200 opacity-60 translate-y-0"
+              }`}
             >
               <Image
                 src={url}

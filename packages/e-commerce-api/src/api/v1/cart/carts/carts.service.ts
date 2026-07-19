@@ -13,7 +13,6 @@ import { CartsRepository } from '@/api/v1/cart/carts/carts.repository';
 export class CartsService implements BaseCartsControllerInterface {
   constructor(private readonly cartsRepository: CartsRepository) {}
   async getCart(query: GetCartQueryParams): Promise<GetCart200Response> {
-    console.log('getCart called with query:', query);
     return await this.cartsRepository.getCartByUserId(query.userId);
   }
 

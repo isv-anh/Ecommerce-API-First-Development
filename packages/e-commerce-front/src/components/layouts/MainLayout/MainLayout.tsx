@@ -5,7 +5,6 @@ import Box from "@mui/material/Box";
 import Search from "./components/Search/Search";
 import Footer from "./components/Footer/Footer";
 import { useScrollTrigger } from "@mui/material";
-import ActionButtonList from "./components/ActionButtonList/ActionButtonList";
 import ScrollToTopButton from "./components/ScrollToTopButton/ScrollToTopButton";
 
 
@@ -23,13 +22,11 @@ const MainLayout = ({ children }: { children: ReactNode }) => {
         <Search />
       </div>
       <div className="grow flex flex-col w-full">
-        <Box className="w-full">
-         
-          <Box className="w-full">{children}</Box>
+        <Box className="w-full max-w-7xl mx-auto px-4 md:px-8">
+          {children}
         </Box>
       </div>
       <Footer />
-      <ActionButtonList />
       {trigger && <ScrollToTopButton />}
     </Box>
   );

@@ -18,7 +18,7 @@ const Home = () => {
   return (
     <div className="flex flex-col gap-12 pb-12">
       <SpotlightCarousel timeout={5000} />
-      <div className="max-w-7xl mx-auto px-4 md:px-8 w-full flex flex-col gap-12">
+      <div className="w-full flex flex-col gap-12">
         <FeaturedCategories />
         <SuspenseWrapper height={500}>
           <ProductGrid params={{ page: 1, pageSize: 8 }} />

@@ -12,6 +12,7 @@ namespace Product.Brands {
     @route("/{brandId}")
     @operationId("getBrandByBrandId")
     @tag("brands")
+    @extension("x-public", true)
     op getBrandByBrandId(
         @path brandId: UUID,
     ): GetBrandByBrandIdResponse200 | BadRequestError | InternalServerError;
