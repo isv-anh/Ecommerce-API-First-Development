@@ -35,10 +35,7 @@ export class CategoriesService implements BaseCategoriesControllerInterface {
   async getAllRootCategories(
     query: GetCategoriesQueryParams,
   ): Promise<GetCategories200Response> {
-    return await this.getCategories({
-      ...query,
-      parentId: undefined,
-    });
+    return await this.categoriesRepository.getRootCategories(query);
   }
 
   /**

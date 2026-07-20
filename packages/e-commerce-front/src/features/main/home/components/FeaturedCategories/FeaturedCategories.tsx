@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
@@ -7,34 +7,20 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { useGetAllRootCategoriesSuspense } from "@e-commerce/api-client/endpoints/product";
 import NextLink from "next/link";
 
-
 const MAX_CATEGORIES = 4;
 
-type Category = {
-  categoryId: string;
-  categoryName: string;
-  parentId?: string | null;
-};
-
-const FeaturedCategories = ({
-  title = "Danh mục",
-}: {
-  title?: string;
-}) => {
+const FeaturedCategories = ({ title = "Danh mục" }: { title?: string }) => {
   const { data } = useGetAllRootCategoriesSuspense();
   const categories = data?.categories?.slice(0, MAX_CATEGORIES) || [];
 
   return (
-    <Box
-      component="section"
-      sx={{ width: "100%", px: 0, py: 4 }}
-    >
+    <Box component="section" sx={{ width: "100%", px: 0, py: 4 }}>
       <Typography variant="header" sx={{ mb: 3, fontWeight: 700 }}>
         {title}
       </Typography>
 
       <Grid container spacing={2.5}>
-        {categories.map((c: Category) => (
+        {categories.map((c) => (
           <Grid key={c.categoryId} size={{ xs: 6, md: 3 }}>
             <Button
               component={NextLink}
