@@ -8,19 +8,15 @@ import {
   getGetProductBySlugQueryKey,
 } from "@e-commerce/api-client/endpoints/product";
 
-const ProductDetailPage = async ({
-  params,
-}: PageProps<"/product/[slug]">) => {
+const ProductDetailPage = async ({ params }: PageProps<"/product/[slug]">) => {
   const { slug } = await params;
   const queryClient = getQueryClient();
 
   try {
-    // 1. Prefetch product by slug
     await queryClient.prefetchQuery({
       queryKey: getGetProductBySlugQueryKey(slug),
       queryFn: () => getProductBySlug(slug),
     });
-
   } catch (error) {
     console.error("Failed to prefetch product data:", error);
   }
