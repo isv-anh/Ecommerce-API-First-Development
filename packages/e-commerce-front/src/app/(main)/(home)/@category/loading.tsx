@@ -14,7 +14,11 @@ export default function CategoryLoading() {
       <Grid container spacing={2.5}>
         {Array.from(new Array(MAX_CATEGORIES)).map((_, idx) => (
           <Grid key={idx} size={{ xs: 6, md: 3 }}>
-            <Skeleton variant="rounded" height={80} sx={{ borderRadius: "12px" }} />
+            <Skeleton
+              variant="rounded"
+              height={80}
+              sx={{ borderRadius: "12px" }}
+            />
           </Grid>
         ))}
       </Grid>

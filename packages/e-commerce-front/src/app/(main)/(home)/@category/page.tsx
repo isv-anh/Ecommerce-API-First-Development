@@ -2,7 +2,10 @@ import FeaturedCategories from "@/features/main/home/components/FeaturedCategori
 import Hydration from "@/components/ssr/Hydration/Hydration";
 import { getQueryClient } from "@/utils/query";
 import { dehydrate } from "@tanstack/react-query";
-import { getAllRootCategories, getGetAllRootCategoriesQueryKey } from "@e-commerce/api-client/endpoints/product";
+import {
+  getAllRootCategories,
+  getGetAllRootCategoriesQueryKey,
+} from "@e-commerce/api-client/endpoints/product";
 
 export default async function CategorySlot() {
   const queryClient = getQueryClient();
