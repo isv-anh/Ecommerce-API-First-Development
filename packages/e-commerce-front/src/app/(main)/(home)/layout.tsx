@@ -1,5 +1,7 @@
 import Newsletter from "@/features/main/home/components/Newsletter/Newsletter";
 
+export const dynamic = 'force-dynamic';
+
 export default function HomeLayout({
   children,
   category,
