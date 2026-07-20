@@ -1,36 +1,30 @@
+"use client";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import { useGetAllRootCategoriesSuspense } from "@e-commerce/api-client/endpoints/product";
+import NextLink from "next/link";
 
-// Minimalist categories
-const DEFAULT_CATEGORIES = [
-  { id: "c1", name: "Thời trang", href: "/product" },
-  { id: "c2", name: "Đồ điện tử", href: "/product" },
-  { id: "c3", name: "Nhà cửa", href: "/product" },
-  { id: "c4", name: "Đồ chơi", href: "/product" },
-];
+const MAX_CATEGORIES = 4;
 
-const FeaturedCategories = ({
-  title = "Danh mục",
-}: {
-  title?: string;
-}) => {
+const FeaturedCategories = ({ title = "Danh mục" }: { title?: string }) => {
+  const { data } = useGetAllRootCategoriesSuspense();
+  const categories = data?.categories?.slice(0, MAX_CATEGORIES) || [];
+
   return (
-    <Box
-      component="section"
-      sx={{ width: "100%", px: 0, py: 4 }}
-    >
+    <Box component="section" sx={{ width: "100%", px: 0, py: 4 }}>
       <Typography variant="header" sx={{ mb: 3, fontWeight: 700 }}>
         {title}
       </Typography>
 
       <Grid container spacing={2.5}>
-        {DEFAULT_CATEGORIES.map((c) => (
-          <Grid key={c.id} size={{ xs: 6, md: 3 }}>
+        {categories.map((c) => (
+          <Grid key={c.categoryId} size={{ xs: 6, md: 3 }}>
             <Button
-              href={c.href}
+              component={NextLink}
+              href={`/product?category=${c.categoryId}`}
               variant="outlined"
               fullWidth
               endIcon={<ArrowForwardIcon fontSize="small" />}
@@ -61,7 +55,7 @@ const FeaturedCategories = ({
                 transition: "all 0.2s ease",
               }}
             >
-              {c.name}
+              {c.categoryName}
             </Button>
           </Grid>
         ))}

@@ -42,8 +42,6 @@ export class UserProductsService
   async getProductBySlug(
     params: GetProductBySlugParams,
   ): Promise<GetProductBySlug200Response> {
-    return await this.productsRepository.getProductBySlug(
-      params.slug as string,
-    );
+    return await this.productsRepository.getProductBySlug(params.slug);
   }
 }
