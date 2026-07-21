@@ -59,10 +59,16 @@ ENV HOSTNAME="0.0.0.0"
 COPY --from=builder --chown=node:node /app/out ./
 
 # Switch to non-root user for security best practices
+# We temporarily switch to root to remove the global npm installed by the base node image.
+# This prevents Trivy from reporting vulnerabilities (e.g., in tar, glob, minimatch) 
+# that exist within npm itself. Since we use pnpm for package management and 
+# run the app with node directly, npm is entirely unnecessary in the production image.
+USER root
+RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx
 USER node
 
 # Expose port 8080 to allow HTTP traffic
 EXPOSE 8080
 
 # Start API server
-CMD ["npm", "run", "start:prod"]
+CMD ["node", "dist/src/main"]
