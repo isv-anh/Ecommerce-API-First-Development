@@ -7,8 +7,10 @@ import Axios, {
 import tokenStore from "../storages/token-storage";
 
 const getBaseUrl = () => {
-  const apiUrl = process.env.API_URL;
-  return apiUrl || "http://localhost:8080";
+  if (typeof window === "undefined") {
+    return process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+  }
+  return process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 };
 
 export const AXIOS_INSTANCE = Axios.create({

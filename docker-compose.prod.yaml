@@ -1,0 +1,98 @@
+services:
+  postgres-db:
+    container_name: postgres-db-prod
+    image: postgres:16
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+      - TZ=Asia/Ho_Chi_Minh
+    volumes:
+      - pg_data_prod:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -h localhost -U ${POSTGRES_USER} -d ${DB_NAME}",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - e-commerce-network-prod
+
+  liquibase:
+    image: liquibase/liquibase:4.33
+    container_name: liquibase-prod
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+    volumes:
+      - ./packages/e-commerce-db/changelog:/liquibase/changelog
+    command:
+      - --url=jdbc:postgresql://postgres-db:5432/${DB_NAME}
+      - --username=${POSTGRES_USER}
+      - --password=${POSTGRES_PASSWORD}
+      - --changeLogFile=db.changelog-master.yaml
+      - --searchPath=/liquibase/changelog
+      - update
+      - -DadminPassword=${ADMIN_PASSWORD:?ADMIN_PASSWORD is required. Run ansible/setup.sh or add ADMIN_PASSWORD to .env}
+    networks:
+      - e-commerce-network-prod
+
+  api:
+    container_name: e-commerce-api-prod
+    build:
+      context: .
+      dockerfile: docker/e-commerce-api/dockerfile
+    ports:
+      - "8080:8080"
+    restart: always
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+      liquibase:
+        condition: service_completed_successfully
+    env_file:
+      - .env.production
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=postgres-db
+      - DB_PORT=5432
+      - DB_USERNAME=${POSTGRES_USER}
+      - DB_PASSWORD=${POSTGRES_PASSWORD}
+      - DB_NAME=${DB_NAME}
+    networks:
+      - e-commerce-network-prod
+
+  frontend:
+    container_name: e-commerce-front-prod
+    build:
+      context: .
+      dockerfile: docker/e-commerce-front/dockerfile
+      # We must pass NEXT_PUBLIC_ variables via args at build time so that Next.js
+      # can hardcode/inline this value into the client-side JavaScript bundle.
+      # The `env_file` below only applies at run time (for SSR), not at build time.
+      args:
+        - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8080}
+    ports:
+      - "3000:3000"
+    restart: always
+    depends_on:
+      - api
+    env_file:
+      - .env.production
+    environment:
+      - NODE_ENV=production
+    networks:
+      - e-commerce-network-prod
+
+networks:
+  e-commerce-network-prod:
+    driver: bridge
+
+volumes:
+  pg_data_prod:

@@ -1,0 +1,87 @@
+# ============================================
+# Stage 1: Build Next.js application in standalone mode
+# ============================================
+
+# IMPORTANT: Node.js Version Maintenance
+# This Dockerfile uses Node.js 22.17.0-slim, which was the latest LTS version at the time of writing.
+# To ensure security and compatibility, regularly update the NODE_VERSION ARG to the latest LTS version.
+ARG NODE_VERSION=22.17.0-slim
+
+FROM node:${NODE_VERSION} AS builder
+
+# Set working directory
+WORKDIR /app
+
+# Enable pnpm
+RUN corepack enable && corepack prepare pnpm@10.13.1 --activate
+
+# Copy root configs
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+
+# Copy all packages and docs
+COPY packages/ ./packages/
+COPY docs/ ./docs/
+
+# Install project dependencies with frozen lockfile for reproducible builds
+# Using cache mount for pnpm store to speed up installs
+RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
+    pnpm install --frozen-lockfile
+
+ENV NODE_ENV=production
+
+# Receive NEXT_PUBLIC_API_URL from the build process (docker-compose args)
+# so Next.js can embed/inline this value into the client-side JavaScript source.
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+
+# Next.js collects completely anonymous telemetry data about general usage.
+# Learn more here: https://nextjs.org/telemetry
+ENV NEXT_TELEMETRY_DISABLED=1
+
+# Generate API client and validation
+RUN pnpm run api-validation:build
+RUN pnpm run api-client:build
+
+# Build the frontend package
+# Cache the Next.js build artifacts to speed up rebuilds
+RUN --mount=type=cache,target=/app/packages/e-commerce-front/.next/cache \
+    pnpm --filter e-commerce-front build
+
+# ============================================
+# Stage 2: Run Next.js application
+# ============================================
+
+FROM node:${NODE_VERSION} AS runner
+
+# Set working directory
+WORKDIR /app
+
+# Set production environment variables
+ENV NODE_ENV=production
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
+
+# Next.js collects completely anonymous telemetry data about general usage.
+ENV NEXT_TELEMETRY_DISABLED=1
+
+# Set the correct permission for prerender cache
+# We create the specific Next.js directory in the monorepo structure
+RUN mkdir -p packages/e-commerce-front/.next
+RUN chown -R node:node packages/e-commerce-front/.next
+
+# Copy production assets
+COPY --from=builder --chown=node:node /app/packages/e-commerce-front/public ./packages/e-commerce-front/public
+
+# Automatically leverage output traces to reduce image size
+# Next.js standalone output contains the full workspace structure
+COPY --from=builder --chown=node:node /app/packages/e-commerce-front/.next/standalone ./
+COPY --from=builder --chown=node:node /app/packages/e-commerce-front/.next/static ./packages/e-commerce-front/.next/static
+
+# Switch to non-root user for security best practices
+USER node
+
+# Expose port 3000 to allow HTTP traffic
+EXPOSE 3000
+
+# Start Next.js standalone server
+CMD ["node", "packages/e-commerce-front/server.js"]
