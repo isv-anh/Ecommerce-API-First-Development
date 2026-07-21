@@ -6,6 +6,9 @@ ARG NODE_VERSION=22.17.0-slim
 
 FROM node:${NODE_VERSION} AS builder
 
+# Apply OS security patches
+RUN apt-get update && apt-get upgrade -y && rm -rf /var/lib/apt/lists/*
+
 # Set working directory
 WORKDIR /app
 
@@ -40,6 +43,9 @@ RUN pnpm --filter e-commerce-api --prod deploy --legacy /app/out
 # ============================================
 
 FROM node:${NODE_VERSION} AS runner
+
+# Apply OS security patches
+RUN apt-get update && apt-get upgrade -y && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
 WORKDIR /app
