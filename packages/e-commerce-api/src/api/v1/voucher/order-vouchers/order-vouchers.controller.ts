@@ -12,9 +12,7 @@ import type {
 import { BaseOrderVouchersControllerInterface } from '@generated-controller/voucher/order-vouchers/base-order-vouchers.controller.interface';
 
 @Injectable()
-export class OrderVouchersController
-  implements BaseOrderVouchersControllerInterface
-{
+export class OrderVouchersController implements BaseOrderVouchersControllerInterface {
   constructor(private readonly service: OrderVouchersService) {}
 
   /**

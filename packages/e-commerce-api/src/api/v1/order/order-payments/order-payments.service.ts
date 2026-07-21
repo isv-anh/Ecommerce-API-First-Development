@@ -15,9 +15,7 @@ import type { BaseOrderPaymentsControllerInterface } from '@generated-controller
 import { OrderPaymentsRepository } from '@/api/v1/order/order-payments/order-payments.repository';
 
 @Injectable()
-export class OrderPaymentsService
-  implements BaseOrderPaymentsControllerInterface
-{
+export class OrderPaymentsService implements BaseOrderPaymentsControllerInterface {
   constructor(
     private readonly orderPaymentsRepository: OrderPaymentsRepository,
   ) {}

@@ -14,9 +14,7 @@ import type {
 import { BaseWarehouseInventoriesControllerInterface } from '@generated-controller/product/warehouse-inventories/base-warehouse-inventories.controller.interface';
 
 @Injectable()
-export class WarehouseInventoriesController
-  implements BaseWarehouseInventoriesControllerInterface
-{
+export class WarehouseInventoriesController implements BaseWarehouseInventoriesControllerInterface {
   constructor(private readonly service: WarehouseInventoriesService) {}
 
   /**

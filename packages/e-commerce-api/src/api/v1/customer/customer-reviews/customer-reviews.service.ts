@@ -15,9 +15,7 @@ import { CustomerReviewsRepository } from '@/api/v1/customer/customer-reviews/cu
 import { BaseCustomerReviewsControllerInterface } from '@generated-controller/customer/customer-reviews/base-customer-reviews.controller.interface';
 
 @Injectable()
-export class CustomerReviewsService
-  implements BaseCustomerReviewsControllerInterface
-{
+export class CustomerReviewsService implements BaseCustomerReviewsControllerInterface {
   constructor(
     private readonly customerReviewsRepository: CustomerReviewsRepository,
   ) {}
