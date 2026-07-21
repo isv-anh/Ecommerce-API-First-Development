@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import type {
   GetUserProductsQueryParams,
   GetUserProducts200Response,
-  GetProductsQueryParams,
   GetProductBySlugParams,
   GetProductBySlug200Response,
 } from '@e-commerce/api-validation/types/product';
@@ -10,9 +9,7 @@ import type { BaseUserProductsControllerInterface } from '@generated-controller/
 import { ProductsRepository } from '@/api/v1/product/products/products.repository';
 
 @Injectable()
-export class UserProductsService
-  implements BaseUserProductsControllerInterface
-{
+export class UserProductsService implements BaseUserProductsControllerInterface {
   constructor(private readonly productsRepository: ProductsRepository) {}
 
   /**
@@ -26,9 +23,7 @@ export class UserProductsService
   async getUserProducts(
     query: GetUserProductsQueryParams,
   ): Promise<GetUserProducts200Response> {
-    return await this.productsRepository.getUserProducts(
-      query as GetProductsQueryParams,
-    );
+    return await this.productsRepository.getUserProducts(query);
   }
 
   /**

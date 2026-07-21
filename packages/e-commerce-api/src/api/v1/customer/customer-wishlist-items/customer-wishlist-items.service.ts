@@ -11,9 +11,7 @@ import { CustomerWishlistItemsRepository } from '@/api/v1/customer/customer-wish
 import { BaseCustomerWishlistItemsControllerInterface } from '@generated-controller/customer/customer-wishlist-items/base-customer-wishlist-items.controller.interface';
 
 @Injectable()
-export class CustomerWishlistItemsService
-  implements BaseCustomerWishlistItemsControllerInterface
-{
+export class CustomerWishlistItemsService implements BaseCustomerWishlistItemsControllerInterface {
   constructor(
     private readonly customerWishlistItemsRepository: CustomerWishlistItemsRepository,
   ) {}

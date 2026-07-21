@@ -205,7 +205,7 @@ describe('ProductAttributesService', () => {
       (prisma.product_attributes.findUnique as jest.Mock).mockResolvedValue({
         product_id: productId,
         attribute_id: newAttributeId,
-      } as never);
+      });
 
       await expect(service.patchProductAttribute(params, body)).rejects.toThrow(
         ConflictException,

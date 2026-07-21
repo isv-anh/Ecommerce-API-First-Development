@@ -8,9 +8,7 @@ import {
 import { Prisma } from 'generated/prisma/client';
 
 @Catch(Prisma.PrismaClientKnownRequestError)
-export class PrismaExceptionFilter
-  implements ExceptionFilter<Prisma.PrismaClientKnownRequestError>
-{
+export class PrismaExceptionFilter implements ExceptionFilter<Prisma.PrismaClientKnownRequestError> {
   catch(error: Prisma.PrismaClientKnownRequestError) {
     switch (error.code) {
       case 'P2025':

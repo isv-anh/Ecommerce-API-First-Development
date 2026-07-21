@@ -9,9 +9,7 @@ import type { BaseUserProductsControllerInterface } from '@generated-controller/
 import { UserProductsService } from '@/api/v1/product/user-products/user-products.service';
 
 @Injectable()
-export class UserProductsController
-  implements BaseUserProductsControllerInterface
-{
+export class UserProductsController implements BaseUserProductsControllerInterface {
   constructor(private readonly service: UserProductsService) {}
 
   /**

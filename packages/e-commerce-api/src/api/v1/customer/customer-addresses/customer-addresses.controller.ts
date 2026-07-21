@@ -13,9 +13,7 @@ import type {
 import { BaseCustomerAddressesControllerInterface } from '@generated-controller/customer/customer-addresses/base-customer-addresses.controller.interface';
 
 @Injectable()
-export class CustomerAddressesController
-  implements BaseCustomerAddressesControllerInterface
-{
+export class CustomerAddressesController implements BaseCustomerAddressesControllerInterface {
   constructor(private readonly service: CustomerAddressesService) {}
 
   /**

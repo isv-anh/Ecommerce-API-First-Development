@@ -17,9 +17,7 @@ import { ProductAttributesRepository } from './product-attributes.repository';
 import { PrismaService } from '@/common/services/prisma.service';
 
 @Injectable()
-export class ProductAttributesService
-  implements BaseProductAttributesControllerInterface
-{
+export class ProductAttributesService implements BaseProductAttributesControllerInterface {
   constructor(
     private readonly productAttributesRepository: ProductAttributesRepository,
     private readonly prisma: PrismaService,

@@ -13,9 +13,7 @@ import type { BaseVoucherConditionsControllerInterface } from '@generated-contro
 import { VoucherConditionsRepository } from '@/api/v1/voucher/voucher-conditions/voucher-conditions.repository';
 
 @Injectable()
-export class VoucherConditionsService
-  implements BaseVoucherConditionsControllerInterface
-{
+export class VoucherConditionsService implements BaseVoucherConditionsControllerInterface {
   constructor(
     private readonly voucherConditionsRepository: VoucherConditionsRepository,
   ) {}
