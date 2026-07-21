@@ -1,0 +1,15 @@
+node_modules
+packages/*/node_modules
+.git
+.github
+**/.next
+.vscode
+dist
+build
+out
+*.log
+.env*
+!.env.example
+.turbo
+*.md
+!README.md

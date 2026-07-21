@@ -1,0 +1,62 @@
+# ============================================
+# Stage 1: Build API application
+# ============================================
+
+ARG NODE_VERSION=22.17.0-slim
+
+FROM node:${NODE_VERSION} AS builder
+
+# Set working directory
+WORKDIR /app
+
+# Enable pnpm
+RUN corepack enable && corepack prepare pnpm@10.13.1 --activate
+
+# Copy root configs
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+
+# Cache bust for .npmignore
+COPY packages/ ./packages/
+COPY docs/ ./docs/
+
+# Install project dependencies with frozen lockfile for reproducible builds
+# Using cache mount for pnpm store to speed up installs
+RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
+    pnpm install --frozen-lockfile
+
+ENV NODE_ENV=production
+
+# Generate types for API validation
+RUN pnpm run api-validation:build
+
+# Build the api package
+RUN pnpm --filter e-commerce-api build
+
+# Deploy isolated production environment
+RUN pnpm --filter e-commerce-api --prod deploy --legacy /app/out
+
+# ============================================
+# Stage 2: Run API application
+# ============================================
+
+FROM node:${NODE_VERSION} AS runner
+
+# Set working directory
+WORKDIR /app
+
+# Set production environment variables
+ENV NODE_ENV=production
+ENV PORT=8080
+ENV HOSTNAME="0.0.0.0"
+
+# Copy the deployed production environment from builder
+COPY --from=builder --chown=node:node /app/out ./
+
+# Switch to non-root user for security best practices
+USER node
+
+# Expose port 8080 to allow HTTP traffic
+EXPOSE 8080
+
+# Start API server
+CMD ["npm", "run", "start:prod"]
