@@ -1,6 +1,6 @@
 "use client";
 import { styled } from "@mui/material/styles";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import type { AppNavigationProps } from "./types";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
@@ -47,10 +47,12 @@ const AppNavigation = ({
   children,
 }: AppNavigationProps) => {
   const [open, setOpen] = useState(initVisibleDrawer);
+  const [prevInitVisibleDrawer, setPrevInitVisibleDrawer] = useState(initVisibleDrawer);
 
-  useEffect(() => {
+  if (initVisibleDrawer !== prevInitVisibleDrawer) {
+    setPrevInitVisibleDrawer(initVisibleDrawer);
     setOpen(initVisibleDrawer);
-  }, [initVisibleDrawer]);
+  }
 
   const handleDrawerOpen = () => {
     setOpen(true);

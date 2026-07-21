@@ -13,9 +13,7 @@ import type {
 import { BaseVoucherConditionsControllerInterface } from '@generated-controller/voucher/voucher-conditions/base-voucher-conditions.controller.interface';
 
 @Injectable()
-export class VoucherConditionsController
-  implements BaseVoucherConditionsControllerInterface
-{
+export class VoucherConditionsController implements BaseVoucherConditionsControllerInterface {
   constructor(private readonly service: VoucherConditionsService) {}
   async getVoucherConditionById(
     params: GetVoucherConditionByIdParams,

@@ -14,9 +14,7 @@ import { CustomerAddressesRepository } from '@/api/v1/customer/customer-addresse
 import { BaseCustomerAddressesControllerInterface } from '@generated-controller/customer/customer-addresses/base-customer-addresses.controller.interface';
 
 @Injectable()
-export class CustomerAddressesService
-  implements BaseCustomerAddressesControllerInterface
-{
+export class CustomerAddressesService implements BaseCustomerAddressesControllerInterface {
   constructor(
     private readonly customerAddressesRepository: CustomerAddressesRepository,
   ) {}

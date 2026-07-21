@@ -12,9 +12,7 @@ import type {
 import { BaseCustomerWishlistsControllerInterface } from '@generated-controller/customer/customer-wishlists/base-customer-wishlists.controller.interface';
 
 @Injectable()
-export class CustomerWishlistsController
-  implements BaseCustomerWishlistsControllerInterface
-{
+export class CustomerWishlistsController implements BaseCustomerWishlistsControllerInterface {
   constructor(private readonly service: CustomerWishlistsService) {}
 
   /**

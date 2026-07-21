@@ -14,9 +14,7 @@ import type { BaseProductVariantsControllerInterface } from '@generated-controll
 import { ProductVariantsRepository } from '@/api/v1/product/product-variants/product-variants.repository';
 
 @Injectable()
-export class ProductVariantsService
-  implements BaseProductVariantsControllerInterface
-{
+export class ProductVariantsService implements BaseProductVariantsControllerInterface {
   constructor(
     private readonly productVariantsRepository: ProductVariantsRepository,
   ) {}
