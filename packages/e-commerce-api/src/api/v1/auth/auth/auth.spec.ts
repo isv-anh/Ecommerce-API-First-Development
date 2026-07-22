@@ -8,6 +8,9 @@ import { AuthService } from './auth.service';
 import { UsersService } from '@/api/v1/auth/services/user-service/users.service';
 import { JwtService } from '@/api/v1/auth/services/jwt-service/jwt.service';
 import { ClsService } from '@/common/services/cls/cls.service';
+import { PrismaService } from '@/common/services/prisma.service';
+import { MailService } from '@/common/services/mail/mail.service';
+import { ConfigService } from '@nestjs/config';
 
 jest.mock('bcrypt', () => ({
   compare: jest.fn(),
@@ -19,6 +22,7 @@ const mockUser = {
   uid: '123e4567-e89b-12d3-a456-426614174000',
   email: 'test@example.com',
   password: 'hashed-password',
+  is_email_verified: true,
   roles: ['USER'],
 };
 
@@ -72,6 +76,32 @@ describe('AuthService', () => {
             generateAccessToken: jest.fn(),
             generateRefreshToken: jest.fn(),
             extractRefreshTokenPayload: jest.fn(),
+          },
+        },
+        {
+          provide: PrismaService,
+          useValue: {
+            verification_tokens: {
+              create: jest.fn(),
+              findUnique: jest.fn(),
+              delete: jest.fn(),
+              deleteMany: jest.fn(),
+            },
+            users: {
+              update: jest.fn(),
+            },
+          },
+        },
+        {
+          provide: MailService,
+          useValue: {
+            sendVerificationEmail: jest.fn(),
+          },
+        },
+        {
+          provide: ConfigService,
+          useValue: {
+            get: jest.fn().mockReturnValue('5'),
           },
         },
       ],
@@ -174,35 +204,14 @@ describe('AuthService', () => {
         roleId: 'USER',
       });
 
-      jwtService.generateAccessToken.mockResolvedValue(accessToken);
-
-      jwtService.generateRefreshToken.mockResolvedValue(refreshToken);
-
       const result = await service.postRegister(body);
 
       expect(usersService.register).toHaveBeenCalledTimes(1);
 
       expect(usersService.register).toHaveBeenCalledWith(body);
 
-      expect(jwtService.generateAccessToken).toHaveBeenCalledTimes(1);
-
-      expect(jwtService.generateAccessToken).toHaveBeenCalledWith({
-        sub: mockUser.uid,
-        email: mockUser.email,
-        roles: ['USER'],
-      });
-
-      expect(jwtService.generateRefreshToken).toHaveBeenCalledTimes(1);
-
-      expect(jwtService.generateRefreshToken).toHaveBeenCalledWith({
-        sub: mockUser.uid,
-        email: mockUser.email,
-        roles: ['USER'],
-      });
-
       expect(result).toEqual({
-        accessToken,
-        refreshToken,
+        message: 'Vui lòng kiểm tra email để lấy mã xác thực.',
       });
     });
   });

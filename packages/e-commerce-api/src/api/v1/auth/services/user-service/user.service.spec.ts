@@ -5,7 +5,7 @@ import {
   ConflictException,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { Prisma } from 'generated/prisma/client';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
 import * as bcrypt from 'bcrypt';
 
 import { UsersService } from './users.service';
@@ -201,7 +201,7 @@ describe('UsersService', () => {
 
     it('should throw ConflictException when email already exists', async () => {
       prismaService.$transaction.mockRejectedValue(
-        new Prisma.PrismaClientKnownRequestError('Unique constraint failed', {
+        new PrismaClientKnownRequestError('Unique constraint failed', {
           code: 'P2002',
           clientVersion: '6.0.0',
         }),

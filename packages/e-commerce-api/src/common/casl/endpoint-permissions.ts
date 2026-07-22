@@ -97,6 +97,8 @@ export const getPermissions: Record<Operation, PolicyRule[]> = {
   postProductVariantImage: [],
   postRefreshToken: [],
   postRegister: [],
+  postVerifyEmail: [],
+  postResendVerification: [],
   postReview: [],
   postVoucher: [],
   postVoucherCondition: [],

@@ -6,9 +6,11 @@ import {
   BaseAuthController,
 } from '@generated-controller/auth/auth/base-auth.controller';
 import { UsersModule } from '@/api/v1/auth/services/user-service/users.module';
+import { MailModule } from '@/common/services/mail/mail.module';
+import { PrismaModule } from '@/common/services/prisma.module';
 
 @Module({
-  imports: [UsersModule],
+  imports: [UsersModule, MailModule, PrismaModule],
   controllers: [BaseAuthController],
   providers: [
     AuthService,
