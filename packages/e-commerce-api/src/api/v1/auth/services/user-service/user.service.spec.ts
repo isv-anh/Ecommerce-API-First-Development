@@ -88,6 +88,7 @@ describe('UsersService', () => {
           uid: true,
           email: true,
           password: true,
+          is_email_verified: true,
           user_roles: {
             select: {
               roles: {
