@@ -8,6 +8,10 @@ import type {
   PostRefreshToken200Response,
   PostRegisterBody,
   PostRegister200Response,
+  PostVerifyEmailBody,
+  PostVerifyEmail200Response,
+  PostResendVerificationBody,
+  PostResendVerification200Response,
 } from '@e-commerce/api-validation/types/auth';
 import { BaseAuthControllerInterface } from '@generated-controller/auth/auth/base-auth.controller.interface';
 
@@ -43,5 +47,23 @@ export class AuthController implements BaseAuthControllerInterface {
    */
   async postRegister(body: PostRegisterBody): Promise<PostRegister200Response> {
     return await this.service.postRegister(body);
+  }
+
+  /**
+   * POST /auth/verify-email
+   */
+  async postVerifyEmail(
+    body: PostVerifyEmailBody,
+  ): Promise<PostVerifyEmail200Response> {
+    return await this.service.postVerifyEmail(body);
+  }
+
+  /**
+   * POST /auth/resend-verification
+   */
+  async postResendVerification(
+    body: PostResendVerificationBody,
+  ): Promise<PostResendVerification200Response> {
+    return await this.service.postResendVerification(body);
   }
 }

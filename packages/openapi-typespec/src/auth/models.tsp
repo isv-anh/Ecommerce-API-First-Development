@@ -26,10 +26,23 @@ model RefreshTokenRequest {
     refreshToken: string;
 }
 
+model VerifyEmailRequest {
+    email: Email;
+    otp: string;
+}
+
+model ResendVerificationRequest {
+    email: Email;
+}
+
 model UserProfile {
     id: NonEmptyString;
     email: Email;
     name: NonEmptyString;
+}
+
+model MessageResponse {
+    message: string;
 }
 
 model AuthResponse200 {
@@ -40,4 +53,9 @@ model AuthResponse200 {
 model UserProfile200 {
     @statusCode statusCode: 200;
     @body body: UserProfile;
+}
+
+model MessageResponse200 {
+    @statusCode statusCode: 200;
+    @body body: MessageResponse;
 }

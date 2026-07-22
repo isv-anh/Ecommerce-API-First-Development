@@ -12,6 +12,7 @@ import TextField from "@/components/inputs/TextField/TextField";
 import type { LoginRequest } from "@e-commerce/api-client/schemas/auth";
 import type { LoginFormProps } from "@/components/auth/LoginForm/types";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { postLoginBody } from "@e-commerce/api-validation/zod/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { login } from "@/utils/login";
@@ -36,9 +37,17 @@ export default function LoginForm({
 
   const onSubmit: SubmitHandler<LoginRequest> = async (data) => {
     try {
-      const accessToken = await mutation.mutateAsync(data);
-      tokenStore.setTokens(accessToken);
-      router.push("/");
+      const result = await mutation.mutateAsync(data);
+      if (result.success && result.accessToken) {
+        tokenStore.setTokens(result.accessToken);
+        router.push("/");
+      } else {
+        if (result.code === "USER_UNVERIFIED") {
+          router.push(`/auth/verify-email?email=${encodeURIComponent(data.username)}`);
+        } else {
+          throw new Error(result.message || "Đăng nhập thất bại");
+        }
+      }
     } catch {
       // Error state handled by mutation.isError
     }
@@ -130,7 +139,7 @@ export default function LoginForm({
                 alignItems="center"
               >
                 <Typography variant="regularS">Chưa có tài khoản?</Typography>
-                <Button sx={{ ml: 1 }} variant="text">
+                <Button sx={{ ml: 1 }} variant="text" component={Link} href="/auth/register">
                   Đăng ký
                 </Button>
               </Box>

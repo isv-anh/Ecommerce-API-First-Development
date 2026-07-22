@@ -6,8 +6,7 @@ import {
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { Prisma } from 'generated/prisma/client';
-
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
 @Injectable()
 export class UsersService {
   constructor(private readonly prismaService: PrismaService) {}
@@ -19,6 +18,7 @@ export class UsersService {
         uid: true,
         email: true,
         password: true,
+        is_email_verified: true,
         user_roles: {
           select: {
             roles: {
@@ -39,7 +39,8 @@ export class UsersService {
       uid: user.uid,
       email: user.email,
       password: user.password,
-      roles: user.user_roles.map((r) => r.roles.role_id),
+      is_email_verified: user.is_email_verified,
+      roles: user.user_roles.map((r) => String(r.roles.role_id)),
     };
   }
 
@@ -105,7 +106,7 @@ export class UsersService {
       });
     } catch (error) {
       if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error instanceof PrismaClientKnownRequestError &&
         error.code === 'P2002'
       ) {
         throw new ConflictException('Email or username already exists');

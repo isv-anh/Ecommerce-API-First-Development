@@ -39,6 +39,7 @@ const mockProductVariant = {
   stock: 50,
   createdAt: '2026-04-09T08:00:00.000Z',
   updatedAt: '2026-04-09T08:00:00.000Z',
+  variantAttributes: [],
 };
 
 const mockProductVariantsResponse = {

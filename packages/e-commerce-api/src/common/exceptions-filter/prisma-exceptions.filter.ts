@@ -5,11 +5,11 @@ import {
   ConflictException,
   BadRequestException,
 } from '@nestjs/common';
-import { Prisma } from 'generated/prisma/client';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
 
-@Catch(Prisma.PrismaClientKnownRequestError)
-export class PrismaExceptionFilter implements ExceptionFilter<Prisma.PrismaClientKnownRequestError> {
-  catch(error: Prisma.PrismaClientKnownRequestError) {
+@Catch(PrismaClientKnownRequestError)
+export class PrismaExceptionFilter implements ExceptionFilter<PrismaClientKnownRequestError> {
+  catch(error: PrismaClientKnownRequestError) {
     switch (error.code) {
       case 'P2025':
         throw new NotFoundException('Resource not found');

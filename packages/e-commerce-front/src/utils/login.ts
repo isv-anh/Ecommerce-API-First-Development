@@ -17,9 +17,11 @@ export async function login(body: PostLoginBody) {
       path: "/",
     });
 
-    return data.accessToken;
-  } catch (error) {
-    throw error;
+    return { success: true, accessToken: data.accessToken };
+  } catch (error: any) {
+    const code = error?.response?.data?.code || error?.code;
+    const message = error?.response?.data?.message || error?.message;
+    return { success: false, code, message };
   }
 }
 

@@ -26,7 +26,7 @@ namespace Auth.Auth {
     @extension("x-public", true)
     op register(
         @body body: RegisterRequest,
-    ): AuthResponse200 | BadRequestError | InternalServerError;
+    ): MessageResponse200 | BadRequestError | InternalServerError;
 
     @post
     @route("/refresh")
@@ -36,6 +36,24 @@ namespace Auth.Auth {
     op refresh(
         @body body: RefreshTokenRequest,
     ): AuthResponse200 | BadRequestError | InternalServerError;
+
+    @post
+    @route("/verify-email")
+    @operationId("postVerifyEmail")
+    @tag("auth")
+    @extension("x-public", true)
+    op verifyEmail(
+        @body body: VerifyEmailRequest,
+    ): AuthResponse200 | BadRequestError | InternalServerError;
+
+    @post
+    @route("/resend-verification")
+    @operationId("postResendVerification")
+    @tag("auth")
+    @extension("x-public", true)
+    op resendVerification(
+        @body body: ResendVerificationRequest,
+    ): MessageResponse200 | BadRequestError | InternalServerError;
 
     @get
     @route("/profile")
