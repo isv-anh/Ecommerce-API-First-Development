@@ -1,4 +1,5 @@
 import { PrismaService } from '@/common/services/prisma.service';
+import { parseSort } from '@/utils/parse-sort';
 import {
   GetOrders200Response,
   GetOrdersQueryParams,
@@ -6,6 +7,7 @@ import {
   PostOrderBody,
 } from '@e-commerce/api-validation/types/order';
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { Prisma } from 'generated/prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
 
 @Injectable()
@@ -33,17 +35,29 @@ export class OrdersRepository {
   }
 
   /**
-   * Get a list of orders with optional filters by userId and status
+   * Get a list of orders with optional filters by userId and status, with pagination
    * @param query - query parameters
-   * @returns list of orders
+   * @returns list of orders with pagination metadata
    */
   async getOrders(query: GetOrdersQueryParams): Promise<GetOrders200Response> {
-    const result = await this.prisma.orders.findMany({
-      where: {
-        user_id: query.userId,
-        status: query.status,
-      },
-    });
+    const page = query.page ?? 1;
+    const pageSize = query.pageSize ?? 20;
+    const skip = (page - 1) * pageSize;
+
+    const whereClause: Prisma.ordersWhereInput = {
+      ...(query.userId && { user_id: query.userId }),
+      ...(query.status && { status: query.status }),
+    };
+
+    const [result, totalCount] = await Promise.all([
+      this.prisma.orders.findMany({
+        where: whereClause,
+        orderBy: parseSort(query.orderBy) || [{ created_at: 'desc' }],
+        take: pageSize,
+        skip,
+      }),
+      this.prisma.orders.count({ where: whereClause }),
+    ]);
 
     const orders = result.map((o) => ({
       orderId: o.id,
@@ -55,7 +69,13 @@ export class OrdersRepository {
       createdAt: o.created_at?.toISOString() ?? '',
     }));
 
-    return { orders };
+    const totalPages = Math.ceil(totalCount / pageSize);
+
+    return {
+      orders,
+      totalCount,
+      totalPages,
+    };
   }
 
   /**
