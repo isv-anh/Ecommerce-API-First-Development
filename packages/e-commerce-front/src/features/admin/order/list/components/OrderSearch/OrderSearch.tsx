@@ -21,7 +21,7 @@ const ORDER_STATUS_OPTIONS = [
 type SearchFormValues = Partial<GetOrdersQueryParams>;
 
 const OrderSearch = () => {
-  const { params, setParams } = orderSearchContext.useSearch();
+  const { params, setParams, resetParams } = orderSearchContext.useSearch();
   const defaultValues: SearchFormValues = {
     userId: "",
     status: "",
@@ -32,14 +32,18 @@ const OrderSearch = () => {
   });
 
   useEffect(() => {
-    reset(params);
-  }, [params, reset]);
+    reset({
+      userId: params.userId ?? "",
+      status: params.status ?? "",
+    });
+  }, [params.userId, params.status, reset]);
 
   const onSubmit = (data: SearchFormValues) => {
-    const cleanParams: Partial<GetOrdersQueryParams> = {};
-    if (data.userId) cleanParams.userId = data.userId;
-    if (data.status) cleanParams.status = data.status;
-    setParams(cleanParams);
+    setParams({
+      userId: data.userId || undefined,
+      status: data.status || undefined,
+      page: 1,
+    });
   };
 
   return (
@@ -70,7 +74,7 @@ const OrderSearch = () => {
             <Button
               onClick={() => {
                 reset(defaultValues);
-                setParams({});
+                resetParams();
               }}
             >
               Đặt lại
