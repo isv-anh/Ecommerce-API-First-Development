@@ -37,10 +37,12 @@ export class BrandsRepository {
       }),
     };
 
+    const sort = parseSort(query.orderBy);
+
     const brands = (
       await this.prisma.brands.findMany({
         where: whereClause,
-        orderBy: parseSort(query.orderBy) || [{ id: 'asc' }],
+        orderBy: sort.length > 0 ? sort : [{ id: 'asc' }],
         take: query.pageSize,
         skip: query.pageSize * (query.page - 1),
       })

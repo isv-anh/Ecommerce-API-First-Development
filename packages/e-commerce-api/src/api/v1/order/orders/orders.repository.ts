@@ -49,10 +49,12 @@ export class OrdersRepository {
       ...(query.status && { status: query.status }),
     };
 
+    const sort = parseSort(query.orderBy);
+
     const [result, totalCount] = await Promise.all([
       this.prisma.orders.findMany({
         where: whereClause,
-        orderBy: parseSort(query.orderBy) || [{ created_at: 'desc' }],
+        orderBy: sort.length > 0 ? sort : [{ created_at: 'desc' }],
         take: pageSize,
         skip,
       }),
