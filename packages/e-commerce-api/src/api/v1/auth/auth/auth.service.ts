@@ -100,7 +100,11 @@ export class AuthService {
   async postLogin(body: PostLoginBody): Promise<PostLogin200Response> {
     const user = await this.usersService.findByEmail(body.username);
 
-    if (!user || !(await bcrypt.compare(body.password, user.password))) {
+    const isPasswordValid = user
+      ? await bcrypt.compare(body.password, user.password ?? '')
+      : false;
+
+    if (!user || !isPasswordValid) {
       throw new UnauthorizedException('Invalid credentials');
     }
 

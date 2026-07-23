@@ -34,6 +34,8 @@ const mockOrder = {
 
 const mockOrdersResponse = {
   orders: [mockOrder],
+  totalCount: 1,
+  totalPages: 1,
 };
 
 // ─── Tests ────────────────────────────────────────────────────────────────────
@@ -86,10 +88,11 @@ describe('OrdersService', () => {
     it('should return orders from repository', async () => {
       repository.getOrders.mockResolvedValue(mockOrdersResponse);
 
-      const result = await service.getOrders({ userId });
+      const query = { page: 1, pageSize: 20, userId };
+      const result = await service.getOrders(query);
 
       expect(repository.getOrders).toHaveBeenCalledTimes(1);
-      expect(repository.getOrders).toHaveBeenCalledWith({ userId });
+      expect(repository.getOrders).toHaveBeenCalledWith(query);
       expect(result).toEqual(mockOrdersResponse);
     });
   });

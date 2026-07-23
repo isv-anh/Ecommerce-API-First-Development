@@ -39,6 +39,11 @@ export const routes = {
     attribute: {
       list: "/admin/attribute",
     },
+
+    order: {
+      list: "/admin/order",
+      detail: (id: string | number) => `/admin/order/${id}`,
+    },
   },
 } as const;
 
@@ -75,6 +80,13 @@ export const adminMenus: MenuItem[] = [
     path: routes.admin.product.list,
     name: "Sản phẩm",
     icon: "inventory_2_rounded",
+    isNavigate: true,
+  },
+
+  {
+    path: routes.admin.order.list,
+    name: "Đơn hàng",
+    icon: "receipt_long_rounded",
     isNavigate: true,
   },
 

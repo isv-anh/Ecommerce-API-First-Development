@@ -1,4 +1,6 @@
 import "../../common/scalars/scalars.tsp";
+import "../../common/models/requests.tsp";
+import "../../common/models/response.tsp";
 import "@typespec/http";
 
 using TypeSpec.Http;
@@ -31,7 +33,16 @@ model PostOrderResponseBody {
 }
 
 model OrdersResponse {
+    ...PageResponse;
     orders: OrderResponse[];
+}
+
+model GetOrdersQueryParams extends PageQueryParams {
+    @query
+    userId?: UUID;
+
+    @query
+    status?: string;
 }
 
 model GetOrdersResponse200 {

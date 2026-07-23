@@ -13,8 +13,7 @@ namespace Order.Orders {
     @operationId("getOrders")
     @tag("orders")
     op getOrders(
-        @query userId?: UUID,
-        @query status?: string,
+        ...GetOrdersQueryParams,
     ): GetOrdersResponse200 | BadRequestError | InternalServerError;
 
     @post
