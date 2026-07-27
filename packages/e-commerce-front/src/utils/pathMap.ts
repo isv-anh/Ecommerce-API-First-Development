@@ -9,6 +9,16 @@ export type MenuItem = {
 export const routes = {
   home: "/",
 
+  cart: "/cart",
+  checkout: "/checkout",
+  me: {
+    profile: "/me",
+    order: {
+      list: "/me/order",
+      detail: (id: string | number) => `/me/order/${id}`,
+    },
+  },
+
   admin: {
     dashboard: "/admin",
 

@@ -17,6 +17,7 @@ import Divider from "@mui/material/Divider";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useSnackbar } from "notistack";
 import CircularProgress from "@mui/material/CircularProgress";
 import { CartItemRow } from "./CartItemRow";
@@ -37,6 +38,7 @@ interface CartItemsListProps {
 }
 
 export const CartItemsList = ({ cart }: CartItemsListProps) => {
+  const router = useRouter();
   const queryClient = useQueryClient();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -91,10 +93,7 @@ export const CartItemsList = ({ cart }: CartItemsListProps) => {
   };
 
   const handleCheckout = () => {
-    enqueueSnackbar("Tính năng thanh toán đang được phát triển!", {
-      variant: "success",
-      anchorOrigin: { vertical: "top", horizontal: "right" },
-    });
+    router.push("/checkout");
   };
 
   // Compute Subtotal
