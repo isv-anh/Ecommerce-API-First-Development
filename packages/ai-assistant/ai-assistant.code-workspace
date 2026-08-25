@@ -39,6 +39,17 @@
           "reveal": "always",
         },
       },
+      {
+        "label": "Install Dependencies",
+        "detail": "Install dependencies for the AI Assistant project",
+        "command": "chmod +x ./scripts/install-depencies.sh && ./scripts/install-depencies.sh",
+        "type": "shell",
+        "args": [],
+        "problemMatcher": [],
+        "presentation": {
+          "reveal": "always",
+        },
+      }
     ],
   },
 }

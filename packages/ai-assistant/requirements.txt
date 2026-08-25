@@ -21,6 +21,9 @@ langgraph-checkpoint==4.2.0
 langgraph-prebuilt==1.1.0
 langgraph-sdk==0.4.3
 langsmith==0.11.1
+langchain-openai==1.6.0
+openai>=1.50.0
+tiktoken>=0.8.0
 MarkupSafe==3.0.3
 orjson==3.12.0
 ormsgpack==1.12.2

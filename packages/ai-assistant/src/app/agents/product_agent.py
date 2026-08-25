@@ -2,7 +2,6 @@
 
 from app.tools.get_product_price import get_product_price
 
-
 from app.config import settings
 from langchain_openai import ChatOpenAI
 
