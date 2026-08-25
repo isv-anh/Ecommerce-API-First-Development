@@ -4,4 +4,5 @@
     - role: system_config
     - role: install_docker
     - role: install_node
+    - role: install_python
     - role: install_maven
