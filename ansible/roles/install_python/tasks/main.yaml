@@ -1,0 +1,55 @@
+---
+- name: Kiểm tra Python 3 đã được cài đặt chưa
+  command: python3 --version
+  register: python_check
+  changed_when: false
+  failed_when: false
+
+- name: Cài đặt Python 3 và Pip
+  block:
+    - name: Cập nhật cache apt và cài đặt software-properties-common
+      apt:
+        name:
+          - software-properties-common
+          - curl
+        state: present
+        update_cache: yes
+      become: true
+
+    - name: Thêm repository deadsnakes PPA (Tùy chọn nếu cần phiên bản Python cụ thể)
+      apt_repository:
+        repo: ppa:deadsnakes/ppa
+        state: present
+      become: true
+
+    - name: Cài đặt Python 3, Pip và Virtualenv
+      apt:
+        name:
+          - python3
+          - python3-pip
+          - python3-venv
+          - python3-dev
+        state: latest
+        update_cache: yes
+      become: true
+
+  rescue:
+    - name: Dừng playbook khi cài đặt Python thất bại
+      fail:
+        msg: "Cài đặt Python 3 thất bại"
+
+- name: Kiểm tra lại phiên bản Python 3 sau khi cài
+  command: python3 --version
+  register: python_version_updated
+  changed_when: false
+
+- name: Hiển thị phiên bản Python 3
+  debug:
+    var: python_version_updated.stdout
+
+- name: Cài đặt dependencies của dự án bằng pip (requirements.txt)
+  ansible.builtin.pip:
+    requirements: "{{ playbook_dir }}/packages/ai-assistant/requirements.txt"
+    chdir: "{{ playbook_dir }}/packages/ai-assistant"
+    virtualenv: "{{ playbook_dir }}/packages/ai-assistant/.venv"
+    virtualenv_command: python3 -m venv
