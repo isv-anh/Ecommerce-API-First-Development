@@ -1,18 +1,16 @@
-
-
-from app.tools.get_product_price import get_product_price
-
 from app.config import settings
 from langchain_openai import ChatOpenAI
+
+from app.tools.get_policy import get_policy
 
 
 llm = ChatOpenAI(
     model=settings.DEFAULT_MODEL,
     temperature=settings.TEMPERATURE,
-    api_key=settings.DASHSCOPE_API_KEY_AGENT_1,
+    api_key=settings.DASHSCOPE_API_KEY_AGENT_2,
     base_url="https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
 )
 
-tools = [get_product_price]
+tools = [get_policy]
 
-product_agent = llm.bind_tools(tools)
+support_agent = llm.bind_tools(tools)
