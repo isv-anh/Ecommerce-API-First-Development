@@ -4,6 +4,7 @@ packages:
   - packages/api-client
   - packages/api-validation
   - packages/openapi-typespec
+  - packages/e-commerce-search
 
 catalog:
   '@tanstack/react-query': ^5.101.4
@@ -16,5 +17,5 @@ catalog:
   prettier: 3.5.3
   react: ^19.2.4
   react-dom: ^19.2.4
-  typescript: ^5
+  typescript: ^5.9.3
   zod: ^4.3.6
