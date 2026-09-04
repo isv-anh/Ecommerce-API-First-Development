@@ -1,6 +1,6 @@
 
 
-from app.tools.get_product_price import get_product_price
+from app.tools.handle_order import handle_order
 
 from app.config import settings
 from langchain_openai import ChatOpenAI
@@ -13,6 +13,6 @@ llm = ChatOpenAI(
     base_url="https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
 )
 
-tools = [get_product_price]
+tools = [handle_order]
 
-product_agent = llm.bind_tools(tools)
+order_agent = llm.bind_tools(tools)

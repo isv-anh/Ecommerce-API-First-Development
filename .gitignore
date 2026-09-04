@@ -3,3 +3,4 @@
 node_modules
 openapitools.json
 /packages/custom
+**/generated/**

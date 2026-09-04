@@ -1,0 +1,38 @@
+syntax = "proto3";
+import "google/protobuf/empty.proto";
+
+package products;
+
+service ProductService {
+  rpc SearchProduct (SearchProductRequest) returns (ProductResponse);
+  rpc UpdateProduct (Product) returns (google.protobuf.Empty);
+}
+
+message SearchProductRequest {
+  optional string keyword = 1;
+  optional string categoryName = 2;
+  optional string brandName = 3;
+  optional double minPrice = 4;
+  optional double maxPrice = 5;
+  optional int32 page = 6;
+  optional int32 pageSize = 7;
+  // sort pattern: "field_name:asc" or "field_name:desc", 
+  // multiple sort fields can be separated by commas, e.g. "price:asc,productName:desc"
+  optional string sort = 8;
+}
+
+
+message ProductResponse {
+  repeated Product products = 1;
+}
+
+message Product {
+  string productId = 1;
+  string productName = 2;
+  string description = 3;
+  double price = 4;
+  string categoryName = 5;
+  string thumbnailUrl = 6;
+  string brandName = 7;
+  string slug = 8;
+}
