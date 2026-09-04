@@ -1,0 +1,12 @@
+{
+  "name": "proto",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "scripts": {
+    "generate": "pnpm exec buf generate --template buf.gen.yaml"
+  },
+  "devDependencies": {
+    "@bufbuild/buf": "^1.72.0"
+  }
+}

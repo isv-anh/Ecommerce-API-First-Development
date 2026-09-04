@@ -5,10 +5,11 @@ packages:
   - packages/api-validation
   - packages/openapi-typespec
   - packages/e-commerce-search
+  - packages/proto
 
 catalog:
-  '@tanstack/react-query': ^5.101.4
-  '@tanstack/react-query-devtools': ^5.101.4
+  "@tanstack/react-query": ^5.101.4
+  "@tanstack/react-query-devtools": ^5.101.4
   axios: ^1.15.0
   date-fns: ^4.1.0
   eslint: ^9.39.4

@@ -1,16 +1,29 @@
 version: v2
-plugins:
-  # 1. Sinh code cho Python Server
-  - remote: buf.build/protocolbuffers/python
-    out: services/user-service/gen
-    opt: paths=source_relative
-  - remote: buf.build/grpc/python
-    out: services/user-service/gen
-    opt: paths=source_relative
 
-  # 2. Sinh code cho TypeScript Client
+plugins:
+  # =========================
+  # Python
+  # =========================
+
+  # Python AI Service
+  - remote: buf.build/protocolbuffers/python
+    out: ../ai-assistant/src/app/buf/generated
+
+  # =========================
+  # TypeScript
+  # =========================
+
+  # Search Service - gRPC Server
   - remote: buf.build/community/stephenh-ts-proto
-    out: services/web-bff/src/generated
+    out: ../e-commerce-search/src/buf/generated
+    opt:
+      - env=node
+      - esModuleInterop=true
+      - outputServices=grpc-js
+
+  # BFF - gRPC Client
+  - remote: buf.build/community/stephenh-ts-proto
+    out: ../e-commerce-api/src/buf/generated
     opt:
       - env=node
       - esModuleInterop=true
