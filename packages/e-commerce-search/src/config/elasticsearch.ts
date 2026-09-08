@@ -15,16 +15,3 @@ export const esClient = new Client({
   }
   */
 });
-
-// Hàm kiểm tra kết nối khi khởi động ứng dụng
-export async function checkEsConnection(): Promise<void> {
-  try {
-    const health = await esClient.cluster.health();
-    console.log(
-      `Elasticsearch connected: Cluster status is "${health.status}"`,
-    );
-  } catch (error) {
-    console.error("Không thể kết nối tới Elasticsearch:", error);
-    throw error;
-  }
-}
