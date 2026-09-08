@@ -9,6 +9,10 @@ plugins:
   - remote: buf.build/protocolbuffers/python
     out: ../ai-assistant/src/app/buf/generated
 
+  # Python AI Service - gRPC Client/Server stubs 
+  - remote: buf.build/grpc/python
+    out: ../ai-assistant/src/app/buf/generated
+
   # =========================
   # TypeScript
   # =========================

@@ -3,8 +3,14 @@ import {
   SearchProductRequest,
 } from "@/buf/generated/product/v1/product";
 import { esClient } from "@/config/elasticsearch";
+import { getEmbedding } from "@/config/model";
 
 export async function updateProduct(product: Product): Promise<void> {
+  // semantic search: generate embedding vector for the product and store it in Elasticsearch
+  const vector = await getEmbedding(
+    `${product.productName} ${product.categoryName} ${product.description}`,
+  );
+
   await esClient.index({
     index: "products",
     id: product.productId,
@@ -17,6 +23,7 @@ export async function updateProduct(product: Product): Promise<void> {
       thumbnailUrl: product.thumbnailUrl,
       brandName: product.brandName,
       slug: product.slug,
+      product_vector: vector,
     },
   });
 }
@@ -51,6 +58,8 @@ export async function searchProducts(
 
   const pageNumber = page ?? 1;
   const pageSizeNumber = pageSize ?? 20;
+
+  const queryVector = keyword ? await getEmbedding(keyword) : null;
 
   const filters = [];
 
@@ -115,6 +124,16 @@ export async function searchProducts(
         filter: filters,
       },
     },
+
+    ...(queryVector && {
+      knn: {
+        field: "product_vector",
+        query_vector: queryVector,
+        k: 50,
+        num_candidates: 100,
+        filter: filters,
+      },
+    }),
   });
 
   return result.hits.hits
