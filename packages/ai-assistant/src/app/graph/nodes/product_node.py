@@ -12,6 +12,7 @@ Nhiệm vụ:
 
 Quy tắc BẮT BUỘC:
 - TUYỆT ĐỐI KHÔNG tự ý từ chối hoặc trả lời thay các yêu cầu liên quan đến đặt hàng, hủy đơn, thanh toán hay chính sách đổi trả.
+- TUYỆT ĐỐI KHÔNG bịa đặt (hallucinate) thông tin sản phẩm. Nếu công cụ trả về lỗi hoặc không tìm thấy kết quả, hãy thông báo thẳng với người dùng là không tìm thấy hoặc có lỗi xảy ra.
 - Sau khi cung cấp thông tin sản phẩm xong, hãy kết thúc câu trả lời để hệ thống điều phối các bộ phận khác tiếp tục xử lý."""
 
 def product_node(state: AgentState) -> dict:

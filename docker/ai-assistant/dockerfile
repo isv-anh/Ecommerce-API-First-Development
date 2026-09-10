@@ -1,0 +1,45 @@
+
+FROM python:3.11-slim-bookworm
+
+# 2. Tối ưu Python trong container
+# PYTHONDONTWRITEBYTECODE: không ghi file .pyc rác ra disk
+# PYTHONUNBUFFERED: in log ngay lập tức ra terminal (tránh bị nghẽn log)
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+# 3. Cập nhật các gói hệ thống để giảm lỗ hổng bảo mật và làm mới image
+RUN apt-get update && \
+    apt-get upgrade -y --no-install-recommends && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# 3. Đặt thư mục làm việc
+WORKDIR /app
+
+# 4. Tách riêng bước copy và cài dependencies để tận dụng Docker layer caching
+COPY requirements.txt .
+
+# Cài đặt thư viện (nếu cần build thư viện C/C++ phức tạp có thể cài thêm gcc bằng apt-get)
+RUN pip install --no-cache-dir -r requirements.txt
+
+# 5. Copy toàn bộ mã nguồn vào image
+COPY . .
+
+# 6. Bảo mật: Tạo và chuyển sang user không có quyền root (non-root user)
+RUN useradd -m appuser && chown -R appuser:appuser /app
+USER appuser
+
+# 7. Port ứng dụng lắng nghe (ví dụ 8080 cho HTTP hoặc 50051 cho gRPC)
+EXPOSE 8080
+
+# 8. Lệnh khởi chạy ứng dụng (chọn 1 trong các lệnh phù hợp bên dưới)
+# Với script Python thông thường:
+CMD ["python", "main.py"]
+
+# Hoặc nếu là FastAPI / Starlette:
+# CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
+
+# Hoặc nếu là gRPC Server:
+# CMD ["python", "server.py"]

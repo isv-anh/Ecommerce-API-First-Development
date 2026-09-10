@@ -26,12 +26,12 @@ def chat():
     try:
         # 3. Gọi hàm xử lý của ChatService
         # (Truyền thêm session_id / user_id nếu service của bạn dùng Memory/LangGraph)
-        ai_response = chat_service.process_query(message, session_id)
+        ai_result = chat_service.process_query(message, session_id)
 
         # 4. Trả kết quả chuẩn JSON
         return jsonify({
-            "message": message,
-            "response": ai_response,
+            "message": ai_result["message"],
+            "data": ai_result["data"],
             "session_id": session_id
         }), 200
 
