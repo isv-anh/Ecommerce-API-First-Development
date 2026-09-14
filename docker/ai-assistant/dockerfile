@@ -32,7 +32,7 @@ RUN useradd -m appuser && chown -R appuser:appuser /app
 USER appuser
 
 # 7. Port the application listens on (e.g. 8080 for HTTP or 50051 for gRPC)
-EXPOSE 8080
+EXPOSE 50051
 
 # 8. Command to start the application (choose the appropriate one below)
 # For standard Python scripts:
