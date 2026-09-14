@@ -1,4 +1,4 @@
-name: "[CD] E-Commerce Front Build and Deploy"
+name: "[CD] AI Assistant Build and Deploy"
 
 on:
   release:
@@ -24,7 +24,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ secrets.DOCKERHUB_USERNAME }}/e-commerce-front
+          images: ${{ secrets.DOCKERHUB_USERNAME }}/ai-assistant
           tags: |
             type=ref,event=branch
             type=ref,event=tag
@@ -35,18 +35,16 @@ jobs:
       - name: Build local Docker image for scanning
         uses: docker/build-push-action@v5
         with:
-          context: .
-          file: docker/e-commerce-front/dockerfile
+          context: packages/ai-assistant
+          file: docker/ai-assistant/dockerfile
           load: true
-          tags: local-front:test
-          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/e-commerce-front:buildcache
-          build-args: |
-            NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
+          tags: local-ai-assistant:test
+          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/ai-assistant:buildcache
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'local-front:test'
+          image-ref: 'local-ai-assistant:test'
           format: 'table'
           exit-code: '1'
           ignore-unfixed: true
@@ -56,15 +54,13 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: .
-          file: docker/e-commerce-front/dockerfile
+          context: packages/ai-assistant
+          file: docker/ai-assistant/dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/e-commerce-front:buildcache
-          cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/e-commerce-front:buildcache,mode=max
-          build-args: |
-            NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
+          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/ai-assistant:buildcache
+          cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/ai-assistant:buildcache,mode=max
 
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
@@ -74,6 +70,6 @@ jobs:
       - name: Deploy to Cloud Run
         uses: google-github-actions/deploy-cloudrun@v2
         with:
-          service: e-commerce-front
+          service: ai-assistant
           region: ${{ secrets.GCP_REGION }}
-          image: ${{ secrets.DOCKERHUB_USERNAME }}/e-commerce-front:latest
+          image: ${{ secrets.DOCKERHUB_USERNAME }}/ai-assistant:latest

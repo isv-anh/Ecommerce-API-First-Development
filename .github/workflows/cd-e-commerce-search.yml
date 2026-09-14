@@ -1,4 +1,4 @@
-name: "[CD] E-Commerce Front Build and Deploy"
+name: "[CD] E-Commerce Search Build and Deploy"
 
 on:
   release:
@@ -24,7 +24,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ secrets.DOCKERHUB_USERNAME }}/e-commerce-front
+          images: ${{ secrets.DOCKERHUB_USERNAME }}/e-commerce-search
           tags: |
             type=ref,event=branch
             type=ref,event=tag
@@ -36,17 +36,15 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: docker/e-commerce-front/dockerfile
+          file: docker/e-commerce-search/dockerfile
           load: true
-          tags: local-front:test
-          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/e-commerce-front:buildcache
-          build-args: |
-            NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
+          tags: local-search:test
+          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/e-commerce-search:buildcache
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'local-front:test'
+          image-ref: 'local-search:test'
           format: 'table'
           exit-code: '1'
           ignore-unfixed: true
@@ -57,14 +55,12 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: docker/e-commerce-front/dockerfile
+          file: docker/e-commerce-search/dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/e-commerce-front:buildcache
-          cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/e-commerce-front:buildcache,mode=max
-          build-args: |
-            NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
+          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/e-commerce-search:buildcache
+          cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/e-commerce-search:buildcache,mode=max
 
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
@@ -74,6 +70,6 @@ jobs:
       - name: Deploy to Cloud Run
         uses: google-github-actions/deploy-cloudrun@v2
         with:
-          service: e-commerce-front
+          service: e-commerce-search
           region: ${{ secrets.GCP_REGION }}
-          image: ${{ secrets.DOCKERHUB_USERNAME }}/e-commerce-front:latest
+          image: ${{ secrets.DOCKERHUB_USERNAME }}/e-commerce-search:latest
