@@ -3,6 +3,7 @@ import "@typespec/openapi";
 import "@typespec/versioning";
 
 import "./uploads/routes.tsp";
+import "./ai/routes.tsp";
 import "../common/enums/versions.tsp";
 
 using Versioning;
@@ -12,3 +13,4 @@ using TypeSpec.Http;
 @versioned(Versions)
 @route(CurrentRouteVersion)
 namespace System;
+
