@@ -7,9 +7,9 @@ import {
   ProductServiceService,
   SearchProductRequest,
 } from "@/buf/generated/product/v1/product";
-import { searchProducts, updateProduct } from "@/handlers/product";
-import { Empty } from "@/buf/generated/google/protobuf/empty";
+import { searchProducts } from "@/handlers/product";
 import { esClient } from "@/config/elasticsearch"; // Import esClient của bạn
+import { initRabbitMQConsumer } from "./rabbitmq";
 
 // 1. Hàm kiểm tra kết nối và chuẩn bị Index Elasticsearch
 async function initElasticsearch(): Promise<void> {
@@ -77,20 +77,6 @@ const serverImpl: ProductServiceServer = {
       });
     }
   },
-  updateProduct: async (
-    call: grpc.ServerUnaryCall<Product, Empty>,
-    callback: grpc.sendUnaryData<Empty>,
-  ) => {
-    try {
-      await updateProduct(call.request);
-      callback(null, {});
-    } catch (error: any) {
-      callback({
-        code: grpc.status.INTERNAL,
-        message: error.message || "Failed to update product",
-      });
-    }
-  },
 };
 
 // 3. Hàm bootstrap khởi chạy hệ thống
@@ -98,6 +84,9 @@ async function bootstrap() {
   try {
     // Bước 1: Chờ Elasticsearch sẵn sàng trước
     await initElasticsearch();
+
+    // Bước 1.5: Khởi tạo RabbitMQ Consumer
+    await initRabbitMQConsumer();
 
     // Bước 2: Khởi tạo và bind gRPC server
     const server = new grpc.Server();

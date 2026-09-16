@@ -5,7 +5,6 @@ package products;
 
 service ProductService {
   rpc SearchProduct (SearchProductRequest) returns (ProductResponse);
-  rpc UpdateProduct (Product) returns (google.protobuf.Empty);
 }
 
 message SearchProductRequest {
