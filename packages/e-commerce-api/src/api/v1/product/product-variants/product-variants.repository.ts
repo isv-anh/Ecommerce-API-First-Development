@@ -188,4 +188,38 @@ export class ProductVariantsRepository {
 
     return productVariantId;
   }
+
+  async getInventoryByProductId(productId: string) {
+    const variants = await this.prisma.product_variants.findMany({
+      where: { product_id: productId },
+      select: {
+        id: true,
+        sku: true,
+        stock: true,
+        variant_attribute_values: {
+          select: {
+            value: true,
+            attributes: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return variants.map((v) => {
+      const attrs = v.variant_attribute_values
+        .map((a) => `${a.attributes.name}: ${a.value}`)
+        .join(', ');
+
+      return {
+        variantId: v.id,
+        variantName: attrs || 'Default',
+        sku: v.sku || '',
+        stock: v.stock || 0,
+      };
+    });
+  }
 }

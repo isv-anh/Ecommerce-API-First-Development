@@ -1,4 +1,9 @@
-import { Inject, Injectable, OnModuleInit, NotFoundException } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  OnModuleInit,
+  NotFoundException,
+} from '@nestjs/common';
 import type { ClientGrpc } from '@nestjs/microservices';
 import { Observable, firstValueFrom } from 'rxjs';
 import type {
@@ -20,20 +25,25 @@ interface OrderServiceClient {
 }
 
 @Injectable()
-export class OrdersService implements BaseOrdersControllerInterface, OnModuleInit {
+export class OrdersService
+  implements BaseOrdersControllerInterface, OnModuleInit
+{
   private orderServiceClient: OrderServiceClient;
 
   constructor(@Inject('ORDER_SERVICE') private readonly client: ClientGrpc) {}
 
   onModuleInit() {
-    this.orderServiceClient = this.client.getService<OrderServiceClient>('OrderService');
+    this.orderServiceClient =
+      this.client.getService<OrderServiceClient>('OrderService');
   }
 
   /**
    * DELETE /api/v1/orders/:orderId
    */
   async deleteOrder(params: DeleteOrderParams): Promise<void> {
-    const result = await firstValueFrom(this.orderServiceClient.deleteOrder({ order_id: params.orderId }));
+    const result = await firstValueFrom(
+      this.orderServiceClient.deleteOrder({ order_id: params.orderId }),
+    );
     if (!result.success) {
       throw new NotFoundException('Order not found');
     }
@@ -45,7 +55,9 @@ export class OrdersService implements BaseOrdersControllerInterface, OnModuleIni
   async getOrderById(
     params: GetOrderByIdParams,
   ): Promise<GetOrderById200Response> {
-    const result = await firstValueFrom(this.orderServiceClient.getOrderById({ order_id: params.orderId }));
+    const result = await firstValueFrom(
+      this.orderServiceClient.getOrderById({ order_id: params.orderId }),
+    );
     if (!result.order) {
       throw new NotFoundException('Order not found');
     }
@@ -65,14 +77,16 @@ export class OrdersService implements BaseOrdersControllerInterface, OnModuleIni
    * GET /api/v1/orders
    */
   async getOrders(query: GetOrdersQueryParams): Promise<GetOrders200Response> {
-    const result = await firstValueFrom(this.orderServiceClient.getOrders({
-      user_id: query.userId,
-      status: query.status,
-      page: query.page,
-      page_size: query.pageSize,
-      order_by: query.orderBy,
-    }));
-    
+    const result = await firstValueFrom(
+      this.orderServiceClient.getOrders({
+        user_id: query.userId,
+        status: query.status,
+        page: query.page,
+        page_size: query.pageSize,
+        order_by: query.orderBy,
+      }),
+    );
+
     return {
       totalCount: result.totalCount,
       totalPages: result.totalPages,
@@ -92,7 +106,9 @@ export class OrdersService implements BaseOrdersControllerInterface, OnModuleIni
    * POST /api/v1/orders
    */
   async postOrder(body: PostOrderBody): Promise<PostOrder201Response> {
-    const result = await firstValueFrom(this.orderServiceClient.createOrder({ user_id: body.userId }));
+    const result = await firstValueFrom(
+      this.orderServiceClient.createOrder({ user_id: body.userId }),
+    );
     return { orderId: result.orderId };
   }
 }
