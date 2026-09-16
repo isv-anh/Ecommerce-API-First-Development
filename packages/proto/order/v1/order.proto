@@ -6,6 +6,12 @@ service OrderService {
   rpc PlaceOrder(PlaceOrderRequest) returns (PlaceOrderResponse);
   rpc GetOrder(GetOrderRequest) returns (GetOrderResponse);
   rpc CancelOrder(CancelOrderRequest) returns (CancelOrderResponse);
+
+  // Methods for API Gateway
+  rpc CreateOrder(CreateOrderRequest) returns (CreateOrderResponse);
+  rpc GetOrders(GetOrdersRequest) returns (GetOrdersResponse);
+  rpc GetOrderById(GetOrderByIdRequest) returns (GetOrderByIdResponse);
+  rpc DeleteOrder(DeleteOrderRequest) returns (DeleteOrderResponse);
 }
 
 message PlaceOrderRequest {
@@ -46,4 +52,54 @@ message CancelOrderRequest {
 message CancelOrderResponse {
   bool success = 1;
   string message = 2;
+}
+
+// --- API Gateway specific messages ---
+
+message CreateOrderRequest {
+  string user_id = 1;
+}
+
+message CreateOrderResponse {
+  string order_id = 1;
+}
+
+message GetOrdersRequest {
+  optional string user_id = 1;
+  optional string status = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+  optional string order_by = 5;
+}
+
+message OrderData {
+  string order_id = 1;
+  string user_id = 2;
+  string status = 3;
+  double total_amount = 4;
+  double total_discount = 5;
+  double final_amount = 6;
+  string created_at = 7;
+}
+
+message GetOrdersResponse {
+  repeated OrderData orders = 1;
+  int32 total_count = 2;
+  int32 total_pages = 3;
+}
+
+message GetOrderByIdRequest {
+  string order_id = 1;
+}
+
+message GetOrderByIdResponse {
+  OrderData order = 1;
+}
+
+message DeleteOrderRequest {
+  string order_id = 1;
+}
+
+message DeleteOrderResponse {
+  bool success = 1;
 }

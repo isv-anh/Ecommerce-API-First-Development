@@ -20,4 +20,26 @@ export class AppController {
   cancelOrder(data: any) {
     return this.appService.cancelOrder(data);
   }
+
+  // --- API Gateway methods ---
+
+  @GrpcMethod('OrderService', 'CreateOrder')
+  createOrder(data: any) {
+    return this.appService.createOrder(data);
+  }
+
+  @GrpcMethod('OrderService', 'GetOrders')
+  getOrders(data: any) {
+    return this.appService.getOrders(data);
+  }
+
+  @GrpcMethod('OrderService', 'GetOrderById')
+  getOrderById(data: any) {
+    return this.appService.getOrderById(data);
+  }
+
+  @GrpcMethod('OrderService', 'DeleteOrder')
+  deleteOrder(data: any) {
+    return this.appService.deleteOrder(data);
+  }
 }
