@@ -106,19 +106,34 @@ export async function searchProducts(
         must: keyword
           ? [
               {
-                multi_match: {
-                  query: keyword,
-                  fields: [
-                    "productName^3",
-                    "description",
-                    "categoryName^2",
-                    "brandName^2",
+                bool: {
+                  should: [
+                    {
+                      term: {
+                        productId: {
+                          value: keyword,
+                          boost: 10,
+                        },
+                      },
+                    },
+                    {
+                      multi_match: {
+                        query: keyword,
+                        fields: [
+                          "productName^3",
+                          "description",
+                          "categoryName^2",
+                          "brandName^2",
+                        ],
+                        operator: "and",
+                        fuzziness: "AUTO",
+                        prefix_length: 2,
+                        max_expansions: 50,
+                      },
+                    },
                   ],
-                  operator: "and",
-                  fuzziness: "AUTO",
-                  prefix_length: 2,
-                  max_expansions: 50,
-                },
+                  minimum_should_match: 1,
+                }
               },
             ]
           : [],
