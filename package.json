@@ -17,7 +17,8 @@
     "generate:all": "pnpm run generate:open-api && pnpm run api-client:build && pnpm run api-validation:build && pnpm run generate:api-base-controllers",
     "migrate": "docker compose run --rm liquibase",
     "dev:api": "pnpm --filter e-commerce-api start:dev",
-    "dev:front": "pnpm --filter e-commerce-front dev"
+    "dev:front": "pnpm --filter e-commerce-front dev",
+    "sync:es": "node scripts/sync-elasticsearch.js"
   },
   "pnpm": {
     "overrides": {
@@ -30,5 +31,10 @@
       "sigstore": "^4.1.1",
       "tar": "^7.5.19"
     }
+  },
+  "devDependencies": {
+    "@elastic/elasticsearch": "^9.5.1",
+    "dotenv": "^17.4.2",
+    "pg": "^8.22.0"
   }
 }

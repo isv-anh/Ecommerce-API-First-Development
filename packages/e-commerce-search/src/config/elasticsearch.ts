@@ -1,17 +1,24 @@
-import { Client } from "@elastic/elasticsearch";
+import { Client, ClientOptions } from "@elastic/elasticsearch";
 
-export const esClient = new Client({
-  node: process.env.ELASTICSEARCH_NODE || "http://localhost:9200",
-  // Nếu có bật bảo mật (Basic Auth hoặc API Key):
-  /*
-  auth: {
-    username: process.env.ELASTIC_USERNAME || 'elastic',
-    password: process.env.ELASTIC_PASSWORD || 'changeme',
-    // Hoặc dùng API Key:
-    // apiKey: process.env.ELASTIC_API_KEY
-  },
-  tls: {
-    rejectUnauthorized: false // Chỉ dùng trong dev nếu dùng chứng chỉ tự ký
-  }
-  */
-});
+const clientOptions: ClientOptions = {};
+
+if (process.env.ELASTIC_CLOUD_ID) {
+  clientOptions.cloud = {
+    id: process.env.ELASTIC_CLOUD_ID,
+  };
+} else {
+  clientOptions.node = process.env.ELASTICSEARCH_NODE || "http://localhost:9200";
+}
+
+if (process.env.ELASTIC_API_KEY) {
+  clientOptions.auth = {
+    apiKey: process.env.ELASTIC_API_KEY,
+  };
+} else if (process.env.ELASTIC_USERNAME && process.env.ELASTIC_PASSWORD) {
+  clientOptions.auth = {
+    username: process.env.ELASTIC_USERNAME,
+    password: process.env.ELASTIC_PASSWORD,
+  };
+}
+
+export const esClient = new Client(clientOptions);

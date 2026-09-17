@@ -1,12 +1,13 @@
+require('dotenv').config();
 const { Client } = require('pg');
 const crypto = require('crypto');
 
 const client = new Client({
-  host: 'aws-0-ap-northeast-1.pooler.supabase.com',
-  port: 6543,
-  database: 'postgres',
-  user: 'postgres.ztzaeqprsfmluglnchir',
-  password: '5qTpequyyOYrGzii',
+  host: process.env.DB_HOST || 'aws-0-ap-northeast-1.pooler.supabase.com',
+  port: process.env.DB_PORT || 6543,
+  database: process.env.DB_NAME || 'postgres',
+  user: process.env.DB_USERNAME || process.env.POSTGRES_USER,
+  password: process.env.DB_PASSWORD || process.env.POSTGRES_PASSWORD,
   ssl: { rejectUnauthorized: false }
 });
 
