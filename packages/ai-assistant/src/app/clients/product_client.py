@@ -13,7 +13,7 @@ class ProductClientManager:
             cls._instance = super().__new__(cls)
         return cls._instance
 
-    def get_client(self, target: str = "localhost:50051") -> product_pb2_grpc.ProductServiceStub:
+    def get_client(self, target: str = "localhost:50053") -> product_pb2_grpc.ProductServiceStub:
         if self._client is None:
             self._channel = grpc.insecure_channel(target)
             self._client = product_pb2_grpc.ProductServiceStub(self._channel)

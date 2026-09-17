@@ -14,7 +14,7 @@ class InventoryClientManager:
         return cls._instance
 
     def get_client(
-        self, target: str = "localhost:50052"
+        self, target: str = "localhost:50051"
     ) -> product_pb2_grpc.InventoryServiceStub:
         if self._client is None:
             self._channel = grpc.insecure_channel(target)

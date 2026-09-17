@@ -92,7 +92,7 @@ async function bootstrap() {
     const server = new grpc.Server();
     server.addService(ProductServiceService, serverImpl);
 
-    const PORT = "0.0.0.0:50051";
+    const PORT = "0.0.0.0:50053";
     server.bindAsync(
       PORT,
       grpc.ServerCredentials.createInsecure(),

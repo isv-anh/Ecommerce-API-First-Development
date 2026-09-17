@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
 import { AiController } from './ai.controller';
 import { AiService } from './ai.service';
-import {
-  BaseAIController,
-  AI_CONTROLLER,
-} from '@generated-controller/system/ai/base-ai.controller';
+
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
+import {
+  AI_CONTROLLER,
+  BaseAiController,
+} from '@generated-controller/system/ai/base-ai.controller';
 
 @Module({
   imports: [
@@ -20,12 +21,12 @@ import { join } from 'path';
             process.cwd(),
             '../proto/ai_assistant/v1/ai_assistant.proto',
           ),
-          url: 'localhost:50051',
+          url: 'localhost:50054',
         },
       },
     ]),
   ],
-  controllers: [BaseAIController],
+  controllers: [BaseAiController],
   providers: [
     AiService,
     {

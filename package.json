@@ -35,6 +35,7 @@
   "devDependencies": {
     "@elastic/elasticsearch": "^9.5.1",
     "dotenv": "^17.4.2",
+    "openai": "^7.10.0",
     "pg": "^8.22.0"
   }
 }

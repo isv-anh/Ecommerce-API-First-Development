@@ -17,8 +17,8 @@ model ChatResponse {
   @doc("The response message from the AI")
   message: string;
 
-  @doc("The data payload from the AI as a JSON string")
-  data: string;
+  @doc("The data payload from the AI as a JSON object")
+  data: unknown;
 
   @doc("The session ID used for this conversation")
   sessionId: string;

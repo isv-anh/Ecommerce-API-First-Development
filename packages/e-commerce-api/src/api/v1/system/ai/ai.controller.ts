@@ -1,30 +1,33 @@
 import { ClsService } from '@/common/services/cls/cls.service';
-import { BaseAIControllerInterface } from '@generated-controller/system/ai/base-ai.controller.interface';
-import { AiService } from './ai.service';
-import {
-  AiRoutesChat200Response,
-  AiRoutesChatBody,
-} from '@e-commerce/api-validation/types/system';
 
-export class AiController implements BaseAIControllerInterface {
+import { AiService } from './ai.service';
+import { BaseAiControllerInterface } from '@generated-controller/system/ai/base-ai.controller.interface';
+import {
+  PostAiChat200Response,
+  PostAiChatBody,
+} from '@e-commerce/api-validation/types/system';
+import { Injectable } from '@nestjs/common';
+
+@Injectable()
+export class AiController implements BaseAiControllerInterface {
   constructor(
     private readonly aiService: AiService,
     private readonly clsService: ClsService,
   ) {}
 
-  async aiRoutesChat(
-    requestBody: AiRoutesChatBody,
-  ): Promise<AiRoutesChat200Response> {
+  async postAiChat(
+    requestBody: PostAiChatBody,
+  ): Promise<PostAiChat200Response> {
     const userId = this.clsService.userId;
     const grpcResponse: any = await this.aiService.chat(
-      requestBody.message as string,
-      requestBody.sessionId as string,
+      requestBody.message,
+      requestBody.sessionId,
       userId,
     );
 
     return {
       message: grpcResponse.message,
-      data: grpcResponse.data,
+      data: grpcResponse.data ? JSON.parse(grpcResponse.data as string) : null,
       sessionId: grpcResponse.sessionId,
     };
   }

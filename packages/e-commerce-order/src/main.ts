@@ -9,7 +9,7 @@ async function bootstrap() {
     options: {
       package: 'order.v1',
       protoPath: join(process.cwd(), '../proto/order/v1/order.proto'),
-      url: '0.0.0.0:50052', // Using port 50052 as 50051 is used by ai_assistant
+      url: '0.0.0.0:50052',
     },
   });
   await app.listen();

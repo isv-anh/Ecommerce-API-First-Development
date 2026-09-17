@@ -4,16 +4,16 @@ import "../../common/models/errors.tsp";
 import "./models.tsp";
 
 using TypeSpec.Http;
+using TypeSpec.OpenAPI;
 
-namespace System;
-
-@tag("AI")
 @route("/ai")
-interface AiRoutes {
+namespace System.AI {
   @doc("Chat with the AI Assistant")
   @post
   @route("/chat")
+  @tag("ai")
   @summary("Chat with AI")
-  chat(@body request: ChatRequest): Chat200Response | UnauthorizedError | BadRequestError | InternalServerError;
+  @operationId("postAiChat")
+  op postAiChat(@body request: ChatRequest): Chat200Response | UnauthorizedError | BadRequestError | InternalServerError;
 }
 

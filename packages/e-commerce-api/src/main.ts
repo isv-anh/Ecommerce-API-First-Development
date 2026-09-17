@@ -22,7 +22,7 @@ async function bootstrap() {
     options: {
       package: 'products',
       protoPath: join(process.cwd(), '../proto/product/v1/product.proto'),
-      url: '0.0.0.0:50052',
+      url: '0.0.0.0:50051',
     },
   });
 

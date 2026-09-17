@@ -1,4 +1,5 @@
 import grpc
+import json
 import app.buf.generated.ai_assistant.v1.ai_assistant_pb2 as pb2
 import app.buf.generated.ai_assistant.v1.ai_assistant_pb2_grpc as pb2_grpc
 from app.api.chat.service import ChatService
@@ -24,7 +25,7 @@ class ChatServicer(pb2_grpc.ChatServiceServicer):
 
             return pb2.ChatResponse(
                 message=ai_result.get("message", ""),
-                data=str(ai_result.get("data", "")),
+                data=json.dumps(ai_result.get("data", {})) if ai_result.get("data") else "",
                 session_id=session_id
             )
 

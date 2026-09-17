@@ -8,7 +8,7 @@ import {
 import { Empty } from "@/buf/generated/google/protobuf/empty";
 
 const client = new ProductServiceClient(
-  "localhost:50051",
+  "localhost:50053",
   grpc.credentials.createInsecure(),
 );
 

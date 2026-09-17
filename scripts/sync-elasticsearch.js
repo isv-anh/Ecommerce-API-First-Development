@@ -1,5 +1,6 @@
 const { Client: PgClient } = require('pg');
 const { Client: EsClient } = require('@elastic/elasticsearch');
+const OpenAI = require('openai');
 require('dotenv').config(); // Load root .env
 require('dotenv').config({ path: './packages/e-commerce-search/.env' });
 
@@ -36,6 +37,24 @@ if (process.env.ELASTIC_API_KEY) {
 }
 
 const esClient = new EsClient(clientOptions);
+
+// Dashscope/OpenAI connection
+const qwenClient = new OpenAI({
+  apiKey: process.env.DASHSCOPE_API_KEY,
+  baseURL: "https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
+});
+
+async function getEmbedding(text) {
+  if (!text) return null;
+  const cleanedText = text.replace(/\n+/g, " ").trim();
+  const response = await qwenClient.embeddings.create({
+    model: "text-embedding-v3",
+    input: cleanedText,
+    dimensions: 1024,
+    encoding_format: "float",
+  });
+  return response.data[0].embedding;
+}
 
 async function run() {
   try {
@@ -114,41 +133,59 @@ async function run() {
       return;
     }
 
-    console.log('Bulk indexing to Elasticsearch...');
-    const operations = products.flatMap(doc => [
-      { index: { _index: 'products', _id: doc.productId } },
-      {
-        productId: doc.productId,
-        productName: doc.productName,
-        description: doc.description,
-        price: doc.price ? parseFloat(doc.price) : 0,
-        categoryName: doc.categoryName || '',
-        brandName: doc.brandName || '',
-        thumbnailUrl: doc.thumbnailUrl || '',
-        slug: doc.slug || ''
+    console.log('Generating embeddings and indexing to Elasticsearch...');
+    const batchSize = 25; // Smaller batch size to avoid rate limits and too many concurrent API requests
+    
+    for (let i = 0; i < products.length; i += batchSize) {
+      const batch = products.slice(i, i + batchSize);
+      console.log(`Processing batch ${Math.floor(i / batchSize) + 1} of ${Math.ceil(products.length / batchSize)}...`);
+      
+      const operations = [];
+      
+      // Process batch sequentially to avoid hitting rate limits on Dashscope
+      for (const doc of batch) {
+         const textToEmbed = `${doc.productName} ${doc.categoryName || ''} ${doc.brandName || ''} ${doc.description || ''}`;
+         let vector = null;
+         try {
+             vector = await getEmbedding(textToEmbed);
+         } catch (e) {
+             console.error(`Failed to get embedding for product ${doc.productId}:`, e.message);
+         }
+         
+         operations.push({ index: { _index: 'products', _id: doc.productId } });
+         operations.push({
+            productId: doc.productId,
+            productName: doc.productName,
+            description: doc.description,
+            price: doc.price ? parseFloat(doc.price) : 0,
+            categoryName: doc.categoryName || '',
+            brandName: doc.brandName || '',
+            thumbnailUrl: doc.thumbnailUrl || '',
+            slug: doc.slug || '',
+            product_vector: vector // Include the generated vector
+         });
       }
-    ]);
 
-    const bulkResponse = await esClient.bulk({ refresh: true, operations });
+      const bulkResponse = await esClient.bulk({ refresh: true, operations });
 
-    if (bulkResponse.errors) {
-      const erroredDocuments = [];
-      // The items array has the same order of the dataset we just indexed.
-      bulkResponse.items.forEach((action, i) => {
-        const operation = Object.keys(action)[0];
-        if (action[operation].error) {
-          erroredDocuments.push({
-            status: action[operation].status,
-            error: action[operation].error,
-            operation: operations[i * 2],
-            document: operations[i * 2 + 1]
-          });
-        }
-      });
-      console.error('Errors occurred during bulk index:', erroredDocuments);
-    } else {
-      console.log(`Successfully indexed ${products.length} products to Elasticsearch.`);
+      if (bulkResponse.errors) {
+        const erroredDocuments = [];
+        bulkResponse.items.forEach((action, idx) => {
+          const operation = Object.keys(action)[0];
+          if (action[operation].error) {
+            erroredDocuments.push({
+              status: action[operation].status,
+              error: action[operation].error,
+              operation: operations[idx * 2],
+              document: operations[idx * 2 + 1]
+            });
+          }
+        });
+        console.error('Errors occurred during bulk index for this batch:', JSON.stringify(erroredDocuments, null, 2));
+      }
     }
+    
+    console.log(`Successfully indexed ${products.length} products with embeddings to Elasticsearch.`);
 
   } catch (error) {
     console.error('Error during synchronization:', error);

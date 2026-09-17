@@ -9,13 +9,13 @@
       "name": "uploads"
     },
     {
-      "name": "AI"
+      "name": "ai"
     }
   ],
   "paths": {
     "/api/v1/ai/chat": {
       "post": {
-        "operationId": "AiRoutes_chat",
+        "operationId": "postAiChat",
         "summary": "Chat with AI",
         "description": "Chat with the AI Assistant",
         "parameters": [],
@@ -62,7 +62,7 @@
           }
         },
         "tags": [
-          "AI"
+          "ai"
         ],
         "requestBody": {
           "required": true,
@@ -169,8 +169,7 @@
             "description": "The response message from the AI"
           },
           "data": {
-            "type": "string",
-            "description": "The data payload from the AI as a JSON string"
+            "description": "The data payload from the AI as a JSON object"
           },
           "sessionId": {
             "type": "string",
