@@ -23,6 +23,7 @@ export class AiController implements BaseAiControllerInterface {
       requestBody.message,
       requestBody.sessionId,
       userId,
+      requestBody.confirm,
     );
 
     return {

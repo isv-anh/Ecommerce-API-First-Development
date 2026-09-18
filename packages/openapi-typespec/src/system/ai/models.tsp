@@ -11,6 +11,9 @@ model ChatRequest {
 
   @doc("The optional session ID for continuity")
   sessionId?: string;
+
+  @doc("The optional boolean to confirm HIL interruption")
+  confirm?: boolean;
 }
 
 model ChatResponse {

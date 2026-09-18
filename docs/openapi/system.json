@@ -153,6 +153,10 @@
           "sessionId": {
             "type": "string",
             "description": "The optional session ID for continuity"
+          },
+          "confirm": {
+            "type": "boolean",
+            "description": "The optional boolean to confirm HIL interruption"
           }
         }
       },
