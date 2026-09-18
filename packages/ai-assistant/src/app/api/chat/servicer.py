@@ -21,12 +21,13 @@ class ChatServicer(pb2_grpc.ChatServiceServicer):
 
         try:
             # Process query
-            ai_result = self.chat_service.process_query(request.message, session_id)
+            ai_result = self.chat_service.process_query(request.message, session_id, user_id)
 
             return pb2.ChatResponse(
                 message=ai_result.get("message", ""),
                 data=json.dumps(ai_result.get("data", {})) if ai_result.get("data") else "",
-                session_id=session_id
+                session_id=session_id,
+                type=ai_result.get("type", "")
             )
 
         except Exception as e:

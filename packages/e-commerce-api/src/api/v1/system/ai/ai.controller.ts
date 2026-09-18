@@ -19,7 +19,7 @@ export class AiController implements BaseAiControllerInterface {
     requestBody: PostAiChatBody,
   ): Promise<PostAiChat200Response> {
     const userId = this.clsService.userId;
-    const grpcResponse: any = await this.aiService.chat(
+    const grpcResponse = await this.aiService.chat(
       requestBody.message,
       requestBody.sessionId,
       userId,
@@ -27,8 +27,9 @@ export class AiController implements BaseAiControllerInterface {
 
     return {
       message: grpcResponse.message,
-      data: grpcResponse.data ? JSON.parse(grpcResponse.data as string) : null,
+      data: grpcResponse.data ? JSON.parse(grpcResponse.data) : null,
       sessionId: grpcResponse.sessionId,
+      type: grpcResponse.type,
     };
   }
 }

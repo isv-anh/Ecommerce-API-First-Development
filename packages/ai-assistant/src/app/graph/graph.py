@@ -25,7 +25,7 @@ def create_agent_graph():
     builder.add_node("support", support_node)
     
     # Tool Node riêng biệt theo nghiệp vụ
-    builder.add_node("product_tools", ToolNode([get_products]))
+    builder.add_node("product_tools", ToolNode([get_products, check_inventory_tool]))
     builder.add_node("order_tools", ToolNode([check_inventory_tool, place_order_tool, check_order_tool, cancel_order_tool]))
     builder.add_node("support_tools", ToolNode([get_policy]))
     

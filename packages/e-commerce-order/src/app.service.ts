@@ -111,16 +111,84 @@ export class AppService {
 
   async placeOrder(data: any): Promise<any> {
     const orderId = randomUUID();
-    const totalAmount = data.items?.reduce((sum: number, item: any) => sum + (item.quantity * 10), 0) || 0;
     
+    let totalAmount = 0;
+    const orderItemsData = [];
+    
+    for (const item of data.items || []) {
+      const quantity = item.quantity || 1;
+      let price = 0;
+      let productId = item.productId || item.product_id;
+      let variantId = null;
+      let productName = 'Unknown Product';
+      
+      if (productId) {
+        // First, check if the ID is a product_variant
+        const variant = await this.prisma.product_variants.findUnique({
+          where: { id: productId },
+          include: { products: true }
+        });
+        
+        if (variant) {
+          variantId = variant.id;
+          productId = variant.product_id;
+          price = Number(variant.price || 0);
+          productName = variant.products?.name || productName;
+        } else {
+          // Check if it's a root product ID
+          const product = await this.prisma.products.findUnique({
+            where: { id: productId }
+          });
+          if (product) {
+            productName = product.name;
+            const firstVariant = await this.prisma.product_variants.findFirst({
+              where: { product_id: product.id }
+            });
+            if (firstVariant) {
+              variantId = firstVariant.id;
+              price = Number(firstVariant.price || 0);
+            }
+          }
+        }
+      }
+      
+      const itemTotal = price * quantity;
+      totalAmount += itemTotal;
+      
+      orderItemsData.push({
+        id: randomUUID(),
+        product_id: productId,
+        product_variant_id: variantId,
+        product_name: productName,
+        price: price,
+        quantity: quantity,
+        total_price: itemTotal
+      });
+    }
+
+    let userId = data.customerId;
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(userId);
+
+    if (!isUuid) {
+      const defaultUser = await this.prisma.users.findFirst();
+      if (defaultUser) {
+        userId = defaultUser.uid;
+      } else {
+        throw new Error('No default user found to place order. Please provide a valid customerId (UUID).');
+      }
+    }
+
     await this.prisma.orders.create({
       data: {
         id: orderId,
-        user_id: data.customerId,
+        user_id: userId,
         status: 'CREATED',
         total_amount: totalAmount,
         final_amount: totalAmount,
         created_at: new Date(),
+        order_items: {
+          create: orderItemsData
+        }
       },
     });
     

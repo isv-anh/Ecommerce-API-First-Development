@@ -16,4 +16,5 @@ message ChatResponse {
   string message = 1;
   string data = 2;
   string session_id = 3;
+  string type = 4;
 }

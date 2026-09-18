@@ -5,15 +5,16 @@ class ChatService:
     def __init__(self, agent):
         self.agent = agent
 
-    def process_query(self, message: str, session_id: str = "default_session") -> dict:
+    def process_query(self, message: str, session_id: str = "default_session", user_id: str = "default_user") -> dict:
         result = self.agent.invoke(
             {"messages": [HumanMessage(content=message)]},
-            config={"configurable": {"thread_id": session_id}},
+            config={"configurable": {"thread_id": session_id, "user_id": user_id}},
         )
         
         messages = result.get("messages", [])
         final_message = messages[-1].content
         data = None
+        data_type = None
         
         # Find the last HumanMessage index to only look at tools called in this turn
         last_human_idx = -1
@@ -26,6 +27,7 @@ class ChatService:
         if last_human_idx != -1:
             for i in range(len(messages) - 1, last_human_idx, -1):
                 if messages[i].type == "tool":
+                    data_type = messages[i].name
                     import json
                     try:
                         data = json.loads(messages[i].content)
@@ -35,5 +37,6 @@ class ChatService:
 
         return {
             "message": final_message,
-            "data": data
+            "data": data,
+            "type": data_type or ""
         }
