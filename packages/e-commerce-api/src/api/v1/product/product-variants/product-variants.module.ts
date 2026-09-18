@@ -7,9 +7,10 @@ import {
   PRODUCT_VARIANTS_CONTROLLER,
 } from '@generated-controller/product/product-variants/base-product-variants.controller';
 import { ProductVariantsRepository } from '@/api/v1/product/product-variants/product-variants.repository';
+import { InventoryGrpcController } from './inventory.grpc.controller';
 
 @Module({
-  controllers: [BaseProductVariantsController],
+  controllers: [BaseProductVariantsController, InventoryGrpcController],
   providers: [
     ProductVariantsService,
     {

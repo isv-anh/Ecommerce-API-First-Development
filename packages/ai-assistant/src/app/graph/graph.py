@@ -9,7 +9,10 @@ from app.graph.nodes.order_node import order_node
 from app.graph.nodes.support_node import support_node
 
 from app.tools.get_products import get_products
-from app.tools.handle_order import handle_order
+from app.tools.place_order_tool import place_order_tool
+from app.tools.check_order_tool import check_order_tool
+from app.tools.cancel_order_tool import cancel_order_tool
+from app.tools.check_inventory_tool import check_inventory_tool
 from app.tools.get_policy import get_policy
 
 def create_agent_graph():
@@ -23,7 +26,7 @@ def create_agent_graph():
     
     # Tool Node riêng biệt theo nghiệp vụ
     builder.add_node("product_tools", ToolNode([get_products]))
-    builder.add_node("order_tools", ToolNode([handle_order]))
+    builder.add_node("order_tools", ToolNode([check_inventory_tool, place_order_tool, check_order_tool, cancel_order_tool]))
     builder.add_node("support_tools", ToolNode([get_policy]))
     
     # 2. Luôn bắt đầu từ Supervisor

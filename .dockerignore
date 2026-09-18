@@ -13,3 +13,13 @@ out
 .turbo
 *.md
 !README.md
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+.git/
+.gitignore
+.dockerignore
+README.md

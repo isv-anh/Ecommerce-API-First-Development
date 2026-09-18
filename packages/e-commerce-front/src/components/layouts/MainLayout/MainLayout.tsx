@@ -6,8 +6,7 @@ import Search from "./components/Search/Search";
 import Footer from "./components/Footer/Footer";
 import { useScrollTrigger } from "@mui/material";
 import ScrollToTopButton from "./components/ScrollToTopButton/ScrollToTopButton";
-
-
+import ChatWidget from "@/components/chat/ChatWidget";
 const MainLayout = ({ children }: { children: ReactNode }) => {
   const trigger = useScrollTrigger({
     disableHysteresis: true,
@@ -27,6 +26,7 @@ const MainLayout = ({ children }: { children: ReactNode }) => {
         </Box>
       </div>
       <Footer />
+      <ChatWidget />
       {trigger && <ScrollToTopButton />}
     </Box>
   );

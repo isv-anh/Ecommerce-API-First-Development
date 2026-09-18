@@ -27,13 +27,13 @@ services:
   liquibase:
     image: liquibase/liquibase:4.33
     container_name: liquibase
-    depends_on:
-      postgres-db:
-        condition: service_healthy
+    # depends_on:
+    #   postgres-db:
+    #     condition: service_healthy
     volumes:
       - ./packages/e-commerce-db/changelog:/liquibase/changelog
     command:
-      - --url=jdbc:postgresql://postgres-db:${DB_PORT}/${DB_NAME}
+      - --url=jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
       - --username=${POSTGRES_USER}
       - --password=${POSTGRES_PASSWORD}
       - --changeLogFile=db.changelog-master.yaml
@@ -81,6 +81,18 @@ services:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
     depends_on:
       - elasticsearch
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq-local
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    networks:
+      - e-commerce-network
 
 networks:
   e-commerce-network:

@@ -17,7 +17,7 @@ def get_products(
     page: int = 1,
     page_size: int = 5,
     sort: Optional[str] = None,
-) -> List[Dict[str, Any]]:
+) -> dict:
     """
     Tra cứu danh sách sản phẩm trong kho theo các điều kiện lọc (tên, hãng, danh mục, khoảng giá).
     Trả về danh sách các đối tượng Product chứa đầy đủ thông tin: productId, productName, description, price, categoryName, thumbnailUrl, brandName, slug.
@@ -52,11 +52,26 @@ def get_products(
         # Chuyển đổi protobuf message sang List[Dict] chuẩn Python
         # preserving_proto_field_name=False giúp giữ nguyên định dạng camelCase như proto (productId, productName,...)
         data = MessageToDict(response, preserving_proto_field_name=False)
+        products_list = data.get("products", [])
         
-        # Trả về danh sách products đúng theo schema của proto
-        return data.get("products", [])
+        if not products_list:
+            return {
+                "message": "Không tìm thấy sản phẩm nào phù hợp với điều kiện tìm kiếm.",
+                "data": []
+            }
+
+        return {
+            "message": f"Tìm thấy {len(products_list)} sản phẩm.",
+            "data": products_list
+        }
 
     except grpc.RpcError as e:
-        return [{"error": f"gRPC Error ({e.code().name}): {e.details()}"}]
+        return {
+            "message": f"gRPC Error ({e.code().name}): {e.details()}",
+            "data": None
+        }
     except Exception as e:
-        return [{"error": f"Unexpected error: {str(e)}"}]
+        return {
+            "message": f"Unexpected error: {str(e)}",
+            "data": None
+        }

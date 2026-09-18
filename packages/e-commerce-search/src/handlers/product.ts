@@ -8,7 +8,7 @@ import { getEmbedding } from "@/config/model";
 export async function updateProduct(product: Product): Promise<void> {
   // semantic search: generate embedding vector for the product and store it in Elasticsearch
   const vector = await getEmbedding(
-    `${product.productName} ${product.categoryName} ${product.description}`,
+    `${product.productName} ${product.categoryName} ${product.brandName} ${product.description}`,
   );
 
   await esClient.index({
@@ -65,7 +65,7 @@ export async function searchProducts(
 
   if (categoryName) {
     filters.push({
-      term: {
+      match_phrase: {
         categoryName,
       },
     });
@@ -73,7 +73,7 @@ export async function searchProducts(
 
   if (brandName) {
     filters.push({
-      term: {
+      match_phrase: {
         brandName,
       },
     });
@@ -106,18 +106,34 @@ export async function searchProducts(
         must: keyword
           ? [
               {
-                multi_match: {
-                  query: keyword,
-                  fields: [
-                    "productName^3",
-                    "description",
-                    "categoryName^2",
-                    "brandName^2",
+                bool: {
+                  should: [
+                    {
+                      term: {
+                        productId: {
+                          value: keyword,
+                          boost: 10,
+                        },
+                      },
+                    },
+                    {
+                      multi_match: {
+                        query: keyword,
+                        fields: [
+                          "productName^3",
+                          "description",
+                          "categoryName^2",
+                          "brandName^2",
+                        ],
+                        operator: "and",
+                        fuzziness: "AUTO",
+                        prefix_length: 2,
+                        max_expansions: 50,
+                      },
+                    },
                   ],
-                  fuzziness: "AUTO",
-                  prefix_length: 2,
-                  max_expansions: 50,
-                },
+                  minimum_should_match: 1,
+                }
               },
             ]
           : [],

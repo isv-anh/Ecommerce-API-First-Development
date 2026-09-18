@@ -6,6 +6,7 @@ packages:
   - packages/openapi-typespec
   - packages/e-commerce-search
   - packages/proto
+  - packages/e-commerce-order
 
 catalog:
   "@tanstack/react-query": ^5.101.4

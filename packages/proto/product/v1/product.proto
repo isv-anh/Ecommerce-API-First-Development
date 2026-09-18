@@ -5,7 +5,6 @@ package products;
 
 service ProductService {
   rpc SearchProduct (SearchProductRequest) returns (ProductResponse);
-  rpc UpdateProduct (Product) returns (google.protobuf.Empty);
 }
 
 message SearchProductRequest {
@@ -35,4 +34,23 @@ message Product {
   string thumbnailUrl = 6;
   string brandName = 7;
   string slug = 8;
+}
+
+service InventoryService {
+  rpc GetProductInventory (GetProductInventoryRequest) returns (GetProductInventoryResponse);
+}
+
+message GetProductInventoryRequest {
+  string productId = 1;
+}
+
+message VariantInventory {
+  string variantId = 1;
+  string variantName = 2;
+  string sku = 3;
+  int32 stock = 4;
+}
+
+message GetProductInventoryResponse {
+  repeated VariantInventory variants = 1;
 }

@@ -1,0 +1,45 @@
+
+FROM python:3.11-slim-bookworm
+
+# 1. Optimize Python in container
+# PYTHONDONTWRITEBYTECODE: prevents python from writing .pyc files to disk
+# PYTHONUNBUFFERED: allows python output to be logged immediately without buffering
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+# 2. Update system packages to reduce security vulnerabilities and refresh image
+RUN apt-get update && \
+    apt-get upgrade -y --no-install-recommends && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# 3. Set working directory
+WORKDIR /app
+
+# 4. Separate copy and install dependencies to leverage Docker layer caching
+COPY requirements.txt .
+
+# Install dependencies (add gcc using apt-get if complex C/C++ builds are needed)
+RUN pip install --no-cache-dir -r requirements.txt
+
+# 5. Copy the entire source code into the image
+COPY . .
+
+# 6. Security: Create and switch to a non-root user
+RUN useradd -m appuser && chown -R appuser:appuser /app
+USER appuser
+
+# 7. Port the application listens on (e.g. 8080 for HTTP or 50051 for gRPC)
+EXPOSE 50051
+
+# 8. Command to start the application (choose the appropriate one below)
+# For standard Python scripts:
+CMD ["python", "main.py"]
+
+# Or if it's FastAPI / Starlette:
+# CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
+
+# Or if it's a gRPC Server:
+# CMD ["python", "server.py"]

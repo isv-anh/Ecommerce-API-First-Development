@@ -416,3 +416,13 @@ model verification_tokens {
   created_at DateTime? @default(now()) @db.Timestamp(6)
   users      users     @relation(fields: [user_id], references: [uid], onDelete: NoAction, onUpdate: NoAction, map: "fk_verification_tokens_user")
 }
+
+model outbox_events {
+  id             String   @id @db.Uuid
+  aggregate_type String   @db.VarChar(100)
+  aggregate_id   String   @db.VarChar(255)
+  event_type     String   @db.VarChar(100)
+  payload        Json     @db.JsonB
+  status         String   @default("PENDING") @db.VarChar(50)
+  created_at     DateTime @default(now()) @db.Timestamp(6)
+}

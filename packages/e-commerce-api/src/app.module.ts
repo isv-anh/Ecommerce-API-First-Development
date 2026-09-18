@@ -1,5 +1,6 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { ScheduleModule } from '@nestjs/schedule';
 import { PrismaModule } from './common/services/prisma.module';
 import { HealthModule } from './health.module';
 import { AuthModule } from './api/v1/auth/auth/auth.module';
@@ -32,10 +33,13 @@ import { PoliciesGuard } from '@/common/guards/policies.guard';
 import { UploadsModule } from '@/api/v1/system/uploads/uploads.module';
 import { AttributesModule } from '@/api/v1/product/attributes/attributes.module';
 import { ProductAttributesModule } from '@/api/v1/product/product-attributes/product-attributes.module';
+import { OutboxModule } from '@/api/v1/product/outbox/outbox.module';
+import { AiModule } from '@/api/v1/system/ai/ai.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    ScheduleModule.forRoot(),
     ClsModule,
     JwtModule,
     PrismaModule,
@@ -64,6 +68,8 @@ import { ProductAttributesModule } from '@/api/v1/product/product-attributes/pro
     UploadsModule,
     AttributesModule,
     ProductAttributesModule,
+    OutboxModule,
+    AiModule,
   ],
   providers: [
     CaslAbilityFactory,
