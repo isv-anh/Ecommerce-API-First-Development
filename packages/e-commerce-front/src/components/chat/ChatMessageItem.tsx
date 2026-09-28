@@ -2,6 +2,8 @@ import React from "react";
 import { Box, Typography, Button, Paper } from "@mui/material";
 import type { Message } from "./types";
 import ChatProductCard from "./ChatProductCard";
+import ChatVariantCard from "./ChatVariantCard";
+import ChatOrderCard from "./ChatOrderCard";
 
 interface ChatMessageItemProps {
   msg: Message;
@@ -19,18 +21,34 @@ const ChatMessageItem: React.FC<ChatMessageItemProps> = ({
   const renderData = () => {
     if (!msg.data) return null;
 
-    let productList: any[] = [];
+    let dataList: any[] = [];
     if (Array.isArray(msg.data)) {
-      productList = msg.data;
+      dataList = msg.data;
     } else if (msg.data.data && Array.isArray(msg.data.data)) {
-      productList = msg.data.data;
+      dataList = msg.data.data;
+    } else if (msg.data.orders && Array.isArray(msg.data.orders)) {
+      dataList = msg.data.orders;
+    } else if (
+      msg.data.productVariants &&
+      Array.isArray(msg.data.productVariants)
+    ) {
+      dataList = msg.data.productVariants;
     } else {
-      productList = [msg.data];
+      dataList = [msg.data];
     }
 
-    const hasProducts = productList.some((item) => item && item.productName);
+    const hasProducts = dataList.some((item) => item && item.productName);
+    const hasVariants = dataList.some(
+      (item) => item && item.sku && !item.productName,
+    );
+    const hasOrders = dataList.some(
+      (item) =>
+        item &&
+        (item.orderId ||
+          (item.id && item.status && item.totalAmount !== undefined)),
+    );
 
-    if (hasProducts) {
+    if (hasProducts || hasVariants || hasOrders) {
       return (
         <Box
           sx={{
@@ -41,17 +59,35 @@ const ChatMessageItem: React.FC<ChatMessageItemProps> = ({
             minWidth: 200,
           }}
         >
-          {productList
-            .filter((p) => p && p.productName)
-            .map((product: any, idx: number) => (
-              <ChatProductCard
-                key={idx}
-                product={product}
-                onOrder={(name) =>
-                  onSendMessage(`Tôi muốn đặt mua sản phẩm: ${name}`)
-                }
-              />
-            ))}
+          {dataList.map((item: any, idx: number) => {
+            if (!item) return null;
+            if (item.productName) {
+              return (
+                <ChatProductCard
+                  key={idx}
+                  product={item}
+                  onOrder={(name) =>
+                    onSendMessage(`Tôi muốn đặt mua sản phẩm: ${name}`)
+                  }
+                />
+              );
+            }
+            if (item.sku) {
+              return (
+                <ChatVariantCard
+                  key={idx}
+                  variant={item}
+                  onOrder={(sku) =>
+                    onSendMessage(`Tôi muốn đặt mua SKU: ${sku}`)
+                  }
+                />
+              );
+            }
+            if (item.orderId || (item.id && item.status)) {
+              return <ChatOrderCard key={idx} order={item} />;
+            }
+            return null;
+          })}
         </Box>
       );
     }
