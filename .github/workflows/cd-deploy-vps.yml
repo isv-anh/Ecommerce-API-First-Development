@@ -1,0 +1,60 @@
+name: "[CD] Deploy to VPS"
+
+on:
+  workflow_run:
+    workflows:
+      - "[CD] AI Assistant Build and Deploy"
+      - "[CD] E-Commerce API Build and Deploy"
+      - "[CD] E-Commerce Front Build and Deploy"
+      - "[CD] E-Commerce Order Build and Deploy"
+      - "[CD] E-Commerce Search Build and Deploy"
+    types:
+      - completed
+
+concurrency:
+  group: deploy-vps
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+    # Chỉ chạy deploy nếu workflow trigger nó đã chạy thành công
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Copy docker-compose.yaml to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          port: ${{ secrets.VPS_PORT }}
+          source: "docker-compose.yaml"
+          target: "~/"
+
+      - name: Deploy to VPS via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          port: ${{ secrets.VPS_PORT }}
+          script: |
+            # Tạo thư mục nếu chưa có và di chuyển file docker-compose.yaml vào đó
+            mkdir -p ~/e-commerce
+            mv ~/docker-compose.yaml ~/e-commerce/
+
+            cd ~/e-commerce
+
+            # Pull các image mới nhất vừa được build và push lên Docker Hub
+            docker-compose pull
+
+            # Khởi động lại các service với image mới
+            docker-compose up -d
+
+            # Xóa các image cũ (dangling images) không còn được sử dụng để giải phóng dung lượng VPS
+            docker image prune -f
