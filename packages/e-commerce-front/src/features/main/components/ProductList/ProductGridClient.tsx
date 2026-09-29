@@ -8,12 +8,12 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 
 import ProductCard from "@/features/main/components/ProductCard/ProductCard";
-import { useGetUserProductsSuspense } from "@e-commerce/api-client/endpoints/product";
+import { useSearchProductsSuspense } from "@e-commerce/api-client/endpoints/product";
 import { userProductSearchContext } from "@/features/main/product/utils";
 
 const ProductGridClient = () => {
   const { params, setParams } = userProductSearchContext.useSearch();
-  const { data } = useGetUserProductsSuspense(params);
+  const { data } = useSearchProductsSuspense(params);
 
   // Accumulate products for "Load More" functionality
   const [accumulatedProducts, setAccumulatedProducts] = useState(data.products);

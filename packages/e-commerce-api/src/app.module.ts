@@ -35,6 +35,7 @@ import { AttributesModule } from '@/api/v1/product/attributes/attributes.module'
 import { ProductAttributesModule } from '@/api/v1/product/product-attributes/product-attributes.module';
 import { OutboxModule } from '@/api/v1/product/outbox/outbox.module';
 import { AiModule } from '@/api/v1/system/ai/ai.module';
+import { SearchModule } from '@/api/v1/product/search/search.module';
 
 @Module({
   imports: [
@@ -70,6 +71,7 @@ import { AiModule } from '@/api/v1/system/ai/ai.module';
     ProductAttributesModule,
     OutboxModule,
     AiModule,
+    SearchModule,
   ],
   providers: [
     CaslAbilityFactory,

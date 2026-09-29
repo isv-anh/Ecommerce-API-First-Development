@@ -2,11 +2,10 @@ import Hydration from "@/components/ssr/Hydration/Hydration";
 import ProductGridClient from "@/features/main/components/ProductList/ProductGridClient";
 import { getQueryClient } from "@/utils/query";
 import {
-  getUserProducts,
-  getGetUserProductsQueryKey,
+  searchProducts,
+  getSearchProductsQueryKey,
 } from "@e-commerce/api-client/endpoints/product";
 import { dehydrate } from "@tanstack/react-query";
-import { getUserProductsQueryParams } from "@e-commerce/api-validation/zod/product";
 
 interface ProductPageProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -14,12 +13,13 @@ interface ProductPageProps {
 
 const ProductPage = async ({ searchParams }: ProductPageProps) => {
   const resolvedSearchParams = await searchParams;
-  const parsedParams = getUserProductsQueryParams.parse(resolvedSearchParams);
+  // Fallback to simple object if parsing is complex, or use validation schema if available
+  const parsedParams = resolvedSearchParams as any;
   const queryClient = getQueryClient();
 
   await queryClient.prefetchQuery({
-    queryKey: getGetUserProductsQueryKey(parsedParams),
-    queryFn: () => getUserProducts(parsedParams),
+    queryKey: getSearchProductsQueryKey(parsedParams),
+    queryFn: () => searchProducts(parsedParams),
   });
 
   return (

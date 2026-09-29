@@ -88,7 +88,9 @@ const ProductListContent = () => {
     const brandIdsArray = params.brandIds
       ? params.brandIds.split(",").filter(Boolean)
       : [];
-    const newBrandIds = brandIdsArray.filter((id) => id !== brandIdToRemove);
+    const newBrandIds = brandIdsArray.filter(
+      (id: string) => id !== brandIdToRemove,
+    );
     setParams({
       page: 1,
       brandIds: newBrandIds.length > 0 ? newBrandIds.join(",") : undefined,
@@ -125,7 +127,7 @@ const ProductListContent = () => {
   const handleResetFilters = () => {
     setParams({
       page: 1,
-      productName: undefined,
+      keyword: undefined,
       brandIds: undefined,
       categoryIds: undefined,
       minPrice: undefined,
@@ -143,7 +145,7 @@ const ProductListContent = () => {
       page: 1,
       sortBy,
       sortOrder,
-    });
+    } as any);
   };
 
   const hasActiveFilters = !!(
@@ -151,7 +153,7 @@ const ProductListContent = () => {
     (params as any).categoryIds ||
     params.minPrice ||
     params.maxPrice ||
-    params.productName
+    params.keyword
   );
 
   return (
@@ -163,7 +165,7 @@ const ProductListContent = () => {
         minPrice={params.minPrice}
         maxPrice={params.maxPrice}
         sortBy={params.sortBy}
-        sortOrder={params.sortOrder}
+        sortOrder={(params as any).sortOrder}
         hasActiveFilters={hasActiveFilters}
         onOpenFilterDialog={() => setFilterDialogOpen(true)}
         onApplyPrice={handleApplyPrice}

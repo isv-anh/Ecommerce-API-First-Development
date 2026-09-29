@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getUserProductsQueryParams } from "@e-commerce/api-validation/zod/product";
+
 
 interface ProductPageProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -10,11 +10,11 @@ export async function generateMetadata({
   searchParams,
 }: ProductPageProps): Promise<Metadata> {
   const resolvedSearchParams = await searchParams;
-  const parsedParams = getUserProductsQueryParams.parse(resolvedSearchParams);
+  const keyword = resolvedSearchParams.keyword as string | undefined;
 
   let title = "Danh sách sản phẩm | E-Commerce";
-  if (parsedParams.productName) {
-    title = `Kết quả tìm kiếm: ${parsedParams.productName} | E-Commerce`;
+  if (keyword) {
+    title = `Kết quả tìm kiếm: ${keyword} | E-Commerce`;
   }
 
   return {
