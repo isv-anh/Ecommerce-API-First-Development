@@ -40,7 +40,7 @@ const Header = () => {
               <>
                 <Button
                   component={NextLink}
-                  href="/auth/signin"
+                  href="/auth/login"
                   variant="text"
                   className="text-gray-600 hover:text-black hover:bg-gray-100 text-xs font-medium px-3"
                   disableRipple
@@ -49,7 +49,7 @@ const Header = () => {
                 </Button>
                 <Button
                   component={NextLink}
-                  href="/auth/signup"
+                  href="/auth/register"
                   variant="text"
                   className="text-gray-600 hover:text-black hover:bg-gray-100 text-xs font-medium px-3"
                   disableRipple
