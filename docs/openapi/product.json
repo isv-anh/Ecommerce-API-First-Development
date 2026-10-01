@@ -9,6 +9,9 @@
       "name": "categories"
     },
     {
+      "name": "search"
+    },
+    {
       "name": "brands"
     },
     {
@@ -2349,6 +2352,75 @@
         ]
       }
     },
+    "/api/v1/search": {
+      "get": {
+        "operationId": "searchProducts",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/SearchProductRequestParams.keyword"
+          },
+          {
+            "$ref": "#/components/parameters/SearchProductRequestParams.categoryIds"
+          },
+          {
+            "$ref": "#/components/parameters/SearchProductRequestParams.brandIds"
+          },
+          {
+            "$ref": "#/components/parameters/SearchProductRequestParams.minPrice"
+          },
+          {
+            "$ref": "#/components/parameters/SearchProductRequestParams.maxPrice"
+          },
+          {
+            "$ref": "#/components/parameters/SearchProductRequestParams.sortBy"
+          },
+          {
+            "$ref": "#/components/parameters/PageQueryParams.page"
+          },
+          {
+            "$ref": "#/components/parameters/PageQueryParams.pageSize"
+          },
+          {
+            "$ref": "#/components/parameters/PageQueryParams.orderBy"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchProductsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "search"
+        ]
+      }
+    },
     "/api/v1/user/products": {
       "get": {
         "operationId": "getUserProducts",
@@ -3205,6 +3277,62 @@
           "minimum": 1,
           "maximum": 100,
           "default": 20
+        },
+        "explode": false
+      },
+      "SearchProductRequestParams.brandIds": {
+        "name": "brandIds",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string"
+        },
+        "explode": false
+      },
+      "SearchProductRequestParams.categoryIds": {
+        "name": "categoryIds",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string"
+        },
+        "explode": false
+      },
+      "SearchProductRequestParams.keyword": {
+        "name": "keyword",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string"
+        },
+        "explode": false
+      },
+      "SearchProductRequestParams.maxPrice": {
+        "name": "maxPrice",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "explode": false
+      },
+      "SearchProductRequestParams.minPrice": {
+        "name": "minPrice",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "explode": false
+      },
+      "SearchProductRequestParams.sortBy": {
+        "name": "sortBy",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string"
         },
         "explode": false
       }
@@ -4403,6 +4531,30 @@
         }
       },
       "ProductsResponse": {
+        "type": "object",
+        "required": [
+          "totalCount",
+          "totalPages",
+          "products"
+        ],
+        "properties": {
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "products": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductResponse"
+            }
+          }
+        }
+      },
+      "SearchProductsResponse": {
         "type": "object",
         "required": [
           "totalCount",

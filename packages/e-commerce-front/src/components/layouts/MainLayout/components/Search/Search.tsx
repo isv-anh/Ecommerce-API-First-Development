@@ -25,7 +25,7 @@ const SearchBar = () => {
   const [badgeCount, setBadgeCount] = useState(0);
   const { userId } = useAuth();
 
-  const textSearchParam = searchParams.get("productName") || "";
+  const textSearchParam = searchParams.get("keyword") || "";
 
   useEffect(() => {
     if (!userId) {
@@ -75,9 +75,9 @@ const SearchBar = () => {
   const handleSearch = (data: { textSearch: string }) => {
     const query = data.textSearch.trim();
     if (query !== "") {
-      router.push(`/product?productName=${encodeURIComponent(query)}`);
+      router.push(`/search?keyword=${encodeURIComponent(query)}`);
     } else {
-      router.push(`/product`);
+      router.push(`/search`);
     }
   };
 
