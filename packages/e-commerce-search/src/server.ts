@@ -6,9 +6,9 @@ import {
   ProductServiceServer,
   ProductServiceService,
   SearchProductRequest,
-} from "@/buf/generated/product/v1/product";
-import { searchProducts } from "@/handlers/product";
-import { esClient } from "@/config/elasticsearch"; // Import esClient của bạn
+} from "./buf/generated/product/v1/product";
+import { searchProducts } from "./handlers/product";
+import { esClient } from "./config/elasticsearch"; // Import esClient của bạn
 import { initRabbitMQConsumer } from "./rabbitmq";
 
 // 1. Hàm kiểm tra kết nối và chuẩn bị Index Elasticsearch

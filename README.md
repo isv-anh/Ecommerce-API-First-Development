@@ -198,3 +198,66 @@ Tự động hóa những công việc lặp lại nhằm giảm thời gian onb
 Repository sử dụng một hệ thống **E-Commerce SaaS** làm ứng dụng minh họa.
 
 Mục tiêu của dự án không phải xây dựng một website bán hàng hoàn chỉnh, mà là chứng minh rằng kiến trúc API-first, workflow code generation và mô hình Contract-Driven Development có thể áp dụng hiệu quả trên một hệ thống thực tế.
+
+
+# Chạy production bằng Docker Compose
+
+`docker-compose.prod.yaml` chạy 5 service: `frontend`, `api`, `order`, `search`,
+`ai-assistant`. PostgreSQL dùng Supabase; RabbitMQ và Elasticsearch dùng cloud.
+
+```bash
+cp .env.production.example .env.production
+# Điền thông tin Supabase, RabbitMQ, Elasticsearch, JWT, AWS, SendGrid và DashScope.
+docker compose --env-file .env.production -f docker-compose.prod.yaml config --quiet
+docker compose --env-file .env.production -f docker-compose.prod.yaml up -d --build
+docker compose --env-file .env.production -f docker-compose.prod.yaml ps
+docker compose --env-file .env.production -f docker-compose.prod.yaml logs -f
+```
+
+Dùng `--env-file .env.production` để Compose đọc các biến `${...}`; xem
+[tài liệu Docker về interpolation](https://docs.docker.com/compose/how-tos/environment-variables/variable-interpolation/).
+Giữ `.env.production` ở máy triển khai, không commit. Nếu mật khẩu chứa `$`,
+đặt giá trị trong dấu nháy đơn trong file env để tránh nội suy.
+
+- `DB_HOST`, `DB_PORT`, `DB_USERNAME`, `DB_PASSWORD`, `DB_NAME`: lấy từ mục
+  **Connect** của Supabase, dùng direct connection hoặc session pooler. Kết nối
+  Node sử dụng TLS qua `PGSSLMODE=require`.
+- `DB_URI`: URI PostgreSQL riêng cho checkpoint của AI, thêm `sslmode=require`
+  và URL-encode username/password khi có ký tự đặc biệt. AI tự tạo bảng checkpoint
+  khi khởi động, nên tài khoản này cần quyền tạo bảng trong schema sử dụng.
+- `RABBITMQ_URL`: URL cloud dạng `amqps://...`, bao gồm virtual host đúng.
+- Elasticsearch: điền `ELASTIC_CLOUD_ID` hoặc `ELASTICSEARCH_NODE` (HTTPS), kèm
+  `ELASTIC_API_KEY` hoặc `ELASTIC_USERNAME` / `ELASTIC_PASSWORD`.
+- `FRONTEND_URL`: origin công khai của frontend cho CORS, không thêm dấu `/` cuối.
+- `NEXT_PUBLIC_API_URL`: URL API mà trình duyệt truy cập được. Giá trị này được
+  nhúng khi build, nên cần build lại frontend sau khi đổi. SSR dùng `http://api:8080`.
+
+Mặc định host mở frontend ở cổng `3000` và API ở `8080`; đổi bằng `FRONTEND_PORT`
+và `API_PORT`. Trỏ domain HTTPS / reverse proxy của máy triển khai về các cổng
+này. Các cổng gRPC `50051`–`50054` chỉ dùng trong mạng Docker. Healthcheck kiểm tra
+cổng lắng nghe; không thay thế kiểm tra từng chức năng hay kết nối cloud.
+
+Build image cần Internet để tải dependency và sinh protobuf từ Buf. API tự sinh
+Prisma Client và base controller trong build, không cần truyền secret production
+vào image.
+
+
+Image `api` và `order` dùng [Node.js distroless](https://github.com/GoogleContainerTools/distroless/tree/main/nodejs)
+và [dependency tracing](https://github.com/vercel/nft) qua `docker/node-runtime/trace.mjs`.
+Image cuối chỉ chứa code đã build và file runtime cần thiết; Prisma CLI, Studio,
+TypeScript, npm và pnpm nằm ngoài image chạy. Prisma WASM, bcrypt và gRPC được
+kiểm tra trong image. Distroless không có shell: dùng `logs` để xem lỗi hoặc
+`docker compose ... exec api node ...` để chạy lệnh Node.js. Healthcheck hiện tại
+vẫn chạy qua `node` trong `PATH`.
+
+Nếu schema Supabase đã được migrate, chỉ cần lệnh `up` ở trên. Khi cần cập nhật
+schema, chạy Liquibase riêng trước khi triển khai ứng dụng:
+
+```bash
+# Điền ADMIN_PASSWORD trong .env.production trước khi chạy migration.
+docker compose --env-file .env.production -f docker-compose.prod.yaml --profile migration run --rm liquibase
+```
+
+Liquibase dùng `DB_*` với TLS; có thể đặt `LIQUIBASE_URL` để đổi JDBC URL. Profile
+`migration` không chạy trong lệnh `up` thông thường. Migration thất bại cần xử lý
+trước khi cập nhật các container ứng dụng.

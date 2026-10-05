@@ -15,8 +15,7 @@ RUN corepack enable && corepack prepare pnpm@10.13.1 --activate
 COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
 
 # Copy packages
-COPY packages/e-commerce-search ./packages/e-commerce-search
-COPY packages/proto ./packages/proto
+COPY packages/ ./packages/
 
 # Install project dependencies with frozen lockfile for reproducible builds
 # Using cache mount for pnpm store to speed up installs
@@ -47,7 +46,7 @@ WORKDIR /app
 
 # Set production environment variables
 ENV NODE_ENV=production
-ENV PORT=50051
+ENV PORT=50053
 ENV HOSTNAME="0.0.0.0"
 
 COPY --from=builder --chown=node:node /app/out ./
@@ -61,8 +60,8 @@ USER root
 RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx
 USER node
 
-# Expose port 50051 to allow gRPC traffic
-EXPOSE 50051
+# Expose port 50053 to allow gRPC traffic
+EXPOSE 50053
 
 # Start the application using the Node.js runtime
 CMD ["node", "dist/server.js"]

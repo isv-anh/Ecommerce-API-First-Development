@@ -21,7 +21,7 @@ import {
             process.cwd(),
             '../proto/ai_assistant/v1/ai_assistant.proto',
           ),
-          url: 'localhost:50054',
+          url: process.env.AI_ASSISTANT_SERVICE_URL || 'localhost:50054',
         },
       },
     ]),

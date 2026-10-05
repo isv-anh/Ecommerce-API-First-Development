@@ -1,3 +1,5 @@
+import os
+
 import grpc
 
 from app.buf.generated.order.v1 import order_pb2_grpc
@@ -13,9 +15,9 @@ class OrderClientManager:
             cls._instance = super().__new__(cls)
         return cls._instance
 
-    def get_client(self, target: str = "localhost:50052") -> order_pb2_grpc.OrderServiceStub:
+    def get_client(self, target: str | None = None) -> order_pb2_grpc.OrderServiceStub:
         if self._client is None:
-            self._channel = grpc.insecure_channel(target)
+            self._channel = grpc.insecure_channel(target or os.getenv("ORDER_SERVICE_URL", "localhost:50052"))
             self._client = order_pb2_grpc.OrderServiceStub(self._channel)
         return self._client
 

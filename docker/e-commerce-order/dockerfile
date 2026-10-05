@@ -38,40 +38,24 @@ RUN pnpm --filter e-commerce-order exec prisma generate
 # Build the package
 RUN pnpm --filter e-commerce-order build
 
-# Deploy isolated production environment
-RUN pnpm --filter e-commerce-order --prod deploy --legacy /app/out
-
-# Generate Prisma Client in the deployed environment
-WORKDIR /app/out
-RUN npx prisma generate
+# Trace the compiled entrypoint and copy only files needed at runtime.
+COPY docker/node-runtime/trace.mjs /app/trace-runtime.mjs
+RUN node /app/trace-runtime.mjs packages/e-commerce-order/dist/main.js /app/runtime
 
 # ============================================
-# Stage 2: Run API application
+# Stage 2: Minimal Node.js runtime
 # ============================================
+FROM gcr.io/distroless/nodejs22-debian13:nonroot AS runner
 
-FROM node:${NODE_VERSION} AS runner
+WORKDIR /app/packages/e-commerce-order
+ENV NODE_ENV=production \
+    PORT=50052 \
+    HOSTNAME=0.0.0.0 \
+    PATH=/nodejs/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
-# Apply OS security patches
-RUN apt-get update && apt-get upgrade -y && rm -rf /var/lib/apt/lists/*
+COPY --from=builder --chown=65532:65532 /app/runtime /app
+COPY --from=builder --chown=65532:65532 /app/packages/proto /app/packages/proto
 
-# Set working directory
-WORKDIR /app
-
-# Set production environment variables
-ENV NODE_ENV=production
-ENV PORT=50052
-ENV HOSTNAME="0.0.0.0"
-
-# Copy the deployed production environment from builder
-COPY --from=builder --chown=node:node /app/out ./
-
-# Switch to non-root user for security best practices
-USER root
-RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx
-USER node
-
-# Expose port 50052 for gRPC
 EXPOSE 50052
-
-# Start API server
-CMD ["node", "dist/src/main"]
+# The distroless entrypoint already invokes Node.js.
+CMD ["dist/main.js"]

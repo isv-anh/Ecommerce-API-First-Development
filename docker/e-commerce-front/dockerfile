@@ -36,6 +36,7 @@ ENV NODE_ENV=production
 # so Next.js can embed/inline this value into the client-side JavaScript source.
 ARG NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_ENABLE_MOCKS=false
 
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
