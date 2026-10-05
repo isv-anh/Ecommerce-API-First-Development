@@ -241,20 +241,21 @@ export class AppService {
   }
 
   async cancelOrder(data: any): Promise<any> {
-    try {
-      await this.prisma.orders.update({
-        where: { id: data.orderId },
-        data: { status: 'CANCELLED' }
-      });
-      return {
-        success: true,
-        message: `Order cancelled due to: ${data.reason}`
-      };
-    } catch (e) {
-      return {
-        success: false,
-        message: 'Order not found or could not be cancelled'
-      };
-    }
+    const result = await this.prisma.orders.updateMany({
+      where: {
+        id: data.orderId,
+        OR: [
+          { status: { equals: 'PENDING', mode: 'insensitive' } },
+          { status: { equals: 'CONFIRMED', mode: 'insensitive' } },
+        ],
+      },
+      data: { status: 'CANCELLED' },
+    });
+    return {
+      success: result.count === 1,
+      message: result.count === 1
+        ? `Order cancelled due to: ${data.reason}`
+        : 'Order not found or cannot be cancelled in its current status',
+    };
   }
 }

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import type {
+  CancelOrderParams,
   DeleteOrderParams,
   GetOrderByIdParams,
   GetOrderById200Response,
@@ -14,6 +15,11 @@ import { BaseOrdersControllerInterface } from '@generated-controller/order/order
 @Injectable()
 export class OrdersController implements BaseOrdersControllerInterface {
   constructor(private readonly service: OrdersService) {}
+
+  /** POST /api/v1/orders/:orderId/cancel */
+  async cancelOrder(params: CancelOrderParams): Promise<void> {
+    await this.service.cancelOrder(params);
+  }
 
   /**
    * DELETE /api/v1/orders/:orderId

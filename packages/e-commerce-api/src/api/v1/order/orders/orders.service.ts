@@ -3,10 +3,14 @@ import {
   Injectable,
   OnModuleInit,
   NotFoundException,
+  BadRequestException,
+  ForbiddenException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import type { ClientGrpc } from '@nestjs/microservices';
 import { Observable, firstValueFrom } from 'rxjs';
 import type {
+  CancelOrderParams,
   DeleteOrderParams,
   GetOrderByIdParams,
   GetOrderById200Response,
@@ -16,12 +20,14 @@ import type {
   PostOrder201Response,
 } from '@e-commerce/api-validation/types/order';
 import type { BaseOrdersControllerInterface } from '@generated-controller/order/orders/base-orders.controller.interface';
+import { ClsService } from '@/common/services/cls/cls.service';
 
 interface OrderServiceClient {
   createOrder(data: any): Observable<any>;
   getOrders(data: any): Observable<any>;
   getOrderById(data: any): Observable<any>;
   deleteOrder(data: any): Observable<any>;
+  cancelOrder(data: any): Observable<any>;
 }
 
 @Injectable()
@@ -30,11 +36,41 @@ export class OrdersService
 {
   private orderServiceClient: OrderServiceClient;
 
-  constructor(@Inject('ORDER_SERVICE') private readonly client: ClientGrpc) {}
+  constructor(
+    @Inject('ORDER_SERVICE') private readonly client: ClientGrpc,
+    private readonly clsService: ClsService,
+  ) {}
 
   onModuleInit() {
     this.orderServiceClient =
       this.client.getService<OrderServiceClient>('OrderService');
+  }
+
+  /** Cancel an eligible order owned by the authenticated customer. */
+  async cancelOrder(params: CancelOrderParams): Promise<void> {
+    const userId = this.clsService.userId;
+    if (!userId) throw new UnauthorizedException();
+
+    const { order } = await firstValueFrom(
+      this.orderServiceClient.getOrderById({ orderId: params.orderId }),
+    );
+    if (!order) throw new NotFoundException('Không tìm thấy đơn hàng.');
+    if (order.userId !== userId) throw new ForbiddenException();
+    if (!['PENDING', 'CONFIRMED'].includes(order.status.toUpperCase())) {
+      throw new BadRequestException('Đơn hàng này không thể hủy.');
+    }
+
+    const result = await firstValueFrom(
+      this.orderServiceClient.cancelOrder({
+        orderId: params.orderId,
+        reason: 'Khách hàng yêu cầu hủy đơn hàng',
+      }),
+    );
+    if (!result.success) {
+      throw new BadRequestException(
+        'Không thể hủy đơn hàng. Vui lòng tải lại và thử lại.',
+      );
+    }
   }
 
   /**

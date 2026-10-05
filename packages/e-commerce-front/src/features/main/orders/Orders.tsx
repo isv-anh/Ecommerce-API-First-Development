@@ -1,7 +1,10 @@
 "use client";
 
 import React from "react";
-import { useGetOrdersSuspense } from "@e-commerce/api-client/endpoints/order";
+import {
+  useGetOrdersSuspense,
+  useGetOrderItemsSuspense,
+} from "@e-commerce/api-client/endpoints/order";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
@@ -12,8 +15,11 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Link from "next/link";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useUser } from "@/providers/UserProvider/UserProvider";
-import Grid from "@mui/material/Grid";
-import Chip from "@mui/material/Chip";
+import Pagination from "@mui/material/Pagination";
+import SuspenseWrapper from "@/components/feedback/SuspenseWrapper/SuspenseWrapper";
+import type { OrderResponse } from "@e-commerce/api-client/schemas/order";
+import OrderCard from "./OrderCard";
+import CancelOrderButton from "./CancelOrderButton";
 
 const Orders = () => {
   const { userId, isInitialized } = useUser();
@@ -65,7 +71,7 @@ const Orders = () => {
   }
 
   return (
-    <Container maxWidth="lg" sx={{ py: 6 }}>
+    <Container maxWidth="lg" sx={{ py: { xs: 3, sm: 6 } }}>
       <Typography variant="header" sx={{ fontWeight: 800, mb: 4 }}>
         Đơn hàng của tôi
       </Typography>
@@ -83,21 +89,33 @@ const Orders = () => {
   );
 };
 
-const getStatusConfig = (status: string) => {
-  switch (status.toUpperCase()) {
-    case "PENDING":
-      return { label: "Chờ xử lý", color: "warning" as const };
-    case "COMPLETED":
-      return { label: "Hoàn thành", color: "success" as const };
-    case "CANCELLED":
-      return { label: "Đã hủy", color: "error" as const };
-    default:
-      return { label: status, color: "default" as const };
-  }
+/** Load purchased items through the generated API hook. */
+const OrderCardLoader = ({ order }: { order: OrderResponse }) => {
+  const { data } = useGetOrderItemsSuspense(order.orderId);
+  return (
+    <OrderCard
+      order={order}
+      items={data.orderItems}
+      actions={<CancelOrderButton order={order} />}
+    />
+  );
 };
 
+/** Isolate item loading failures so other orders remain visible. */
+const OrderWithItems = ({ order }: { order: OrderResponse }) => (
+  <SuspenseWrapper>
+    <OrderCardLoader order={order} />
+  </SuspenseWrapper>
+);
+
 const OrdersLoader = ({ userId }: { userId: string }) => {
-  const { data: ordersResponse } = useGetOrdersSuspense({ userId });
+  const [page, setPage] = React.useState(1);
+  const [isPending, startTransition] = React.useTransition();
+  const { data: ordersResponse } = useGetOrdersSuspense({
+    userId,
+    page,
+    pageSize: 5,
+  });
   const orders = ordersResponse?.orders || [];
 
   if (orders.length === 0) {
@@ -134,59 +152,25 @@ const OrdersLoader = ({ userId }: { userId: string }) => {
   }
 
   return (
-    <Stack spacing={3}>
-      {orders.map((order) => {
-        const statusConfig = getStatusConfig(order.status);
-        return (
-          <Paper
-            key={order.orderId}
-            sx={{
-              p: 4,
-              borderRadius: 3,
-              border: "1px solid",
-              borderColor: "divider",
-              boxShadow: "none",
-            }}
-          >
-            <Grid container spacing={3} alignItems="center">
-              <Grid size={{ xs: 12, md: 6 }}>
-                <Typography variant="boldM" fontWeight="bold">
-                  Mã đơn: #{order.orderId.split("-")[0].toUpperCase()}
-                </Typography>
-                <Typography variant="regularM" color="text.secondary" mt={0.5}>
-                  Ngày đặt:{" "}
-                  {new Date(order.createdAt).toLocaleDateString("vi-VN")}
-                </Typography>
-              </Grid>
-              <Grid
-                size={{ xs: 12, md: 3 }}
-                sx={{ textAlign: { md: "center" } }}
-              >
-                <Chip
-                  label={statusConfig.label}
-                  color={statusConfig.color}
-                  size="small"
-                />
-              </Grid>
-              <Grid
-                size={{ xs: 12, md: 3 }}
-                sx={{ textAlign: { md: "right" } }}
-              >
-                <Typography
-                  variant="boldL"
-                  color="error.main"
-                  fontWeight="bold"
-                >
-                  {new Intl.NumberFormat("vi-VN", {
-                    style: "currency",
-                    currency: "VND",
-                  }).format(order.finalAmount)}
-                </Typography>
-              </Grid>
-            </Grid>
-          </Paper>
-        );
-      })}
+    <Stack spacing={3} aria-busy={isPending}>
+      <Typography variant="regularS" color="text.secondary">
+        {ordersResponse.totalCount} đơn hàng · Xem lại sản phẩm và theo dõi đơn
+        hàng của bạn
+      </Typography>
+      {orders.map((order) => (
+        <OrderWithItems key={order.orderId} order={order} />
+      ))}
+      {ordersResponse.totalPages > 1 && (
+        <Stack alignItems="center">
+          <Pagination
+            count={ordersResponse.totalPages}
+            page={page}
+            color="primary"
+            disabled={isPending}
+            onChange={(_, nextPage) => startTransition(() => setPage(nextPage))}
+          />
+        </Stack>
+      )}
     </Stack>
   );
 };

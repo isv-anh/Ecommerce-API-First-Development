@@ -2,6 +2,7 @@ import { PolicyRule } from '@/common/decorators/check-policies.decorator';
 import { Operation } from '@e-commerce/api-validation/operations/operations';
 
 export const getPermissions: Record<Operation, PolicyRule[]> = {
+  cancelOrder: [],
   deleteAddress: [],
   deleteBrand: [],
   deleteCart: [],

@@ -63,3 +63,7 @@ model PostOrderResponse {
 model DeleteOrderResponse {
     @statusCode statusCode: 204;
 }
+
+model CancelOrderResponse {
+    @statusCode statusCode: 204;
+}
