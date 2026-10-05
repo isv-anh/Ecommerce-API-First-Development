@@ -1,4 +1,6 @@
 from langchain_core.messages import HumanMessage
+from copy import deepcopy
+from app.utils.tool_results import tool_payload
 
 
 class ChatService:
@@ -14,6 +16,7 @@ class ChatService:
         if is_suspended:
             if confirm is True:
                 # Resume graph execution
+                self.agent.update_state(config, {"action_status": "confirmed"}, as_node="order")
                 result = self.agent.invoke(None, config=config)
             elif confirm is False:
                 # Cancel the tool call by faking a tool message response
@@ -27,7 +30,10 @@ class ChatService:
                         name=tc["name"], 
                         content="User rejected the confirmation."
                     ))
-                result = self.agent.invoke({"messages": cancel_messages}, config=config)
+                result = self.agent.invoke({
+                    "messages": cancel_messages, "pending_actions": [],
+                    "order_draft": None, "action_status": "rejected",
+                }, config=config)
             else:
                 # confirm is None but we are suspended, shouldn't happen normally unless frontend bugs out
                 # Just return CONFIRMATION_REQUIRED again
@@ -49,9 +55,14 @@ class ChatService:
             messages_list = new_state.values.get("messages", [])
             if messages_list:
                 last_message = messages_list[-1]
-                if hasattr(last_message, "tool_calls") and len(last_message.tool_calls) > 0:
-                    snapshot_data = last_message.tool_calls[0].get("args", {})
-                    data_type = last_message.tool_calls[0].get("name", "")
+                pending = new_state.values.get("pending_actions") or [
+                    {"name": call["name"], "args": call["args"]}
+                    for call in getattr(last_message, "tool_calls", [])
+                    if call["name"] in ("place_order_tool", "cancel_order_tool")
+                ]
+                if pending:
+                    snapshot_data = pending[0]["args"]
+                    data_type = pending[0]["name"]
                     
             return {
                 "message": "Hệ thống chuẩn bị gọi lệnh. Bạn vui lòng kiểm tra lại thông tin dưới đây và xác nhận nhé?",
@@ -93,11 +104,11 @@ class ChatService:
         # Extract data from the last ToolMessage in this turn
         if last_human_idx != -1:
             for i in range(len(messages) - 1, last_human_idx, -1):
-                if messages[i].type == "tool":
+                if messages[i].type == "tool" and messages[i].name != "get_product_details":
                     data_type = messages[i].name
                     import json
                     try:
-                        data = json.loads(messages[i].content)
+                        data = deepcopy(tool_payload(messages[i]))
                         if data_type == "get_products" and isinstance(data, dict) and "data" in data and isinstance(data["data"], list) and len(data["data"]) > 0:
                             from app.utils.llm_utils import get_llm_with_fallbacks
                             from app.config import settings
@@ -167,14 +178,14 @@ Trả về ĐÚNG 1 mảng JSON chứa các ID hợp lệ, ví dụ: ["id1", "id
                         prev_msg = messages[j]
                         if prev_msg.type == "human":
                             break
-                        if prev_msg.type == "tool":
+                        if prev_msg.type == "tool" and prev_msg.name != "get_product_details":
                             try:
-                                parsed = json.loads(prev_msg.content)
+                                parsed = tool_payload(prev_msg)
                                 # Only attach tool data if it looks like a dictionary with 'data'
                                 if isinstance(parsed, dict) and "data" in parsed:
                                     data_payload = json.dumps(parsed)
                                 else:
-                                    data_payload = prev_msg.content
+                                    data_payload = parsed if isinstance(parsed, str) else json.dumps(parsed)
                             except Exception:
                                 data_payload = prev_msg.content
                             break

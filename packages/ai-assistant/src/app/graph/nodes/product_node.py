@@ -2,12 +2,14 @@
 from app.graph.states.state import AgentState
 from app.agents.product_agent import product_agent
 from langchain_core.messages import SystemMessage
+from app.utils.agent_context import agent_context
 
 # Định nghĩa system prompt phân định rõ ranh giới quyền hạn
 PRODUCT_SYSTEM_PROMPT = """Bạn là chuyên viên phụ trách tra cứu thông tin sản phẩm và giá cả.
 
 Nhiệm vụ:
 - Sử dụng công cụ để tra cứu thông tin, giá bán, cấu hình sản phẩm theo yêu cầu.
+- Kết quả tìm kiếm chỉ chứa mô tả rút gọn. Khi có description_truncated và cần chi tiết, gọi get_product_details; không kết luận thiếu thông tin từ đoạn rút gọn.
 - Sử dụng `check_inventory_tool` để kiểm tra tồn kho, size, màu sắc của sản phẩm khi người dùng hỏi "còn hàng không", "size X còn không".
 - Chỉ tập trung cung cấp dữ liệu sản phẩm một cách ngắn gọn, chính xác.
 
@@ -19,10 +21,11 @@ Quy tắc BẮT BUỘC:
 - Sau khi cung cấp thông tin sản phẩm xong, hãy kết thúc câu trả lời để hệ thống điều phối các bộ phận khác tiếp tục xử lý."""
 
 def product_node(state: AgentState) -> dict:
+    """Run the product agent with compact results and relevant business context."""
     sys_message = SystemMessage(content=PRODUCT_SYSTEM_PROMPT)
     
     # Ghép system message vào đầu danh sách messages gửi cho LLM
-    response = product_agent.invoke([sys_message] + list(state["messages"])[-10:])
+    response = product_agent.invoke([sys_message] + agent_context(state, "product"))
     
     return {
         "messages": [response]

@@ -5,6 +5,7 @@ from langchain_core.messages import SystemMessage
 from langchain_openai import ChatOpenAI
 from app.config import settings
 from app.graph.states.state import AgentState
+from app.utils.agent_context import agent_context
 
 from app.utils.llm_utils import get_llm_with_fallbacks
 
@@ -20,6 +21,7 @@ supervisor_llm = get_llm_with_fallbacks(
 )
 
 def supervisor_node(state: AgentState) -> dict:
+    """Choose the next agent without sending frontend-only tool fields."""
     sys_prompt = SystemMessage(
         content=(
             "Bạn là Supervisor điều phối trung tâm. Khách hàng có thể hỏi gộp nhiều việc trong 1 câu.\n"
@@ -30,5 +32,5 @@ def supervisor_node(state: AgentState) -> dict:
             "- 'FINISH': Khi TẤT CẢ các ý của khách đã được xử lý xong, HOẶC NẾU tin nhắn cuối cùng là của hệ thống (AI) đang đặt câu hỏi/yêu cầu khách hàng cung cấp thêm thông tin. (BẮT BUỘC CHỌN FINISH ĐỂ CHỜ KHÁCH TRẢ LỜI, TRÁNH VÒNG LẶP VÔ HẠN)."
         )
     )
-    decision = supervisor_llm.invoke([sys_prompt] + list(state["messages"])[-10:])
+    decision = supervisor_llm.invoke([sys_prompt] + agent_context(state, "supervisor"))
     return {"next_node": decision.next_node}
