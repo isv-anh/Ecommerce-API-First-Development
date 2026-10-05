@@ -172,6 +172,75 @@ Protocol Buffers → Buf → gRPC code cho TypeScript và Python
 
 Khi thay đổi HTTP API, cập nhật contract trong `packages/openapi-typespec` rồi sinh lại code. Khi thay đổi giao tiếp gRPC, cập nhật `packages/proto`. Business logic được triển khai trong service, repository và các công cụ của chatbot.
 
+## Chạy chatbot với Docker Compose
+
+### Phát triển local
+
+`docker-compose.yaml` cung cấp PostgreSQL, RabbitMQ, Elasticsearch và Kibana.
+Các ứng dụng và dịch vụ chatbot chạy trực tiếp trên host trong môi trường phát triển.
+Sau khi thiết lập môi trường theo [`SETUP.md`](SETUP.md), khởi động hạ tầng:
+
+```bash
+docker compose up -d postgres-db rabbitmq elasticsearch
+```
+
+Search Service đọc `packages/e-commerce-search/.env`; dùng
+[`packages/e-commerce-search/.env.example`](packages/e-commerce-search/.env.example)
+làm mẫu. Khi chạy service trên host, cấu hình:
+
+```dotenv
+ELASTICSEARCH_NODE=http://localhost:9200
+ELASTIC_CLOUD_ID=
+ELASTIC_API_KEY=
+ELASTIC_USERNAME=
+ELASTIC_PASSWORD=
+RABBITMQ_URL=amqp://guest:guest@localhost:5672
+DASHSCOPE_API_KEY=YOUR_DASHSCOPE_API_KEY
+```
+
+`DASHSCOPE_API_KEY` được dùng để tạo embedding cho tìm kiếm văn bản kết hợp vector.
+Elasticsearch local mở cổng `9200` trên `127.0.0.1`. Nếu cần xem chỉ mục bằng Kibana,
+chạy `docker compose up -d kibana` và truy cập `http://localhost:5601`.
+
+### Triển khai production
+
+`docker-compose.prod.yaml` chạy sáu service: `frontend`, `api`, `order`, `search`,
+`ai-assistant` và `elasticsearch`. PostgreSQL dùng Supabase; RabbitMQ dùng cloud.
+AI Assistant lưu checkpoint hội thoại vào PostgreSQL qua `DB_URI`.
+
+```bash
+cp .env.production.example .env.production
+# Điền Supabase, RabbitMQ, JWT, DashScope và các dịch vụ tích hợp đang sử dụng.
+docker compose --env-file .env.production -f docker-compose.prod.yaml config --quiet
+docker compose --env-file .env.production -f docker-compose.prod.yaml up -d --build
+docker compose --env-file .env.production -f docker-compose.prod.yaml ps
+```
+
+Giữ `.env.production` trên máy triển khai, không commit. `FRONTEND_URL` là origin
+website; `NEXT_PUBLIC_API_URL` là URL API công khai được nhúng lúc build frontend.
+Các khóa `DASHSCOPE_API_KEY`, `DASHSCOPE_API_KEY_AGENT_1` và
+`DASHSCOPE_API_KEY_AGENT_2` phục vụ search và các agent chatbot.
+
+Compose đặt `ELASTICSEARCH_NODE=http://elasticsearch:9200` cho Search Service và
+chờ ES healthy trước khi khởi động search. Elasticsearch production tắt authentication,
+chỉ mở cổng trong mạng Docker; các cổng gRPC cũng chỉ dùng trong mạng Docker.
+Mặc định frontend mở cổng `3000`, API mở cổng `8080`; cấu hình domain HTTPS qua
+reverse proxy của máy triển khai.
+
+### RAM và dữ liệu tìm kiếm
+
+Cả hai cấu hình Compose giới hạn container Elasticsearch ở **512 MB RAM**, không
+cho dùng thêm swap, đặt JVM heap **256 MB**, tắt ML và mmap. Embedding vẫn được tạo
+bằng DashScope bên ngoài Elasticsearch. Giới hạn này dành cho khoảng 300 sản phẩm
+và tải nhẹ; cần theo dõi mức sử dụng RAM khi cập nhật chỉ mục hoặc có nhiều truy vấn
+đồng thời. Kibana và các service khác dùng RAM riêng ngoài giới hạn này.
+
+Dữ liệu Elasticsearch được lưu trong volume `es_data`; local và production có
+volume riêng theo project Compose. ES mới không tự nhận dữ liệu từ ES cloud:
+cần đồng bộ lại các sản phẩm hiện có từ PostgreSQL. Các thay đổi sản phẩm tiếp theo
+được cập nhật qua luồng RabbitMQ của Search Service. Không dùng
+`docker compose down -v` nếu cần giữ dữ liệu trong các volume.
+
 ## Tài liệu và triển khai
 
 - [`SETUP.md`](SETUP.md): hướng dẫn thiết lập môi trường Windows/WSL và VS Code.

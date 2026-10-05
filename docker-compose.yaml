@@ -67,11 +67,27 @@ services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:9.0.0
     container_name: es-local
+    restart: unless-stopped
+    mem_limit: 512m
+    memswap_limit: 512m
     environment:
       - discovery.type=single-node
       - xpack.security.enabled=false
+      - xpack.ml.enabled=false
+      - node.store.allow_mmap=false
+      - ES_JAVA_OPTS=-Xms256m -Xmx256m
     ports:
-      - "9200:9200"
+      - "127.0.0.1:9200:9200"
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS 'http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=5s' | grep -Eq '\"status\"[[:space:]]*:[[:space:]]*\"(green|yellow)\"'"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+    networks:
+      - e-commerce-network
   kibana:
     image: docker.elastic.co/kibana/kibana:9.0.0
     container_name: kibana-local
@@ -80,7 +96,10 @@ services:
     environment:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
     depends_on:
-      - elasticsearch
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - e-commerce-network
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -99,6 +118,7 @@ networks:
     driver: bridge
 volumes:
   pg_data:
+  es_data:
 
     # docker compose down containername -v -- down and remove volumes
     # docker compose up -d -- build -- build and run in detached mode

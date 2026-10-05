@@ -111,17 +111,37 @@ services:
     environment:
       NODE_ENV: production
       RABBITMQ_URL: ${RABBITMQ_URL:?Set the cloud RabbitMQ URL}
-      ELASTIC_CLOUD_ID: ${ELASTIC_CLOUD_ID:-}
-      ELASTICSEARCH_NODE: ${ELASTICSEARCH_NODE:-}
-      ELASTIC_API_KEY: ${ELASTIC_API_KEY:-}
-      ELASTIC_USERNAME: ${ELASTIC_USERNAME:-}
-      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-}
+      ELASTICSEARCH_NODE: http://elasticsearch:9200
       DASHSCOPE_API_KEY: ${DASHSCOPE_API_KEY:?Set the search embedding API key}
     expose:
       - "50053"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
     healthcheck:
       <<: *healthcheck
       test: ["CMD", "node", "-e", "const s=require('net').connect(50053,'127.0.0.1',()=>{s.end();process.exit(0)});s.on('error',()=>process.exit(1))"]
+
+  elasticsearch:
+    <<: *service
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.0.0
+    mem_limit: 512m
+    memswap_limit: 512m
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      xpack.ml.enabled: "false"
+      node.store.allow_mmap: "false"
+      ES_JAVA_OPTS: -Xms256m -Xmx256m
+    expose:
+      - "9200"
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    healthcheck:
+      <<: *healthcheck
+      test: ["CMD-SHELL", "curl -fsS 'http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=5s' | grep -Eq '\"status\"[[:space:]]*:[[:space:]]*\"(green|yellow)\"'"]
+      timeout: 10s
+      start_period: 90s
 
   ai-assistant:
     <<: *service
@@ -167,3 +187,6 @@ services:
 networks:
   e-commerce-network-prod:
     driver: bridge
+
+volumes:
+  es_data:
