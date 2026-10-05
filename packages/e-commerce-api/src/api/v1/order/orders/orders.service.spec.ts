@@ -1,7 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { OrdersService } from './orders.service';
-import { of } from 'rxjs';
-import { NotFoundException } from '@nestjs/common';
+import { of, throwError } from 'rxjs';
+import {
+  BadRequestException,
+  ForbiddenException,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { ClsService } from '@/common/services/cls/cls.service';
 
 // ─── Fixtures ─────────────────────────────────────────────────────────────────
 
@@ -27,11 +33,14 @@ const mockOrdersResponse = {
 // ─── Mocks ────────────────────────────────────────────────────────────────────
 
 const mockOrderServiceClient = {
+  cancelOrder: jest.fn(),
   createOrder: jest.fn(),
   getOrders: jest.fn(),
   getOrderById: jest.fn(),
   deleteOrder: jest.fn(),
 };
+
+const mockClsService = { userId: userId as string | undefined };
 
 const mockClientGrpc = {
   getService: jest.fn().mockReturnValue(mockOrderServiceClient),
@@ -46,6 +55,7 @@ describe('OrdersService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         OrdersService,
+        { provide: ClsService, useValue: mockClsService },
         {
           provide: 'ORDER_SERVICE',
           useValue: mockClientGrpc,
@@ -58,6 +68,85 @@ describe('OrdersService', () => {
     service.onModuleInit();
 
     jest.clearAllMocks();
+    mockClsService.userId = userId;
+  });
+
+  describe('cancelOrder', () => {
+    beforeEach(() => {
+      mockOrderServiceClient.getOrderById.mockReturnValue(
+        of({ order: mockOrder }),
+      );
+      mockOrderServiceClient.cancelOrder.mockReturnValue(of({ success: true }));
+    });
+
+    it.each(['PENDING', 'confirmed'])(
+      'cancels an owned %s order',
+      async (status) => {
+        mockOrderServiceClient.getOrderById.mockReturnValue(
+          of({ order: { ...mockOrder, status } }),
+        );
+        await service.cancelOrder({ orderId });
+        expect(mockOrderServiceClient.cancelOrder).toHaveBeenCalledWith({
+          orderId,
+          reason: 'Khách hàng yêu cầu hủy đơn hàng',
+        });
+      },
+    );
+
+    it('requires an authenticated customer', async () => {
+      mockClsService.userId = undefined;
+      await expect(service.cancelOrder({ orderId })).rejects.toThrow(
+        UnauthorizedException,
+      );
+      expect(mockOrderServiceClient.cancelOrder).not.toHaveBeenCalled();
+    });
+
+    it('rejects an order belonging to another customer', async () => {
+      mockClsService.userId = 'another-customer';
+      await expect(service.cancelOrder({ orderId })).rejects.toThrow(
+        ForbiddenException,
+      );
+      expect(mockOrderServiceClient.cancelOrder).not.toHaveBeenCalled();
+    });
+
+    it('rejects a missing order', async () => {
+      mockOrderServiceClient.getOrderById.mockReturnValue(of({ order: null }));
+      await expect(service.cancelOrder({ orderId })).rejects.toThrow(
+        NotFoundException,
+      );
+      expect(mockOrderServiceClient.cancelOrder).not.toHaveBeenCalled();
+    });
+
+    it.each(['SHIPPING', 'COMPLETED', 'CANCELLED'])(
+      'rejects a %s order',
+      async (status) => {
+        mockOrderServiceClient.getOrderById.mockReturnValue(
+          of({ order: { ...mockOrder, status } }),
+        );
+        await expect(service.cancelOrder({ orderId })).rejects.toThrow(
+          BadRequestException,
+        );
+        expect(mockOrderServiceClient.cancelOrder).not.toHaveBeenCalled();
+      },
+    );
+
+    it('reports a state change between reading and cancelling', async () => {
+      mockOrderServiceClient.cancelOrder.mockReturnValue(
+        of({ success: false }),
+      );
+      await expect(service.cancelOrder({ orderId })).rejects.toThrow(
+        BadRequestException,
+      );
+    });
+
+    it('propagates gRPC failures instead of reporting success', async () => {
+      mockOrderServiceClient.cancelOrder.mockReturnValue(
+        throwError(() => new Error('unavailable')),
+      );
+      await expect(service.cancelOrder({ orderId })).rejects.toThrow(
+        'unavailable',
+      );
+    });
   });
 
   // ─── deleteOrder ─────────────────────────────────────────────────────────────

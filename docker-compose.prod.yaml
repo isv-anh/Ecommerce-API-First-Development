@@ -1,92 +1,186 @@
+# Run with: docker compose --env-file .env.production -f docker-compose.prod.yaml up -d --build
+name: e-commerce-prod
+
+x-service: &service
+  restart: unless-stopped
+  init: true
+  networks:
+    - e-commerce-network-prod
+  logging:
+    driver: json-file
+    options:
+      max-size: "10m"
+      max-file: "3"
+
+x-database: &database
+  DB_HOST: ${DB_HOST:?Set the Supabase database host}
+  DB_PORT: ${DB_PORT:-5432}
+  DB_NAME: ${DB_NAME:-postgres}
+  DB_USERNAME: ${DB_USERNAME:?Set the Supabase database user}
+  DB_PASSWORD: ${DB_PASSWORD:?Set the Supabase database password}
+  PGSSLMODE: ${PGSSLMODE:-require}
+
+x-healthcheck: &healthcheck
+  interval: 15s
+  timeout: 5s
+  retries: 5
+  start_period: 60s
+
 services:
-  postgres-db:
-    container_name: postgres-db-prod
-    image: postgres:16
-    ports:
-      - "${DB_PORT:-5432}:5432"
-    restart: always
-    environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${DB_NAME}
-      - TZ=Asia/Ho_Chi_Minh
-    volumes:
-      - pg_data_prod:/var/lib/postgresql/data
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "pg_isready -h localhost -U ${POSTGRES_USER} -d ${DB_NAME}",
-        ]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    networks:
-      - e-commerce-network-prod
-
-  liquibase:
-    image: liquibase/liquibase:4.33
-    container_name: liquibase-prod
-    depends_on:
-      postgres-db:
-        condition: service_healthy
-    volumes:
-      - ./packages/e-commerce-db/changelog:/liquibase/changelog
-    command:
-      - --url=jdbc:postgresql://postgres-db:5432/${DB_NAME}
-      - --username=${POSTGRES_USER}
-      - --password=${POSTGRES_PASSWORD}
-      - --changeLogFile=db.changelog-master.yaml
-      - --searchPath=/liquibase/changelog
-      - update
-      - -DadminPassword=${ADMIN_PASSWORD:?ADMIN_PASSWORD is required. Run ansible/setup.sh or add ADMIN_PASSWORD to .env}
-    networks:
-      - e-commerce-network-prod
-
   api:
-    container_name: e-commerce-api-prod
+    <<: *service
     build:
       context: .
       dockerfile: docker/e-commerce-api/dockerfile
     ports:
-      - "8080:8080"
-    restart: always
-    depends_on:
-      postgres-db:
-        condition: service_healthy
-      liquibase:
-        condition: service_completed_successfully
-    env_file:
-      - .env.production
+      - "${API_PORT:-8080}:8080"
     environment:
-      - NODE_ENV=production
-      - DB_HOST=postgres-db
-      - DB_PORT=5432
-      - DB_USERNAME=${POSTGRES_USER}
-      - DB_PASSWORD=${POSTGRES_PASSWORD}
-      - DB_NAME=${DB_NAME}
-    networks:
-      - e-commerce-network-prod
+      <<: *database
+      NODE_ENV: production
+      PORT: 8080
+      FRONTEND_URL: ${FRONTEND_URL:?Set the public frontend URL}
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:?Set JWT_ACCESS_SECRET}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:?Set JWT_REFRESH_SECRET}
+      OTP_EXPIRATION_MINUTES: ${OTP_EXPIRATION_MINUTES:-5}
+      RABBITMQ_URL: ${RABBITMQ_URL:?Set the cloud RabbitMQ URL}
+      ORDER_SERVICE_URL: order:50052
+      SEARCH_SERVICE_URL: search:50053
+      AI_ASSISTANT_SERVICE_URL: ai-assistant:50054
+      AWS_REGION: ${AWS_REGION:-ap-southeast-1}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+      S3_BUCKET_NAME: ${S3_BUCKET_NAME:-}
+      CLOUDFRONT_DOMAIN: ${CLOUDFRONT_DOMAIN:-}
+      SENDGRID_API_KEY: ${SENDGRID_API_KEY:-}
+      SENDGRID_FROM_EMAIL: ${SENDGRID_FROM_EMAIL:-}
+    expose:
+      - "50051"
+    depends_on:
+      order:
+        condition: service_healthy
+      search:
+        condition: service_healthy
+      ai-assistant:
+        condition: service_healthy
+    healthcheck:
+      <<: *healthcheck
+      test: ["CMD", "node", "-e", "const s=require('net').connect(8080,'127.0.0.1',()=>{s.end();process.exit(0)});s.on('error',()=>process.exit(1))"]
 
   frontend:
-    container_name: e-commerce-front-prod
+    <<: *service
     build:
       context: .
       dockerfile: docker/e-commerce-front/dockerfile
-      # We must pass NEXT_PUBLIC_ variables via args at build time so that Next.js
-      # can hardcode/inline this value into the client-side JavaScript bundle.
-      # The `env_file` below only applies at run time (for SSR), not at build time.
       args:
-        - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8080}
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:?Set the public API URL}
     ports:
-      - "3000:3000"
-    restart: always
-    depends_on:
-      - api
-    env_file:
-      - .env.production
+      - "${FRONTEND_PORT:-3000}:3000"
     environment:
-      - NODE_ENV=production
+      NODE_ENV: production
+      PORT: 3000
+      HOSTNAME: 0.0.0.0
+      API_URL: http://api:8080
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:?Set the public API URL}
+      NEXT_PUBLIC_ENABLE_MOCKS: "false"
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      <<: *healthcheck
+      test: ["CMD", "node", "-e", "const s=require('net').connect(3000,'127.0.0.1',()=>{s.end();process.exit(0)});s.on('error',()=>process.exit(1))"]
+
+  order:
+    <<: *service
+    build:
+      context: .
+      dockerfile: docker/e-commerce-order/dockerfile
+    environment:
+      <<: *database
+      NODE_ENV: production
+    expose:
+      - "50052"
+    healthcheck:
+      <<: *healthcheck
+      test: ["CMD", "node", "-e", "const s=require('net').connect(50052,'127.0.0.1',()=>{s.end();process.exit(0)});s.on('error',()=>process.exit(1))"]
+
+  search:
+    <<: *service
+    build:
+      context: .
+      dockerfile: docker/e-commerce-search/dockerfile
+    environment:
+      NODE_ENV: production
+      RABBITMQ_URL: ${RABBITMQ_URL:?Set the cloud RabbitMQ URL}
+      ELASTICSEARCH_NODE: http://elasticsearch:9200
+      DASHSCOPE_API_KEY: ${DASHSCOPE_API_KEY:?Set the search embedding API key}
+    expose:
+      - "50053"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    healthcheck:
+      <<: *healthcheck
+      test: ["CMD", "node", "-e", "const s=require('net').connect(50053,'127.0.0.1',()=>{s.end();process.exit(0)});s.on('error',()=>process.exit(1))"]
+
+  elasticsearch:
+    <<: *service
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.0.0
+    mem_limit: 512m
+    memswap_limit: 512m
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      xpack.ml.enabled: "false"
+      node.store.allow_mmap: "false"
+      ES_JAVA_OPTS: -Xms256m -Xmx256m
+    expose:
+      - "9200"
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    healthcheck:
+      <<: *healthcheck
+      test: ["CMD-SHELL", "curl -fsS 'http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=5s' | grep -Eq '\"status\"[[:space:]]*:[[:space:]]*\"(green|yellow)\"'"]
+      timeout: 10s
+      start_period: 90s
+
+  ai-assistant:
+    <<: *service
+    build:
+      context: .
+      dockerfile: docker/ai-assistant/dockerfile
+    environment:
+      DB_URI: ${DB_URI:?Set the Supabase PostgreSQL URI for AI checkpoints}
+      DASHSCOPE_API_KEY_AGENT_1: ${DASHSCOPE_API_KEY_AGENT_1:?Set the AI agent API key}
+      DASHSCOPE_API_KEY_AGENT_2: ${DASHSCOPE_API_KEY_AGENT_2:?Set the support agent API key}
+      ORDER_SERVICE_URL: order:50052
+      SEARCH_SERVICE_URL: search:50053
+      INVENTORY_SERVICE_URL: api:50051
+      LANGSMITH_TRACING: ${LANGSMITH_TRACING:-false}
+      LANGSMITH_API_KEY: ${LANGSMITH_API_KEY:-}
+    expose:
+      - "50054"
+    depends_on:
+      order:
+        condition: service_healthy
+      search:
+        condition: service_healthy
+    healthcheck:
+      <<: *healthcheck
+      test: ["CMD", "python", "-c", "import socket; socket.create_connection(('127.0.0.1', 50054), timeout=3).close()"]
+
+  # Optional one-off migration against Supabase; excluded from normal startup.
+  liquibase:
+    image: liquibase/liquibase:4.33
+    profiles: ["migration"]
+    environment:
+      LIQUIBASE_COMMAND_URL: ${LIQUIBASE_URL:-jdbc:postgresql://${DB_HOST}:${DB_PORT:-5432}/${DB_NAME:-postgres}?sslmode=require}
+      LIQUIBASE_COMMAND_USERNAME: ${DB_USERNAME}
+      LIQUIBASE_COMMAND_PASSWORD: ${DB_PASSWORD}
+      LIQUIBASE_COMMAND_CHANGELOG_FILE: db.changelog-master.yaml
+      LIQUIBASE_SEARCH_PATH: /liquibase/changelog
+    volumes:
+      - ./packages/e-commerce-db/changelog:/liquibase/changelog:ro
+    command: ["update", "-DadminPassword=${ADMIN_PASSWORD:-}"]
     networks:
       - e-commerce-network-prod
 
@@ -95,4 +189,4 @@ networks:
     driver: bridge
 
 volumes:
-  pg_data_prod:
+  es_data:

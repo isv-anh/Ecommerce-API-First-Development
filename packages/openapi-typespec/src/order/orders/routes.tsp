@@ -8,6 +8,18 @@ using TypeSpec.OpenAPI;
 
 @route("/orders")
 namespace Order.Orders {
+    @post
+    @route("/{orderId}/cancel")
+    @operationId("cancelOrder")
+    @tag("orders")
+    op cancelOrder(@path orderId: UUID):
+        | CancelOrderResponse
+        | UnauthorizedError
+        | ForbiddenError
+        | NotFoundError
+        | BadRequestError
+        | InternalServerError;
+
     @get
     @route("")
     @operationId("getOrders")

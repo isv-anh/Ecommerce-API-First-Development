@@ -21,6 +21,8 @@ model OrderItemResponse {
     productVariantId: UUID;
     productName: NonEmptyString;
     variantName: string;
+    @doc("Current variant image, falling back to the product image. Null when unavailable.")
+    thumbnailUrl?: string | null;
     price: decimal;
     quantity: int32;
     totalPrice: decimal;

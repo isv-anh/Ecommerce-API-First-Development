@@ -1,3 +1,5 @@
+import os
+
 import grpc
 
 from app.buf.generated.product.v1 import product_pb2_grpc
@@ -13,9 +15,9 @@ class ProductClientManager:
             cls._instance = super().__new__(cls)
         return cls._instance
 
-    def get_client(self, target: str = "localhost:50053") -> product_pb2_grpc.ProductServiceStub:
+    def get_client(self, target: str | None = None) -> product_pb2_grpc.ProductServiceStub:
         if self._client is None:
-            self._channel = grpc.insecure_channel(target)
+            self._channel = grpc.insecure_channel(target or os.getenv("SEARCH_SERVICE_URL", "localhost:50053"))
             self._client = product_pb2_grpc.ProductServiceStub(self._channel)
         return self._client
 

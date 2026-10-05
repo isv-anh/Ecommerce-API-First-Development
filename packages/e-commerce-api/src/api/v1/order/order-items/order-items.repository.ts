@@ -7,6 +7,9 @@ import {
 } from '@e-commerce/api-validation/types/order';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
+import type { products } from 'generated/prisma/client';
+
+type CatalogThumbnail = Pick<products, 'id' | 'thumbnail_url'>;
 
 @Injectable()
 export class OrderItemsRepository {
@@ -44,6 +47,7 @@ export class OrderItemsRepository {
       },
     });
 
+    const thumbnails = await this.getThumbnails(result);
     const orderItems = result.map((item) => ({
       orderItemId: item.id,
       orderId: item.order_id,
@@ -51,6 +55,7 @@ export class OrderItemsRepository {
       productVariantId: item.product_variant_id ?? '',
       productName: item.product_name ?? '',
       variantName: item.variant_name ?? '',
+      thumbnailUrl: thumbnails.get(item.id) ?? null,
       price: Number(item.price ?? 0),
       quantity: item.quantity ?? 0,
       totalPrice: Number(item.total_price ?? 0),
@@ -75,6 +80,7 @@ export class OrderItemsRepository {
       throw new NotFoundException('Order Item not found');
     }
 
+    const thumbnails = await this.getThumbnails([item]);
     return {
       orderItemId: item.id,
       orderId: item.order_id,
@@ -82,10 +88,63 @@ export class OrderItemsRepository {
       productVariantId: item.product_variant_id ?? '',
       productName: item.product_name ?? '',
       variantName: item.variant_name ?? '',
+      thumbnailUrl: thumbnails.get(item.id) ?? null,
       price: Number(item.price ?? 0),
       quantity: item.quantity ?? 0,
       totalPrice: Number(item.total_price ?? 0),
     };
+  }
+
+  /** Resolve current images in batches while retaining historical order item data. */
+  private async getThumbnails(
+    items: {
+      id: string;
+      product_id: string | null;
+      product_variant_id: string | null;
+    }[],
+  ): Promise<Map<string, string | null>> {
+    const productIds = [
+      ...new Set(
+        items.flatMap((item) => (item.product_id ? [item.product_id] : [])),
+      ),
+    ];
+    const variantIds = [
+      ...new Set(
+        items.flatMap((item) =>
+          item.product_variant_id ? [item.product_variant_id] : [],
+        ),
+      ),
+    ];
+    const [products, variants]: [CatalogThumbnail[], CatalogThumbnail[]] =
+      await Promise.all([
+        productIds.length
+          ? this.prisma.products.findMany({
+              where: { id: { in: productIds } },
+              select: { id: true, thumbnail_url: true },
+            })
+          : [],
+        variantIds.length
+          ? this.prisma.product_variants.findMany({
+              where: { id: { in: variantIds } },
+              select: { id: true, thumbnail_url: true },
+            })
+          : [],
+      ]);
+    const productImages = new Map(
+      products.map((product) => [product.id, product.thumbnail_url]),
+    );
+    const variantImages = new Map(
+      variants.map((variant) => [variant.id, variant.thumbnail_url]),
+    );
+    return new Map(
+      items.map((item) => [
+        item.id,
+        (item.product_variant_id &&
+          variantImages.get(item.product_variant_id)) ||
+          (item.product_id && productImages.get(item.product_id)) ||
+          null,
+      ]),
+    );
   }
 
   /**

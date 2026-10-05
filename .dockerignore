@@ -9,6 +9,7 @@ build
 out
 *.log
 .env*
+**/.env*
 !.env.example
 .turbo
 *.md
@@ -17,9 +18,17 @@ __pycache__/
 *.py[cod]
 *$py.class
 .venv/
+**/.venv/
+**/__pycache__/
+**/*.py[cod]
 venv/
 ENV/
 .git/
 .gitignore
 .dockerignore
 README.md
+# Exclude local build output and generator caches.
+**/dist
+**/target
+**/lib/openapi-generator-cli.jar
+**/*.tsbuildinfo

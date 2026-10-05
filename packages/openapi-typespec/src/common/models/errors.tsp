@@ -14,6 +14,18 @@ model UnauthorizedError {
 }
 
 @error
+model ForbiddenError {
+    @statusCode statusCode: 403;
+    @body body: ErrorResponse;
+}
+
+@error
+model NotFoundError {
+    @statusCode statusCode: 404;
+    @body body: ErrorResponse;
+}
+
+@error
 model BadRequestError {
     @statusCode statusCode: 400;
     @body body: ErrorResponse;

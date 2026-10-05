@@ -17,7 +17,7 @@ import {
         options: {
           package: 'order.v1',
           protoPath: join(process.cwd(), '../proto/order/v1/order.proto'),
-          url: '0.0.0.0:50052',
+          url: process.env.ORDER_SERVICE_URL || 'localhost:50052',
         },
       },
     ]),

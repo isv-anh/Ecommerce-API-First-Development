@@ -1,9 +1,9 @@
 import {
   Product,
   SearchProductRequest,
-} from "@/buf/generated/product/v1/product";
-import { esClient } from "@/config/elasticsearch";
-import { getEmbedding } from "@/config/model";
+} from "../buf/generated/product/v1/product";
+import { esClient } from "../config/elasticsearch";
+import { getEmbedding } from "../config/model";
 
 export async function updateProduct(product: Product): Promise<void> {
   // semantic search: generate embedding vector for the product and store it in Elasticsearch

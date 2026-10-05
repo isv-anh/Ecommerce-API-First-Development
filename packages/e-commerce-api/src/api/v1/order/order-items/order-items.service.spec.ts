@@ -32,6 +32,7 @@ const mockOrderItem = {
   productVariantId,
   productName: 'Test Product',
   variantName: 'Red',
+  thumbnailUrl: 'https://example.com/variant.jpg',
   price: 50,
   quantity: 2,
   totalPrice: 100,

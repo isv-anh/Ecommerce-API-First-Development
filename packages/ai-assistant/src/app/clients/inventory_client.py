@@ -1,3 +1,5 @@
+import os
+
 import grpc
 
 from app.buf.generated.product.v1 import product_pb2_grpc
@@ -14,10 +16,10 @@ class InventoryClientManager:
         return cls._instance
 
     def get_client(
-        self, target: str = "localhost:50051"
+        self, target: str | None = None
     ) -> product_pb2_grpc.InventoryServiceStub:
         if self._client is None:
-            self._channel = grpc.insecure_channel(target)
+            self._channel = grpc.insecure_channel(target or os.getenv("INVENTORY_SERVICE_URL", "localhost:50051"))
             self._client = product_pb2_grpc.InventoryServiceStub(self._channel)
         return self._client
 

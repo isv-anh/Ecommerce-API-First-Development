@@ -1,3 +1,13 @@
+# Generate Python gRPC stubs from the shared contracts.
+FROM node:22.17.0-slim AS proto-builder
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates && rm -rf /var/lib/apt/lists/*
+WORKDIR /app
+RUN corepack enable && corepack prepare pnpm@10.13.1 --activate
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+COPY packages/ ./packages/
+RUN --mount=type=cache,target=/root/.local/share/pnpm/store pnpm install --frozen-lockfile
+RUN pnpm --filter proto generate
+
 
 FROM python:3.11-slim-bookworm
 
@@ -19,20 +29,21 @@ RUN apt-get update && \
 WORKDIR /app
 
 # 4. Separate copy and install dependencies to leverage Docker layer caching
-COPY requirements.txt .
+COPY packages/ai-assistant/requirements.txt .
 
 # Install dependencies (add gcc using apt-get if complex C/C++ builds are needed)
 RUN pip install --no-cache-dir -r requirements.txt
 
 # 5. Copy the entire source code into the image
-COPY . .
+COPY packages/ai-assistant/ .
+COPY --from=proto-builder /app/packages/ai-assistant/src/app/buf/generated ./src/app/buf/generated
 
 # 6. Security: Create and switch to a non-root user
 RUN useradd -m appuser && chown -R appuser:appuser /app
 USER appuser
 
 # 7. Port the application listens on (e.g. 8080 for HTTP or 50051 for gRPC)
-EXPOSE 50051
+EXPOSE 50054
 
 # 8. Command to start the application (choose the appropriate one below)
 # For standard Python scripts:
