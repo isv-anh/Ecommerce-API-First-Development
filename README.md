@@ -1,263 +1,183 @@
-# API-First Development Platform
+# E-Commerce Chatbot
 
-> Một nền tảng phát triển theo hướng **API-first**, trong đó **API Contract** được xem là **Single Source of Truth**.
->
-> Từ một định nghĩa API duy nhất bằng **TypeSpec**, hệ thống tự động sinh backend controller, frontend API client và validation schema, giúp giảm boilerplate, đảm bảo tính đồng nhất giữa frontend và backend, đồng thời cho phép hai phía phát triển độc lập.
+Ứng dụng thương mại điện tử tích hợp chatbot AI, giúp khách hàng tìm sản phẩm, kiểm tra tồn kho, đặt hàng và theo dõi đơn hàng bằng hội thoại tiếng Việt. Chatbot kết nối với các dịch vụ nghiệp vụ để tra cứu dữ liệu và thực hiện thao tác ngay trong giao diện mua sắm.
 
-> **Lưu ý:** Ứng dụng **E-Commerce** trong repository này chỉ đóng vai trò **Reference Implementation** nhằm kiểm chứng kiến trúc và workflow trên một hệ thống thực tế.
+Dự án gồm website bán hàng, trang quản trị và các dịch vụ backend trong cùng một monorepo. API-first là phương pháp phát triển hỗ trợ đồng bộ contract giữa frontend và backend; trọng tâm sản phẩm là trải nghiệm mua sắm với chatbot.
 
----
+## Chatbot làm được gì?
 
-# Vấn đề
+| Nhóm tác vụ | Chức năng trong code hiện tại |
+| --- | --- |
+| Tư vấn sản phẩm | Tìm theo từ khóa, danh mục, thương hiệu, khoảng giá và thứ tự sắp xếp; trả dữ liệu để giao diện hiển thị thẻ sản phẩm. |
+| Kiểm tra tồn kho | Tra cứu biến thể, SKU và số lượng tồn của sản phẩm. |
+| Xử lý đơn hàng | Thu thập thông tin đặt hàng, tạo đơn, tra cứu trạng thái và hủy đơn qua dịch vụ đơn hàng. |
+| Hỗ trợ khách hàng | Giải đáp chính sách đổi trả, bảo hành và giao hàng. Công cụ tra cứu hiện dùng nội dung mẫu cố định. |
+| Duy trì hội thoại | Lưu trạng thái bằng LangGraph checkpoint trên PostgreSQL và tải lại lịch sử chat. |
+| Xác nhận thao tác | Tạm dừng trước khi tạo hoặc hủy đơn để người dùng kiểm tra thông tin, xác nhận hoặc từ chối. |
 
-Trong nhiều dự án thực tế, frontend và backend thường duy trì các định nghĩa API riêng biệt.
+Ví dụ yêu cầu có thể gửi cho chatbot:
 
-Điều này dẫn đến nhiều vấn đề:
+- “Tìm giúp tôi áo polo dưới 500.000 đồng.”
+- “Sản phẩm này còn những phân loại nào?”
+- “Tôi muốn đặt 2 sản phẩm này.”
+- “Kiểm tra trạng thái đơn hàng của tôi.”
+- “Chính sách đổi trả như thế nào?”
 
-* API contract dễ bị sai lệch theo thời gian.
-* DTO và validation bị trùng lặp ở nhiều nơi.
-* Frontend và backend phải phụ thuộc lẫn nhau trong quá trình phát triển.
-* Mỗi khi thêm API mới cần viết nhiều boilerplate code.
-* Chi phí bảo trì tăng theo quy mô hệ thống.
+Kết quả phụ thuộc vào dữ liệu sản phẩm, tồn kho, đơn hàng và các dịch vụ đã cấu hình. Khi đặt hàng, chatbot cần thu thập sản phẩm, số lượng, người nhận, địa chỉ, số điện thoại và phương thức thanh toán trước bước xác nhận.
 
----
+## Website và trang quản trị
 
-# Giải pháp
+Website có các trang danh sách và chi tiết sản phẩm, tìm kiếm, giỏ hàng, danh sách yêu thích, tài khoản và đơn hàng cá nhân. Chat widget được tích hợp trong layout mua sắm.
 
-Dự án áp dụng mô hình **Contract-Driven Development**.
+Trang quản trị hỗ trợ quản lý sản phẩm, biến thể, danh mục, thương hiệu, thuộc tính, kho, tồn kho và đơn hàng. Backend cung cấp xác thực, phân quyền và các API nghiệp vụ phục vụ những giao diện này.
 
-API Contract được xem là nguồn dữ liệu duy nhất của toàn bộ hệ thống.
+## Kiến trúc hệ thống
 
-Từ cùng một contract, hệ thống sẽ tự động sinh:
+```mermaid
+flowchart TD
+    Web[Website Next.js và Chat Widget] -->|HTTP| API[API NestJS]
+    API -->|gRPC| AI[AI Assistant: Python và LangGraph]
+    AI --> Supervisor[Supervisor]
+    Supervisor --> Product[Product Agent]
+    Supervisor --> Order[Order Agent]
+    Supervisor --> Support[Support Agent]
+    Product -->|gRPC: tìm sản phẩm| Search[Search Service]
+    Product -->|gRPC: tồn kho| API
+    Order -->|gRPC: tồn kho| API
+    Order -->|gRPC: đơn hàng| Orders[Order Service]
+    Support --> Policy[Chính sách mẫu]
+    Search --> ES[(Elasticsearch)]
+    AI -->|Checkpoint hội thoại| DB[(PostgreSQL)]
+    API --> DB
+    Orders --> DB
+    API -->|Sự kiện sản phẩm qua outbox| MQ[RabbitMQ]
+    MQ -->|Đồng bộ chỉ mục| Search
+```
 
-### Backend
+1. Chat widget gửi tin nhắn đến API, sau đó API chuyển yêu cầu sang AI Assistant qua gRPC.
+2. Supervisor trong LangGraph điều phối Product Agent, Order Agent hoặc Support Agent dựa trên hội thoại. Một yêu cầu có thể cần nhiều nhóm tác vụ.
+3. Agent gọi công cụ tương ứng để lấy dữ liệu hoặc xử lý nghiệp vụ. Thao tác tạo và hủy đơn đi qua bước xác nhận của người dùng.
+4. AI Assistant trả lời kèm dữ liệu có cấu trúc để frontend hiển thị nội dung chat, sản phẩm hoặc yêu cầu xác nhận.
 
-* Base Controller
-* Route Definition
-* Request Validation
-* Response Type
-* RBAC Metadata
-* Public Endpoint Metadata
+Search Service kết hợp tìm kiếm văn bản và vector trên Elasticsearch. Embedding được tạo qua DashScope với model `text-embedding-v3`; các thay đổi sản phẩm được chuyển qua RabbitMQ để cập nhật chỉ mục.
 
-Developer chỉ cần tập trung vào **Business Logic**.
+## Các luồng xử lý chính
 
-### Frontend
+### Hội thoại và điều phối agent
 
-* API Client
-* React Query Hooks
-* Request Functions
-* Shared TypeScript Types
+Supervisor đọc ngữ cảnh hội thoại để chọn agent xử lý. Mỗi agent có bộ công cụ riêng và có thể gọi công cụ, đọc kết quả rồi tiếp tục trả lời. Sau khi agent hoàn thành, luồng quay lại Supervisor để xử lý yêu cầu còn lại hoặc kết thúc lượt chat. Khi cần khách hàng cung cấp thêm thông tin, hệ thống kết thúc lượt hiện tại để chờ phản hồi.
 
-Frontend không cần viết thủ công các hàm gọi API.
+```mermaid
+flowchart LR
+    Input[Tin nhắn và ngữ cảnh] --> Supervisor[Supervisor]
+    Supervisor --> Agent[Product / Order / Support]
+    Agent --> Decision{Cần gọi công cụ?}
+    Decision -->|Có| Tool[Công cụ nghiệp vụ]
+    Tool --> Agent
+    Decision -->|Không| Supervisor
+    Supervisor -->|Hoàn tất hoặc cần hỏi thêm| Response[Phản hồi khách hàng]
+```
 
-### Shared Package
+Trạng thái graph được lưu bằng PostgreSQL checkpointer với khóa kết hợp người dùng đã xác thực và phiên hội thoại. Khóa giao dịch trong PostgreSQL tuần tự hóa các yêu cầu trên cùng hội thoại, kể cả khi có nhiều AI worker. API cũng cung cấp luồng lấy lịch sử để chat widget khôi phục các tin nhắn đã trao đổi.
 
-* TypeScript Types
-* Zod Schema
-* Request Models
-* Response Models
+### Tìm kiếm và kiểm tra tồn kho
 
-Giúp đảm bảo dữ liệu được đồng bộ giữa frontend và backend.
+1. Product Agent chuyển nhu cầu của khách thành các tham số như từ khóa, thương hiệu, danh mục và khoảng giá.
+2. Công cụ `get_products` gọi Search Service qua gRPC. Khi có từ khóa, Search Service tạo embedding và kết hợp truy vấn văn bản với tìm kiếm vector trên Elasticsearch.
+3. Kết quả sản phẩm được trả về cùng phản hồi của chatbot để frontend hiển thị thẻ sản phẩm.
+4. Khi khách hỏi về phân loại hoặc số lượng còn lại, công cụ `check_inventory_tool` gọi dịch vụ tồn kho trong API để lấy dữ liệu biến thể và tồn kho từ PostgreSQL.
 
----
+Elasticsearch phục vụ tìm kiếm sản phẩm; thông tin tồn kho được tra cứu qua dịch vụ nghiệp vụ khi cần.
 
-# Workflow
+### Tạo và hủy đơn có xác nhận
+
+```mermaid
+sequenceDiagram
+    actor Customer as Khách hàng
+    participant Web as Chat Widget
+    participant AI as API / AI Assistant
+    participant Graph as LangGraph
+    participant Order as Order Service
+    Customer->>Web: Yêu cầu đặt hoặc hủy đơn
+    Web->>AI: Gửi tin nhắn
+    AI->>Graph: Xử lý yêu cầu và thu thập thông tin
+    Graph-->>AI: Tạm dừng trước công cụ tạo / hủy đơn
+    AI-->>Web: Trả thông tin cần xác nhận
+    Web-->>Customer: Hiển thị thao tác dự kiến
+    Customer->>Web: Xác nhận hoặc từ chối
+    Web->>AI: Gửi lựa chọn
+    alt Khách xác nhận
+        AI->>Graph: Tiếp tục graph
+        Graph->>Order: Gọi công cụ qua gRPC
+        Order-->>Graph: Kết quả xử lý
+    else Khách từ chối
+        AI->>Graph: Ghi nhận từ chối, bỏ qua thao tác
+    end
+    Graph-->>AI: Phản hồi kết quả
+    AI-->>Web: Hiển thị cho khách
+```
+
+LangGraph tạm dừng trước nhóm `sensitive_order_tools`, gồm `place_order_tool` và `cancel_order_tool`. Xác nhận gắn với ID của thao tác đang chờ; Order Service kiểm tra chủ sở hữu đơn và chống tạo trùng khi gửi lại cùng yêu cầu. Tạo đơn/trừ kho và hủy đơn/hoàn kho được xử lý trong transaction. Các thao tác tra cứu như kiểm tra đơn hoặc tồn kho không đi qua bước xác nhận này.
+
+### Đồng bộ dữ liệu tìm kiếm
 
 ```text
-                    TypeSpec Contract
-                           │
-                           ▼
-                     OpenAPI Schema
-                           │
-        ┌──────────────────┴──────────────────┐
-        │                                     │
-        ▼                                     ▼
- Backend Generator                    Orval Generator
-        │                                     │
-        ▼                                     ▼
- Base Controller                  React Query Client
-                                  TypeScript Types
-                                  Zod Schema
-        │                                     │
-        └──────────────────┬──────────────────┘
-                           ▼
-              Backend & Frontend Development
+Thay đổi sản phẩm → Outbox trong PostgreSQL → RabbitMQ
+                  → Search Service → Tạo embedding → Elasticsearch
 ```
 
-Developer chỉ cần định nghĩa API một lần bằng **TypeSpec**.
+API ghi nhận sự kiện sản phẩm qua outbox. Bộ xử lý outbox chuyển sự kiện sang RabbitMQ; Search Service nhận sự kiện và cập nhật chỉ mục tìm kiếm. Outbox chỉ đánh dấu hoàn tất sau xác nhận từ broker. Search Service dùng phiên bản sự kiện để loại cập nhật cũ, giữ dấu xóa sản phẩm và chuyển lỗi qua retry/dead-letter queue. Đây là luồng đồng bộ bất đồng bộ, nên kết quả tìm kiếm có thể cập nhật sau dữ liệu nghiệp vụ.
 
-Mọi thành phần còn lại được sinh tự động từ cùng một API Contract.
+## Công nghệ và cấu trúc
 
----
-
-# Kiến trúc
-
-Repository được tổ chức theo mô hình **Monorepo** sử dụng **pnpm workspace**.
+| Thành phần | Công nghệ chính |
+| --- | --- |
+| Website và quản trị | Next.js, React, Material UI, TanStack Query |
+| Chatbot | Python, LangGraph, LangChain, Qwen qua DashScope |
+| API và dịch vụ đơn hàng | NestJS, Prisma, gRPC |
+| Tìm kiếm | TypeScript, Elasticsearch, DashScope embeddings |
+| Dữ liệu và sự kiện | PostgreSQL, Liquibase, RabbitMQ |
+| Contract và sinh code | TypeSpec, OpenAPI, Orval, Protocol Buffers, Buf |
+| Công cụ phát triển | pnpm workspace, Docker Compose, GitHub Actions |
 
 ```text
-packages
-├── e-commerce-api          # Backend NestJS (Reference Application)
-├── e-commerce-front        # Frontend Next.js (Reference Application)
-├── api-client              # Generated React Query Client
-├── api-validation          # Shared TypeScript Types & Zod Schema
-├── openapi-typespec        # API Contract Definition
-├── openapi-generator       # NestJS Code Generator
-└── e-commerce-db           # Database Migration
+packages/
+├── ai-assistant/          # Chatbot, LangGraph, agents và tools (Python)
+├── e-commerce-front/      # Website, trang quản trị và chat widget
+├── e-commerce-api/        # HTTP API, xác thực, nghiệp vụ và gRPC tồn kho
+├── e-commerce-order/      # Dịch vụ đơn hàng qua gRPC
+├── e-commerce-search/     # Tìm kiếm và đồng bộ chỉ mục Elasticsearch
+├── e-commerce-db/         # Database changelog và migration Liquibase
+├── proto/                 # Contract gRPC và cấu hình sinh code
+├── openapi-typespec/       # Contract HTTP API bằng TypeSpec
+├── openapi-generator/      # Công cụ sinh base controller NestJS
+├── custom/                # Template tùy chỉnh cho generator
+├── api-client/            # API client và TanStack Query hooks
+└── api-validation/        # Types và Zod schemas dùng chung
 ```
 
-Hai package:
+Các package JavaScript/TypeScript được quản lý bằng pnpm workspace. AI Assistant có môi trường Python và dependencies riêng.
 
-* `e-commerce-api`
-* `e-commerce-front`
+## API-first trong quy trình phát triển
 
-được sử dụng để kiểm chứng kiến trúc trên một bài toán thực tế.
+API-first giúp giảm phần code lặp và giữ frontend, backend thống nhất khi bổ sung tính năng thương mại điện tử hoặc chatbot.
 
----
+```text
+TypeSpec → OpenAPI ─┬→ Base controllers NestJS
+                   ├→ API client và TanStack Query hooks
+                   └→ Types và Zod schemas
 
-# Developer Experience
-
-Ngoài việc sinh code, dự án còn tập trung vào việc giảm thời gian onboarding và tăng hiệu quả phát triển.
-
-Bao gồm:
-
-* VSCode Tasks
-* Workspace Configuration
-* Environment Setup Scripts
-* GitHub Workflow Automation
-* Pull Request Helper Scripts
-* Database Migration Scripts
-* One-command Code Generation
-
-Một developer mới có thể clone project, chạy setup task và bắt đầu phát triển mà không cần thực hiện nhiều bước cấu hình thủ công.
-
----
-
-# Nguyên tắc thiết kế
-
-## API-First
-
-API Contract là trung tâm của toàn bộ hệ thống.
-
-Mọi thành phần đều được sinh ra từ cùng một nguồn dữ liệu.
-
----
-
-## Contract-Driven Development
-
-Frontend và backend cùng phát triển dựa trên một API Contract duy nhất.
-
-Điều này giúp giảm sai lệch và hạn chế việc phải đồng bộ thủ công giữa hai phía.
-
----
-
-## Convention over Configuration
-
-Những phần mang tính lặp lại sẽ được generator xử lý.
-
-Developer chỉ tập trung vào Business Logic.
-
----
-
-## Developer Experience
-
-Tự động hóa những công việc lặp lại nhằm giảm thời gian onboarding và tăng năng suất phát triển.
-
----
-
-# Công nghệ sử dụng
-
-## Backend
-
-* NestJS
-* Prisma
-* PostgreSQL
-* Liquibase
-
-## Frontend
-
-* Next.js
-* React Query
-* Zod
-
-## API Contract
-
-* TypeSpec
-* OpenAPI
-
-## Tooling
-
-* Orval
-* pnpm Workspace
-* Docker
-* GitHub CLI
-
----
-
-# Reference Implementation
-
-Repository sử dụng một hệ thống **E-Commerce SaaS** làm ứng dụng minh họa.
-
-Mục tiêu của dự án không phải xây dựng một website bán hàng hoàn chỉnh, mà là chứng minh rằng kiến trúc API-first, workflow code generation và mô hình Contract-Driven Development có thể áp dụng hiệu quả trên một hệ thống thực tế.
-
-
-# Chạy production bằng Docker Compose
-
-`docker-compose.prod.yaml` chạy 5 service: `frontend`, `api`, `order`, `search`,
-`ai-assistant`. PostgreSQL dùng Supabase; RabbitMQ và Elasticsearch dùng cloud.
-
-```bash
-cp .env.production.example .env.production
-# Điền thông tin Supabase, RabbitMQ, Elasticsearch, JWT, AWS, SendGrid và DashScope.
-docker compose --env-file .env.production -f docker-compose.prod.yaml config --quiet
-docker compose --env-file .env.production -f docker-compose.prod.yaml up -d --build
-docker compose --env-file .env.production -f docker-compose.prod.yaml ps
-docker compose --env-file .env.production -f docker-compose.prod.yaml logs -f
+Protocol Buffers → Buf → gRPC code cho TypeScript và Python
 ```
 
-Dùng `--env-file .env.production` để Compose đọc các biến `${...}`; xem
-[tài liệu Docker về interpolation](https://docs.docker.com/compose/how-tos/environment-variables/variable-interpolation/).
-Giữ `.env.production` ở máy triển khai, không commit. Nếu mật khẩu chứa `$`,
-đặt giá trị trong dấu nháy đơn trong file env để tránh nội suy.
+Khi thay đổi HTTP API, cập nhật contract trong `packages/openapi-typespec` rồi sinh lại code. Khi thay đổi giao tiếp gRPC, cập nhật `packages/proto`. Business logic được triển khai trong service, repository và các công cụ của chatbot.
 
-- `DB_HOST`, `DB_PORT`, `DB_USERNAME`, `DB_PASSWORD`, `DB_NAME`: lấy từ mục
-  **Connect** của Supabase, dùng direct connection hoặc session pooler. Kết nối
-  Node sử dụng TLS qua `PGSSLMODE=require`.
-- `DB_URI`: URI PostgreSQL riêng cho checkpoint của AI, thêm `sslmode=require`
-  và URL-encode username/password khi có ký tự đặc biệt. AI tự tạo bảng checkpoint
-  khi khởi động, nên tài khoản này cần quyền tạo bảng trong schema sử dụng.
-- `RABBITMQ_URL`: URL cloud dạng `amqps://...`, bao gồm virtual host đúng.
-- Elasticsearch: điền `ELASTIC_CLOUD_ID` hoặc `ELASTICSEARCH_NODE` (HTTPS), kèm
-  `ELASTIC_API_KEY` hoặc `ELASTIC_USERNAME` / `ELASTIC_PASSWORD`.
-- `FRONTEND_URL`: origin công khai của frontend cho CORS, không thêm dấu `/` cuối.
-- `NEXT_PUBLIC_API_URL`: URL API mà trình duyệt truy cập được. Giá trị này được
-  nhúng khi build, nên cần build lại frontend sau khi đổi. SSR dùng `http://api:8080`.
+## Tài liệu và triển khai
 
-Mặc định host mở frontend ở cổng `3000` và API ở `8080`; đổi bằng `FRONTEND_PORT`
-và `API_PORT`. Trỏ domain HTTPS / reverse proxy của máy triển khai về các cổng
-này. Các cổng gRPC `50051`–`50054` chỉ dùng trong mạng Docker. Healthcheck kiểm tra
-cổng lắng nghe; không thay thế kiểm tra từng chức năng hay kết nối cloud.
+- [`SETUP.md`](SETUP.md): hướng dẫn thiết lập môi trường Windows/WSL và VS Code.
+- [`docker-compose.yaml`](docker-compose.yaml): hạ tầng dùng khi phát triển local.
+- [`docker-compose.prod.yaml`](docker-compose.prod.yaml): cấu hình Compose cho môi trường production.
+- [`.github/workflows`](.github/workflows): các workflow build, kiểm tra và triển khai dịch vụ.
+- [`docs/openapi`](docs/openapi): tài liệu contract OpenAPI trong repository.
 
-Build image cần Internet để tải dependency và sinh protobuf từ Buf. API tự sinh
-Prisma Client và base controller trong build, không cần truyền secret production
-vào image.
-
-
-Image `api` và `order` dùng [Node.js distroless](https://github.com/GoogleContainerTools/distroless/tree/main/nodejs)
-và [dependency tracing](https://github.com/vercel/nft) qua `docker/node-runtime/trace.mjs`.
-Image cuối chỉ chứa code đã build và file runtime cần thiết; Prisma CLI, Studio,
-TypeScript, npm và pnpm nằm ngoài image chạy. Prisma WASM, bcrypt và gRPC được
-kiểm tra trong image. Distroless không có shell: dùng `logs` để xem lỗi hoặc
-`docker compose ... exec api node ...` để chạy lệnh Node.js. Healthcheck hiện tại
-vẫn chạy qua `node` trong `PATH`.
-
-Nếu schema Supabase đã được migrate, chỉ cần lệnh `up` ở trên. Khi cần cập nhật
-schema, chạy Liquibase riêng trước khi triển khai ứng dụng:
-
-```bash
-# Điền ADMIN_PASSWORD trong .env.production trước khi chạy migration.
-docker compose --env-file .env.production -f docker-compose.prod.yaml --profile migration run --rm liquibase
-```
-
-Liquibase dùng `DB_*` với TLS; có thể đặt `LIQUIBASE_URL` để đổi JDBC URL. Profile
-`migration` không chạy trong lệnh `up` thông thường. Migration thất bại cần xử lý
-trước khi cập nhật các container ứng dụng.
+- [`docs/architecture/hardening.md`](docs/architecture/hardening.md): các bảo đảm dữ liệu, giới hạn còn lại và lưu ý chuyển đổi triển khai.
