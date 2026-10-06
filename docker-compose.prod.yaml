@@ -125,14 +125,15 @@ services:
   elasticsearch:
     <<: *service
     image: docker.elastic.co/elasticsearch/elasticsearch:9.0.0
-    mem_limit: 512m
-    memswap_limit: 512m
+    # Leave room for native memory and filesystem cache beyond the JVM heap.
+    mem_limit: 1g
+    memswap_limit: 1g
     environment:
       discovery.type: single-node
       xpack.security.enabled: "false"
       xpack.ml.enabled: "false"
       node.store.allow_mmap: "false"
-      ES_JAVA_OPTS: -Xms256m -Xmx256m
+      ES_JAVA_OPTS: -Xms512m -Xmx512m
     expose:
       - "9200"
     volumes:
