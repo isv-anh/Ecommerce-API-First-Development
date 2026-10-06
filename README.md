@@ -227,6 +227,52 @@ chỉ mở cổng trong mạng Docker; các cổng gRPC cũng chỉ dùng trong 
 Mặc định frontend mở cổng `3000`, API mở cổng `8080`; cấu hình domain HTTPS qua
 reverse proxy của máy triển khai.
 
+### Build/push Docker Hub và chạy trên VPS
+
+`docker-compose.hub.yaml` dùng image đã publish, không build và không cần source
+code trên VPS. Hạ tầng và biến môi trường giống compose production: PostgreSQL
+trên Supabase, RabbitMQ cloud, Elasticsearch chạy trên VPS. Hai compose production
+dùng cùng project name `e-commerce-prod`, nên có thể chuyển sang image mà giữ volume ES.
+
+Trên máy build đã cài Docker/Buildx, đăng nhập Docker Hub bằng access token rồi push
+một tag cho toàn bộ năm ứng dụng và image migration:
+
+```bash
+docker login --username YOUR_DOCKERHUB_USERNAME
+bash scripts/push-dockerhub.sh YOUR_DOCKERHUB_USERNAME v1.0.0 https://api.example.com
+```
+
+Script mặc định build `linux/amd64`; với VPS ARM64, đặt `IMAGE_PLATFORM=linux/arm64`
+trước lệnh chạy script. `NEXT_PUBLIC_API_URL` được nhúng vào frontend lúc build;
+URL truyền vào script phải trùng với URL API công khai trong `.env.production`.
+Đổi URL này cần build/push lại frontend. Script dừng khi một image thất bại;
+chỉ triển khai tag sau khi tất cả image đã push thành công.
+
+Chỉ cần copy `docker-compose.hub.yaml` và `.env.production.example` lên VPS, sau đó:
+
+```bash
+cp .env.production.example .env.production
+# Điền các cấu hình production, DOCKERHUB_NAMESPACE và IMAGE_TAG=v1.0.0.
+chmod 600 .env.production
+# Đăng nhập Docker Hub trên VPS nếu repository image là private.
+docker compose --env-file .env.production -f docker-compose.hub.yaml config --quiet
+docker compose --env-file .env.production -f docker-compose.hub.yaml pull
+# Với database mới, điền ADMIN_PASSWORD và chạy migration trước khi khởi động:
+docker compose --env-file .env.production -f docker-compose.hub.yaml --profile migration run --rm liquibase
+docker compose --env-file .env.production -f docker-compose.hub.yaml up -d --no-build --wait
+docker compose --env-file .env.production -f docker-compose.hub.yaml ps
+```
+
+Image `e-commerce-migrations` chứa sẵn changelog; migration là bước chạy riêng,
+không tự chạy khi khởi động ứng dụng. Khi cập nhật, đổi `IMAGE_TAG` trong
+`.env.production`, chạy lại `pull`, migration nếu release có thay đổi database,
+rồi `up -d --no-build --wait`. Dùng tag release mới cho mỗi lần publish để có thể
+chọn lại tag cũ khi cần. Rollback image không tự rollback database.
+
+Các workflow CD hiện có push image ứng dụng khi publish GitHub Release; script
+trên cho phép push thủ công và thêm image migration. Workflow `cd-deploy-vps.yml`
+hiện dùng compose local; luồng triển khai VPS bằng Docker Hub này dùng các lệnh ở trên.
+
 ### RAM và dữ liệu tìm kiếm
 
 Cả hai cấu hình Compose giới hạn container Elasticsearch ở **512 MB RAM**, không
@@ -246,6 +292,8 @@ cần đồng bộ lại các sản phẩm hiện có từ PostgreSQL. Các thay
 - [`SETUP.md`](SETUP.md): hướng dẫn thiết lập môi trường Windows/WSL và VS Code.
 - [`docker-compose.yaml`](docker-compose.yaml): hạ tầng dùng khi phát triển local.
 - [`docker-compose.prod.yaml`](docker-compose.prod.yaml): cấu hình Compose cho môi trường production.
+- [`docker-compose.hub.yaml`](docker-compose.hub.yaml): chạy trên VPS bằng image Docker Hub.
+- [`scripts/push-dockerhub.sh`](scripts/push-dockerhub.sh): build/push bộ image cho một release.
 - [`.github/workflows`](.github/workflows): các workflow build, kiểm tra và triển khai dịch vụ.
 - [`docs/openapi`](docs/openapi): tài liệu contract OpenAPI trong repository.
 
