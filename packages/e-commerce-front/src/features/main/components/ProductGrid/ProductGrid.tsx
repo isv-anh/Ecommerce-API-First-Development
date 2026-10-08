@@ -54,7 +54,7 @@ const ProductGrid = ({
           </Typography>
         </Stack>
         {showViewAll && (
-          <Button href="/search" endIcon={<ArrowForwardIcon />} sx={{ px: 0 }}>
+          <Button href="/product" endIcon={<ArrowForwardIcon />} sx={{ px: 0 }}>
             Xem tất cả
           </Button>
         )}
