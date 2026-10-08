@@ -224,7 +224,7 @@ Các khóa `DASHSCOPE_API_KEY`, `DASHSCOPE_API_KEY_AGENT_1` và
 Compose đặt `ELASTICSEARCH_NODE=http://elasticsearch:9200` cho Search Service và
 chờ ES healthy trước khi khởi động search. Elasticsearch production tắt authentication,
 chỉ mở cổng trong mạng Docker; các cổng gRPC cũng chỉ dùng trong mạng Docker.
-Mặc định frontend mở cổng `3000`, API mở cổng `8080`; cấu hình domain HTTPS qua
+Mặc định frontend mở cổng `80` (map vào cổng `3000` trong container), API mở cổng `8080`; cấu hình domain HTTPS qua
 reverse proxy của máy triển khai.
 
 ### Build/push Docker Hub và chạy trên VPS

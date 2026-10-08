@@ -68,7 +68,7 @@ services:
     <<: *service
     image: ${DOCKERHUB_NAMESPACE:?Set your Docker Hub username or organization}/e-commerce-front:${IMAGE_TAG:?Set the image release tag}
     ports:
-      - "${FRONTEND_PORT:-3000}:3000"
+      - "${FRONTEND_PORT:-80}:3000"
     environment:
       NODE_ENV: production
       PORT: 3000
