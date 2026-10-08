@@ -425,4 +425,19 @@ model outbox_events {
   payload        Json     @db.JsonB
   status         String   @default("PENDING") @db.VarChar(50)
   created_at     DateTime @default(now()) @db.Timestamp(6)
+  event_version  BigInt   @default(0)
+  attempts       Int      @default(0)
+  next_attempt_at DateTime @default(now()) @db.Timestamp(6)
+  locked_until   DateTime? @db.Timestamp(6)
+  lock_token     String? @db.Uuid
+  last_error     String?
+  processed_at   DateTime? @db.Timestamp(6)
+
+  @@index([status, next_attempt_at, created_at, id], map: "idx_outbox_pending")
+  @@index([status, locked_until], map: "idx_outbox_lease")
+}
+
+model product_event_versions {
+  product_id String @id @db.Uuid
+  version BigInt
 }
