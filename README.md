@@ -6,14 +6,14 @@ Dự án gồm website bán hàng, trang quản trị và các dịch vụ backe
 
 ## Chatbot làm được gì?
 
-| Nhóm tác vụ | Chức năng trong code hiện tại |
-| --- | --- |
-| Tư vấn sản phẩm | Tìm theo từ khóa, danh mục, thương hiệu, khoảng giá và thứ tự sắp xếp; trả dữ liệu để giao diện hiển thị thẻ sản phẩm. |
-| Kiểm tra tồn kho | Tra cứu biến thể, SKU và số lượng tồn của sản phẩm. |
-| Xử lý đơn hàng | Thu thập thông tin đặt hàng, tạo đơn, tra cứu trạng thái và hủy đơn qua dịch vụ đơn hàng. |
-| Hỗ trợ khách hàng | Giải đáp chính sách đổi trả, bảo hành và giao hàng. Công cụ tra cứu hiện dùng nội dung mẫu cố định. |
-| Duy trì hội thoại | Lưu trạng thái bằng LangGraph checkpoint trên PostgreSQL và tải lại lịch sử chat. |
-| Xác nhận thao tác | Tạm dừng trước khi tạo hoặc hủy đơn để người dùng kiểm tra thông tin, xác nhận hoặc từ chối. |
+| Nhóm tác vụ       | Chức năng trong code hiện tại                                                                                          |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| Tư vấn sản phẩm   | Tìm theo từ khóa, danh mục, thương hiệu, khoảng giá và thứ tự sắp xếp; trả dữ liệu để giao diện hiển thị thẻ sản phẩm. |
+| Kiểm tra tồn kho  | Tra cứu biến thể, SKU và số lượng tồn của sản phẩm.                                                                    |
+| Xử lý đơn hàng    | Thu thập thông tin đặt hàng, tạo đơn, tra cứu trạng thái và hủy đơn qua dịch vụ đơn hàng.                              |
+| Hỗ trợ khách hàng | Giải đáp chính sách đổi trả, bảo hành và giao hàng. Công cụ tra cứu hiện dùng nội dung mẫu cố định.                    |
+| Duy trì hội thoại | Lưu trạng thái bằng LangGraph checkpoint trên PostgreSQL và tải lại lịch sử chat.                                      |
+| Xác nhận thao tác | Tạm dừng trước khi tạo hoặc hủy đơn để người dùng kiểm tra thông tin, xác nhận hoặc từ chối.                           |
 
 Ví dụ yêu cầu có thể gửi cho chatbot:
 
@@ -130,15 +130,15 @@ API ghi nhận sự kiện sản phẩm qua outbox. Bộ xử lý outbox chuyể
 
 ## Công nghệ và cấu trúc
 
-| Thành phần | Công nghệ chính |
-| --- | --- |
-| Website và quản trị | Next.js, React, Material UI, TanStack Query |
-| Chatbot | Python, LangGraph, LangChain, Qwen qua DashScope |
-| API và dịch vụ đơn hàng | NestJS, Prisma, gRPC |
-| Tìm kiếm | TypeScript, Elasticsearch, DashScope embeddings |
-| Dữ liệu và sự kiện | PostgreSQL, Liquibase, RabbitMQ |
-| Contract và sinh code | TypeSpec, OpenAPI, Orval, Protocol Buffers, Buf |
-| Công cụ phát triển | pnpm workspace, Docker Compose, GitHub Actions |
+| Thành phần              | Công nghệ chính                                  |
+| ----------------------- | ------------------------------------------------ |
+| Website và quản trị     | Next.js, React, Material UI, TanStack Query      |
+| Chatbot                 | Python, LangGraph, LangChain, Qwen qua DashScope |
+| API và dịch vụ đơn hàng | NestJS, Prisma, gRPC                             |
+| Tìm kiếm                | TypeScript, Elasticsearch, DashScope embeddings  |
+| Dữ liệu và sự kiện      | PostgreSQL, Liquibase, RabbitMQ                  |
+| Contract và sinh code   | TypeSpec, OpenAPI, Orval, Protocol Buffers, Buf  |
+| Công cụ phát triển      | pnpm workspace, Docker Compose, GitHub Actions   |
 
 ```text
 packages/
@@ -273,20 +273,6 @@ Các workflow CD hiện có push image ứng dụng khi publish GitHub Release; 
 trên cho phép push thủ công và thêm image migration. Workflow `cd-deploy-vps.yml`
 hiện dùng compose local; luồng triển khai VPS bằng Docker Hub này dùng các lệnh ở trên.
 
-### RAM và dữ liệu tìm kiếm
-
-Cả hai cấu hình Compose giới hạn container Elasticsearch ở **512 MB RAM**, không
-cho dùng thêm swap, đặt JVM heap **256 MB**, tắt ML và mmap. Embedding vẫn được tạo
-bằng DashScope bên ngoài Elasticsearch. Giới hạn này dành cho khoảng 300 sản phẩm
-và tải nhẹ; cần theo dõi mức sử dụng RAM khi cập nhật chỉ mục hoặc có nhiều truy vấn
-đồng thời. Kibana và các service khác dùng RAM riêng ngoài giới hạn này.
-
-Dữ liệu Elasticsearch được lưu trong volume `es_data`; local và production có
-volume riêng theo project Compose. ES mới không tự nhận dữ liệu từ ES cloud:
-cần đồng bộ lại các sản phẩm hiện có từ PostgreSQL. Các thay đổi sản phẩm tiếp theo
-được cập nhật qua luồng RabbitMQ của Search Service. Không dùng
-`docker compose down -v` nếu cần giữ dữ liệu trong các volume.
-
 ## Tài liệu và triển khai
 
 - [`SETUP.md`](SETUP.md): hướng dẫn thiết lập môi trường Windows/WSL và VS Code.
@@ -296,5 +282,3 @@ cần đồng bộ lại các sản phẩm hiện có từ PostgreSQL. Các thay
 - [`scripts/push-dockerhub.sh`](scripts/push-dockerhub.sh): build/push bộ image cho một release.
 - [`.github/workflows`](.github/workflows): các workflow build, kiểm tra và triển khai dịch vụ.
 - [`docs/openapi`](docs/openapi): tài liệu contract OpenAPI trong repository.
-
-- [`docs/architecture/hardening.md`](docs/architecture/hardening.md): các bảo đảm dữ liệu, giới hạn còn lại và lưu ý chuyển đổi triển khai.
