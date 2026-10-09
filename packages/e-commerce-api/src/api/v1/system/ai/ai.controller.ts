@@ -22,7 +22,7 @@ export class AiController implements BaseAiControllerInterface {
     const userId = this.clsService.userId;
     const grpcResponse = await this.aiService.chat(
       requestBody.message,
-      requestBody.sessionId,
+      requestBody.sessionId || userId,
       userId,
       requestBody.confirm,
     );
@@ -37,7 +37,7 @@ export class AiController implements BaseAiControllerInterface {
 
   async getAiChatHistory(): Promise<GetAiChatHistory200Response> {
     const userId = this.clsService.userId;
-    const sessionId = 'default_session'; // For now we use default session
+    const sessionId = userId || 'default_session';
 
     const grpcResponse = await this.aiService.getChatHistory(
       sessionId,
