@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useEffect, Suspense } from "react";
 import TextField from "@/components/inputs/TextField/TextField";
 import Stack from "@mui/material/Stack";
 import { useForm } from "react-hook-form";
@@ -12,8 +12,7 @@ import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import Badge from "@mui/material/Badge";
 import NextLink from "next/link";
-import { useQueryClient } from "@tanstack/react-query";
-import { getCart, getCartItems } from "@e-commerce/api-client/endpoints/cart";
+import { useCartBadge } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -21,44 +20,11 @@ import Typography from "@mui/material/Typography";
 const SearchBar = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const queryClient = useQueryClient();
-  const [badgeCount, setBadgeCount] = useState(0);
   const { userId } = useAuth();
 
   const textSearchParam = searchParams.get("keyword") || "";
 
-  useEffect(() => {
-    if (!userId) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setBadgeCount(0);
-      return;
-    }
-
-    let active = true;
-
-    const updateBadge = async () => {
-      try {
-        const cart = await getCart({ userId });
-        const res = await getCartItems(cart.cartId);
-        const count = res.cartItems?.reduce((sum, item) => sum + item.quantity, 0) || 0;
-        if (active) setBadgeCount(count);
-      } catch {
-        if (active) setBadgeCount(0);
-      }
-    };
-
-    updateBadge();
-
-    // Subscribe to query cache changes to update real-time
-    const unsubscribe = queryClient.getQueryCache().subscribe(() => {
-      updateBadge();
-    });
-
-    return () => {
-      active = false;
-      unsubscribe();
-    };
-  }, [userId, queryClient]);
+  const badgeCount = useCartBadge(userId);
 
   const { control, handleSubmit, reset } = useForm<{ textSearch: string }>({
     defaultValues: {
