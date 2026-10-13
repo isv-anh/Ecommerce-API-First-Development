@@ -205,21 +205,21 @@ services:
           "import socket; socket.create_connection(('127.0.0.1', 50054), timeout=3).close()",
         ]
 
-  # Optional one-off migration against Supabase; excluded from normal startup.
-  liquibase:
-    image: liquibase/liquibase:4.33
-    profiles: ["migration"]
-    environment:
-      LIQUIBASE_COMMAND_URL: ${LIQUIBASE_URL:-jdbc:postgresql://${DB_HOST}:${DB_PORT:-5432}/${DB_NAME:-postgres}?sslmode=require}
-      LIQUIBASE_COMMAND_USERNAME: ${DB_USERNAME}
-      LIQUIBASE_COMMAND_PASSWORD: ${DB_PASSWORD}
-      LIQUIBASE_COMMAND_CHANGELOG_FILE: db.changelog-master.yaml
-      LIQUIBASE_SEARCH_PATH: /liquibase/changelog
-    volumes:
-      - ./packages/e-commerce-db/changelog:/liquibase/changelog:ro
-    command: ["update", "-DadminPassword=${ADMIN_PASSWORD:-}"]
-    networks:
-      - e-commerce-network-prod
+  # # Optional one-off migration against Supabase; excluded from normal startup.
+  # liquibase:
+  #   image: liquibase/liquibase:4.33
+  #   profiles: ["migration"]
+  #   environment:
+  #     LIQUIBASE_COMMAND_URL: ${LIQUIBASE_URL:-jdbc:postgresql://${DB_HOST}:${DB_PORT:-5432}/${DB_NAME:-postgres}?sslmode=require}
+  #     LIQUIBASE_COMMAND_USERNAME: ${DB_USERNAME}
+  #     LIQUIBASE_COMMAND_PASSWORD: ${DB_PASSWORD}
+  #     LIQUIBASE_COMMAND_CHANGELOG_FILE: db.changelog-master.yaml
+  #     LIQUIBASE_SEARCH_PATH: /liquibase/changelog
+  #   volumes:
+  #     - ./packages/e-commerce-db/changelog:/liquibase/changelog:ro
+  #   command: ["update", "-DadminPassword=${ADMIN_PASSWORD:-}"]
+  #   networks:
+  #     - e-commerce-network-prod
 
 networks:
   e-commerce-network-prod:
