@@ -6,7 +6,7 @@ def get_llm_with_fallbacks(api_key: str, model: str = None, tools: list = None, 
     
     # Extract kwargs or defaults
     temperature = kwargs.get("temperature", settings.TEMPERATURE)
-    base_url = kwargs.get("base_url", "https://dashscope-intl.aliyuncs.com/compatible-mode/v1")
+    base_url = kwargs.get("base_url", "https://maas.qwencloudapi.com/compatible-mode/v1")
     
     primary_llm = ChatOpenAI(
         model=model,
@@ -16,7 +16,7 @@ def get_llm_with_fallbacks(api_key: str, model: str = None, tools: list = None, 
     )
     
     # Danh sách model dự phòng (tự động chuyển sang khi model chính lỗi 403 / Hết Quota)
-    fallback_models = ["qwen-turbo", "qwen-max"]
+    fallback_models = ["qwen-turbo", "qwen-max", "qwen-plus", "qwen-flash"]
     fallback_models = [m for m in fallback_models if m != model]
     
     fallbacks = [
