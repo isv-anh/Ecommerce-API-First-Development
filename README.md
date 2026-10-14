@@ -221,6 +221,23 @@ website; `NEXT_PUBLIC_API_URL` là URL API công khai được nhúng lúc build
 Các khóa `DASHSCOPE_API_KEY`, `DASHSCOPE_API_KEY_AGENT_1` và
 `DASHSCOPE_API_KEY_AGENT_2` phục vụ search và các agent chatbot.
 
+Khi cập nhật tính năng chat đặt hàng, chạy migration trước để thêm
+`orders.shipping_address` và `orders.payment_method` (đơn cũ giữ giá trị null),
+rồi rebuild các service sử dụng code mới:
+
+```bash
+docker compose --env-file .env.production -f docker-compose.prod.yaml -f docker-compose.migrations.yaml run --rm liquibase
+docker compose --env-file .env.production -f docker-compose.prod.yaml up -d --build order ai-assistant api frontend
+```
+
+Chat mở form tên người nhận, số điện thoại Việt Nam, địa chỉ và phương thức
+thanh toán sau khi khách chọn phân loại/số lượng. Gửi form chưa tạo đơn;
+khách phải kiểm tra và xác nhận riêng. Thông tin cũng được kiểm tra trước khi
+gửi đến Order Service và được lưu cùng đơn hàng.
+Model có timeout 20 giây mỗi lần gọi, không tự retry và dùng một model dự phòng.
+API chat có deadline 90 giây. Khi chưa nhận được kết quả sau khi xác nhận,
+tải lại lịch sử chat và kiểm tra đơn hàng trước khi gửi lại.
+
 Compose đặt `ELASTICSEARCH_NODE=http://elasticsearch:9200` cho Search Service và
 chờ ES healthy trước khi khởi động search. Elasticsearch production tắt authentication,
 chỉ mở cổng trong mạng Docker; các cổng gRPC cũng chỉ dùng trong mạng Docker.

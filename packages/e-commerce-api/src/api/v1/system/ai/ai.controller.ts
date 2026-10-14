@@ -29,7 +29,7 @@ export class AiController implements BaseAiControllerInterface {
 
     return {
       message: grpcResponse.message,
-      data: grpcResponse.data ? JSON.parse(grpcResponse.data) : null,
+      data: this.aiService.parseToolData(grpcResponse.data),
       sessionId: grpcResponse.sessionId,
       type: grpcResponse.type,
     };
@@ -46,11 +46,11 @@ export class AiController implements BaseAiControllerInterface {
 
     return {
       messages: grpcResponse.messages
-        ? grpcResponse.messages.map((m: any) => ({
+        ? grpcResponse.messages.map((m) => ({
             id: m.id,
             sender: m.sender,
             text: m.text,
-            data: m.data ? JSON.parse(m.data as string) : null,
+            data: this.aiService.parseToolData(m.data),
           }))
         : [],
     };
