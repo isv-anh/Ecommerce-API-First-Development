@@ -1,12 +1,10 @@
 "use client";
 
 import { useEffect, Suspense } from "react";
-import TextField from "@/components/inputs/TextField/TextField";
+import ProductSearchInput from "./ProductSearchInput";
 import Stack from "@mui/material/Stack";
-import { useForm } from "react-hook-form";
-import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
+import { Controller, useForm } from "react-hook-form";
 import LocalMallIcon from "@mui/icons-material/LocalMall";
-import Button from "@mui/material/Button";
 import { useRouter, useSearchParams } from "next/navigation";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
@@ -48,20 +46,20 @@ const SearchBar = () => {
   };
 
   return (
-    <Box
-      className="w-full bg-white border-b border-gray-100 transition-all duration-300"
-    >
+    <Box className="w-full bg-white border-b border-gray-100 transition-all duration-300">
       <Stack
         component={"form"}
         onSubmit={handleSubmit(handleSearch)}
         direction={"row"}
         alignItems={"center"}
         justifyContent={"space-between"}
-        spacing={4}
-        className="max-w-7xl mx-auto px-4 md:px-8 h-20"
+        spacing={{ xs: 1, sm: 4 }}
+        useFlexGap
+        sx={{ flexWrap: { xs: "wrap", sm: "nowrap" }, py: { xs: 1, sm: 0 } }}
+        className="max-w-7xl mx-auto px-4 md:px-8 min-h-20"
       >
         <Stack
-          width={240}
+          width={{ xs: "auto", sm: 240 }}
           component={NextLink}
           href="/"
           sx={{
@@ -72,7 +70,7 @@ const SearchBar = () => {
           <Typography
             variant="title"
             sx={{
-              color: "#000",
+              color: "text.primary",
               letterSpacing: "-0.5px",
               fontSize: "1.6rem",
             }}
@@ -80,50 +78,16 @@ const SearchBar = () => {
             E-Commerce
           </Typography>
         </Stack>
-        <TextField
+        <Controller
           control={control}
           name="textSearch"
-          className="grow max-w-2xl"
-          placeholder="Tìm kiếm sản phẩm..."
-          sx={{
-            "& .MuiOutlinedInput-root": {
-              borderRadius: "8px",
-              backgroundColor: "#f9fafb",
-              transition: "all 0.2s ease",
-              "&:hover .MuiOutlinedInput-notchedOutline": {
-                borderColor: "#d1d5db",
-              },
-              "&.Mui-focused": {
-                backgroundColor: "#ffffff",
-                "& .MuiOutlinedInput-notchedOutline": {
-                   borderColor: "#000000",
-                   borderWidth: "1px",
-                }
-              },
-            },
-            "& .MuiInputBase-root": {
-              paddingRight: "6px",
-            },
-          }}
-          slotProps={{
-            input: {
-              endAdornment: (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  sx={{
-                    borderRadius: "6px",
-                    height: "36px",
-                    minWidth: "48px",
-                    px: 2,
-                  }}
-                  type="submit"
-                >
-                  <SearchRoundedIcon fontSize="small" />
-                </Button>
-              ),
-            },
-          }}
+          render={({ field }) => (
+            <ProductSearchInput
+              value={field.value}
+              onInputChange={field.onChange}
+              onSearch={(keyword) => handleSearch({ textSearch: keyword })}
+            />
+          )}
         />
         <Stack>
           <Tooltip title="Giỏ hàng">
@@ -131,7 +95,7 @@ const SearchBar = () => {
               component={NextLink}
               href="/cart"
               className="bg-gray-50 hover:bg-gray-100 transition-colors"
-              sx={{ width: 48, height: 48, color: "#111827" }}
+              sx={{ width: 48, height: 48, color: "text.primary" }}
             >
               <Badge badgeContent={badgeCount} color={"error"}>
                 <LocalMallIcon sx={{ fontSize: 24 }} />
@@ -148,9 +112,7 @@ const Search = () => {
   return (
     <Suspense
       fallback={
-        <Box
-          className="w-full bg-white border-b border-gray-200"
-        >
+        <Box className="w-full bg-white border-b border-gray-200">
           <Stack
             direction={"row"}
             alignItems={"center"}

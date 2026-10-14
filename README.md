@@ -244,6 +244,27 @@ chỉ mở cổng trong mạng Docker; các cổng gRPC cũng chỉ dùng trong 
 Mặc định frontend mở cổng `80` (map vào cổng `3000` trong container), API mở cổng `8080`; cấu hình domain HTTPS qua
 reverse proxy của máy triển khai.
 
+Thanh tìm kiếm gợi ý **từ khóa** qua API public
+`GET /api/v1/search/suggestions?keyword=ao&limit=6`. Search Service dùng ES
+`completion` từ tên sản phẩm, danh mục và thương hiệu của các sản phẩm đã xuất bản.
+Gõ không dấu vẫn nhận nhãn tiếng Việt có dấu; chọn gợi ý mở trang tìm kiếm theo
+từ khóa đó. Gợi ý không tạo embedding hoặc gọi model AI.
+
+Sau khi cập nhật phiên bản có autocomplete, rebuild các service rồi bổ sung
+gợi ý cho sản phẩm đã có trong ES:
+
+```bash
+docker compose --env-file .env.production -f docker-compose.prod.yaml up -d --build search api frontend
+docker compose --env-file .env.production -f docker-compose.prod.yaml exec -T search node dist/scripts/backfill-keywords.js
+```
+
+Search Service tự bổ sung mapping khi khởi động. Script backfill giữ nguyên
+vector và external version, bỏ qua dữ liệu đã xử lý và tránh ghi đè event mới
+đang đồng bộ. Sản phẩm mới/cập nhật sẽ tự có gợi ý qua outbox; sản phẩm ẩn/xóa
+được thay bằng tombstone nên không còn gợi ý sau khi ES refresh.
+Với Docker Hub, publish/pull image mới và dùng `docker-compose.hub.yaml` trong
+các lệnh trên (không dùng `--build`).
+
 ### Build/push Docker Hub và chạy trên VPS
 
 `docker-compose.hub.yaml` dùng image đã publish, không build và không cần source
